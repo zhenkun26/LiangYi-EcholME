@@ -88,21 +88,21 @@ In Chinese mode, the user also reported that directly repeating `=` leaves only 
 
 ### Guided email, URL and code-style result
 
-**12 literal-preservation checks PASS; 2 FAIL_LITERAL_PRESERVATION.** Seven synthetic payloads were entered by actual key events in each mode, with field observations before and after Return. Only titles/case markers were pasted into two new test notes. No email was sent, no URL opened and no code executed. The matrix tests literal preservation, not exhaustive email/URL grammar or automatic context detection.
+**ASCII mode: 7 literal-input checks PASS. Chinese mode: 7 behavior observations, without an imposed literal-input verdict.** Seven synthetic payloads were entered by actual key events in each mode, with field observations before and after Return. Only titles/case markers were pasted into two new test notes. No email was sent, no URL opened and no code executed. English text should be assessed for literal preservation in ASCII mode. Explicit Chinese mode applies its pinyin, punctuation and recognizer rules; no requirement to preserve all English text literally was agreed for Round 0.
 
-| Typed payload | Chinese mode observed text | ASCII mode observed text | Literal-preservation result |
-| --- | --- | --- | --- |
-| `user@example.com` | `user@example.com` | Unchanged | PASS in both modes |
-| `user_01-test@example.com` | `user——01-test@example.com` | Unchanged | Chinese FAIL; ASCII PASS |
-| `user+tag@example.com` | `user+tag@example.com` | Unchanged | PASS in both modes, for this sequence only |
-| `https://example.com/path-01` | Unchanged | Unchanged | PASS in both modes |
-| `www.example.com/path_01` | Unchanged | Unchanged | PASS in both modes |
-| `example.com/path_01` | Unchanged | Unchanged | PASS in both modes |
-| `call_fn(12+3);` | `擦了路——愤怒（12+3）；` | Unchanged | Chinese FAIL; ASCII PASS |
+| Typed payload | Chinese mode observation | ASCII mode observed text (PASS) |
+| --- | --- | --- |
+| `user@example.com` | `user@example.com` | Unchanged |
+| `user_01-test@example.com` | `user——01-test@example.com` | Unchanged |
+| `user+tag@example.com` | `user+tag@example.com` | Unchanged |
+| `https://example.com/path-01` | Unchanged | Unchanged |
+| `www.example.com/path_01` | Unchanged | Unchanged |
+| `example.com/path_01` | Unchanged | Unchanged |
+| `call_fn(12+3);` | `擦了路——愤怒（12+3）；` | Unchanged |
 
 Notes auto-linked ASCII-mode emails/URLs after Return. CUA represented them as Markdown-like links; their visible labels and pre-Return text matched the payloads. The [structured evidence](evidence/notes-format-input-acceptance.json) retains both representations instead of treating link formatting as text corruption.
 
-Open issue **R0-UAT-001**: the underscore in the structured email becomes the configured Chinese dash before the completed email token is protected. This causal explanation is a source-based inference; internal execution was not instrumented. Open issue **R0-UAT-002**: explicit Chinese mode interprets the code-like fragments as pinyin and converts punctuation. Both fail literal preservation and pass the corresponding ASCII control. Neither issue was fixed in this step; no new mode or recognizer contract was approved.
+The former fault classifications **R0-UAT-001/002 are WITHDRAWN_INVALID_CRITERION** following the user's correction. The assistant imposed literal preservation on explicit Chinese mode without an agreed requirement. The underscore mapping and code-like pinyin/punctuation conversion remain documented mode/recognizer observations; their actual outputs have not been changed. These observations do not establish a defect. Any future automatic language/context or literal-input policy requires a defined contract before a behavior can fail it. No code correction was needed or performed for this classification correction.
 
 The plus-alias email passed even though plus is outside the deployed email regex's local-part character set. This single observed path does not establish full alias support. Equality-containing operators, quoted code strings and broader address grammars remain untested.
 
@@ -110,10 +110,10 @@ After the matrix, the starting Chinese mode was restored; fresh `nihao` plus Spa
 
 ### Pending special-character and environment coverage
 
-The user explicitly requested this coverage. The bounded Notes punctuation matrix and physical-equals follow-up are complete; the email/URL/code matrix exposes two unresolved literal-preservation issues. Visual confirmation for the format-input step is pending. All extended coverage in Xcode and Terminal remains NOT_RUN, with Terminal automation blocked by tool policy. Remaining Notes cases below require separate step authorization:
+The user explicitly requested this coverage. The bounded Notes punctuation matrix and physical-equals follow-up are complete; the format matrix verifies seven ASCII literal-input cases and records seven Chinese-mode observations. Visual confirmation for the format-input step is pending. All extended coverage in Xcode and Terminal remains NOT_RUN, with Terminal automation blocked by tool policy. Remaining Notes cases below require separate step authorization:
 
 - Other symbol choices; punctuation during active pinyin composition and arbitrary repeated/interleaved symbol sequences. Record intentional full-width/half-width conversion and configured paging behavior rather than assuming every difference is a bug.
-- Broader email/URL/code input, including case changes, equality-containing operators, quotes and additional grammars; the seven payloads above do not establish blanket coverage. Keep R0-UAT-001/002 open until an authorized fix or explicit mode-contract decision is verified.
+- Broader email/URL/code input, including case changes, equality-containing operators, quotes and additional grammars; the seven payloads above do not establish blanket coverage. Use mode-appropriate acceptance criteria; do not reinstate the withdrawn Chinese-mode literal-input fault labels without an agreed contract and new supporting evidence.
 - Chinese/Latin mixed segments, spaces, repeated punctuation and editing with Backspace/Delete/arrows/Tab; verify host text and composition boundaries.
 - Non-ASCII input such as emoji, accented text and full-width characters through available entry methods. Distinguish typed events from paste/Character Viewer; neither path proves the other.
 - Return in each composition state, including no matching candidate and after digit selection/cancellation; keypad Enter is a separate untested key path.
