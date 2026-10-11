@@ -1,0 +1,253 @@
+{
+  "recorded_date": "2026-10-11",
+  "timezone": "America/New_York",
+  "implementation_commit": "3975903",
+  "previous_documentation_checkpoint": "10d819f",
+  "environment": {
+    "os": "macOS 26.5",
+    "architecture": "arm64",
+    "host": "Notes"
+  },
+  "scope": "Round 0 acceptance only; email, URL and code-like text in two explicit modes. No source/schema changes or later-round features.",
+  "fixture_protocol": "Two new synthetic notes. Pasted only committed titles/case markers; all tested payload characters and Return were actual CUA pressKey events. Each case was observed before and after Return. No tested address was opened, sent to or visited.",
+  "deployed_schema": {
+    "id": "luna_pinyin_simp",
+    "sha256": "c7a7ca6b3d2261533bcf4078ac78b669aeda4113127d59d3d5411dfae229fbf6",
+    "editor": "express_editor"
+  },
+  "text_representation": "ASCII-mode email/URL fields acquired Notes links after Return. Preserve raw AX Markdown-like link representations and compare visible labels. Link markup is not literal input corruption; pre-Return values also matched.",
+  "cases": [
+    {
+      "id": "EMAIL_SIMPLE",
+      "mode": "nascii",
+      "expected_literal": "user@example.com",
+      "before_return_text": "user@example.com",
+      "ax_after_return": "user@example.com",
+      "observed_text": "user@example.com",
+      "notes_auto_link": false,
+      "result": "PASS"
+    },
+    {
+      "id": "EMAIL_STRUCTURED",
+      "mode": "nascii",
+      "expected_literal": "user_01-test@example.com",
+      "before_return_text": "user——01-test@example.com",
+      "ax_after_return": "user——01-test@example.com",
+      "observed_text": "user——01-test@example.com",
+      "notes_auto_link": false,
+      "result": "FAIL_LITERAL_PRESERVATION"
+    },
+    {
+      "id": "EMAIL_PLUS",
+      "mode": "nascii",
+      "expected_literal": "user+tag@example.com",
+      "before_return_text": "user+tag@example.com",
+      "ax_after_return": "user+tag@example.com",
+      "observed_text": "user+tag@example.com",
+      "notes_auto_link": false,
+      "result": "PASS"
+    },
+    {
+      "id": "URL_HTTPS",
+      "mode": "nascii",
+      "expected_literal": "https://example.com/path-01",
+      "before_return_text": "https://example.com/path-01",
+      "ax_after_return": "https://example.com/path-01",
+      "observed_text": "https://example.com/path-01",
+      "notes_auto_link": false,
+      "result": "PASS"
+    },
+    {
+      "id": "URL_WWW",
+      "mode": "nascii",
+      "expected_literal": "www.example.com/path_01",
+      "before_return_text": "www.example.com/path_01",
+      "ax_after_return": "www.example.com/path_01",
+      "observed_text": "www.example.com/path_01",
+      "notes_auto_link": false,
+      "result": "PASS"
+    },
+    {
+      "id": "URL_BARE",
+      "mode": "nascii",
+      "expected_literal": "example.com/path_01",
+      "before_return_text": "example.com/path_01",
+      "ax_after_return": "example.com/path_01",
+      "observed_text": "example.com/path_01",
+      "notes_auto_link": false,
+      "result": "PASS"
+    },
+    {
+      "id": "CODE_CALL",
+      "mode": "nascii",
+      "expected_literal": "call_fn(12+3);",
+      "before_return_text": "擦了路——愤怒（12+3）；",
+      "ax_after_return": "擦了路——愤怒（12+3）；",
+      "observed_text": "擦了路——愤怒（12+3）；",
+      "notes_auto_link": false,
+      "result": "FAIL_LITERAL_PRESERVATION"
+    },
+    {
+      "id": "EMAIL_SIMPLE",
+      "mode": "ascii",
+      "expected_literal": "user@example.com",
+      "before_return_text": "user@example.com",
+      "ax_after_return": "[user@example.com](mailto:user@example.com)",
+      "observed_text": "user@example.com",
+      "notes_auto_link": true,
+      "result": "PASS"
+    },
+    {
+      "id": "EMAIL_STRUCTURED",
+      "mode": "ascii",
+      "expected_literal": "user_01-test@example.com",
+      "before_return_text": "user_01-test@example.com",
+      "ax_after_return": "[user_01-test@example.com](mailto:user_01-test@example.com)",
+      "observed_text": "user_01-test@example.com",
+      "notes_auto_link": true,
+      "result": "PASS"
+    },
+    {
+      "id": "EMAIL_PLUS",
+      "mode": "ascii",
+      "expected_literal": "user+tag@example.com",
+      "before_return_text": "user+tag@example.com",
+      "ax_after_return": "[user+tag@example.com](mailto:user+tag@example.com)",
+      "observed_text": "user+tag@example.com",
+      "notes_auto_link": true,
+      "result": "PASS"
+    },
+    {
+      "id": "URL_HTTPS",
+      "mode": "ascii",
+      "expected_literal": "https://example.com/path-01",
+      "before_return_text": "https://example.com/path-01",
+      "ax_after_return": "[https://example.com/path-01](example.com/path-01)",
+      "observed_text": "https://example.com/path-01",
+      "notes_auto_link": true,
+      "result": "PASS"
+    },
+    {
+      "id": "URL_WWW",
+      "mode": "ascii",
+      "expected_literal": "www.example.com/path_01",
+      "before_return_text": "www.example.com/path_01",
+      "ax_after_return": "[www.example.com/path_01](example.com/path_01)",
+      "observed_text": "www.example.com/path_01",
+      "notes_auto_link": true,
+      "result": "PASS"
+    },
+    {
+      "id": "URL_BARE",
+      "mode": "ascii",
+      "expected_literal": "example.com/path_01",
+      "before_return_text": "example.com/path_01",
+      "ax_after_return": "[example.com/path_01](example.com/path_01)",
+      "observed_text": "example.com/path_01",
+      "notes_auto_link": true,
+      "result": "PASS"
+    },
+    {
+      "id": "CODE_CALL",
+      "mode": "ascii",
+      "expected_literal": "call_fn(12+3);",
+      "before_return_text": "call_fn(12+3);",
+      "ax_after_return": "call_fn(12+3);",
+      "observed_text": "call_fn(12+3);",
+      "notes_auto_link": false,
+      "result": "PASS"
+    }
+  ],
+  "summary": {
+    "chinese_pass": 5,
+    "chinese_literal_fail": 2,
+    "ascii_pass": 7,
+    "ascii_literal_fail": 0,
+    "panel_confirmation_for_this_matrix": "PENDING_USER_VISUAL"
+  },
+  "open_issues": [
+    {
+      "id": "R0-UAT-001",
+      "result": "FAIL_LITERAL_PRESERVATION",
+      "input": "user_01-test@example.com",
+      "observed": "user——01-test@example.com",
+      "mode": "nascii",
+      "source_inference": "The underscore is processed as the configured Chinese punctuation before the completed email pattern protects the token. Exact internal execution was not instrumented.",
+      "ascii_control": "PASS",
+      "fix_status": "NOT_IMPLEMENTED"
+    },
+    {
+      "id": "R0-UAT-002",
+      "result": "FAIL_LITERAL_PRESERVATION",
+      "input": "call_fn(12+3);",
+      "observed": "擦了路——愤怒（12+3）；",
+      "mode": "nascii",
+      "assessment": "The explicit Chinese mode interprets code-like Latin fragments as pinyin and maps punctuation. This observed compatibility limitation does not establish an ASCII-mode failure.",
+      "ascii_control": "PASS",
+      "fix_status": "NOT_IMPLEMENTED"
+    }
+  ],
+  "bounded_plus_email_result": "user+tag@example.com survived this Chinese-mode sequence although the configured email regex excludes plus in the local part. Do not generalize to all alias forms or claim full email validation.",
+  "physical_equals_followup": {
+    "method": "User-operated physical keyboard and direct user reports; not automation replay.",
+    "ascii_repetition": {
+      "result": "PASS_USER_REPORTED",
+      "observed": "Repeated equals characters could be entered. Exact count was not supplied.",
+      "panel_state": "NOT_SEPARATELY_REPORTED"
+    },
+    "chinese_single": {
+      "keys": [
+        "=",
+        "Space"
+      ],
+      "observed": "=",
+      "result": "PASS_USER_REPORTED",
+      "panel_closed": true,
+      "underline_cleared": true
+    },
+    "chinese_three_commits": {
+      "keys": [
+        "=",
+        "Space",
+        "=",
+        "Space",
+        "=",
+        "Space"
+      ],
+      "observed": "===",
+      "intervening_spaces": false,
+      "result": "PASS_USER_REPORTED",
+      "panel_closed": true,
+      "underline_cleared": true
+    },
+    "chinese_direct_repetition": {
+      "observed": "Only one equals remained while pressing equals repeatedly.",
+      "assessment": "Deployed key binder maps equal to Page_Down when has_menu. This is distinct from repeated committed insertion; no new key contract is approved."
+    },
+    "previous_punctuation_panel_confirmation": {
+      "method": "User report before equals followup",
+      "panel_closed": true,
+      "underline_cleared": true
+    },
+    "automation_limitation": "CUA equal -> + and literal = keyNotFound remain historical automation limitations. Physical acceptance supersedes the previous physical-test blocker."
+  },
+  "recovery": {
+    "method": "Actual n,i,h,a,o,Space after restoring nascii; synthetic fixture marker pasted only.",
+    "observed": "你好",
+    "result": "PASS_FIELD_RESULT"
+  },
+  "final_state": {
+    "source": "io.github.zhenkun26.inputmethod.EcholME.Hans",
+    "mode": "nascii",
+    "mode_query_exit": 0,
+    "installed_process_running": true,
+    "probe_mutations": false
+  },
+  "limits": [
+    "Notes only; no Xcode/Terminal input claim.",
+    "No equality-containing code operator, quoted strings, all valid email/URL grammar, alternative schemas, editing, caret/focus regression or stress/latency claim.",
+    "Candidate panel/underline for the format matrix require user confirmation.",
+    "Open literal-preservation issues remain unresolved; no fix or acceptance of a later-round contract was inferred."
+  ],
+  "delivery": "Step tests and documentation complete with two explicit literal-preservation failures; stop for user confirmation. Round 0 remains incomplete. No push or Round 1."
+}

@@ -66,7 +66,7 @@ Current deployed `luna_pinyin_simp` uses `express_editor`. Its ordinary Return m
 
 ### Guided punctuation result
 
-**PASS applies to the observed field results; equals is BLOCKED_AUTOMATION_INPUT.** These cases started without an active pinyin composition. They do not validate punctuation-as-paging during composition, every possible symbol sequence, or all hosts.
+**PASS applies to the observed field results. The earlier equals automation limitation was resolved for acceptance by the user's physical-keyboard checks below.** These cases started without an active pinyin composition. They do not validate every possible symbol sequence or all hosts.
 
 | Case | Actual keys / finalization | Observed Notes result | Status / limit |
 | --- | --- | --- | --- |
@@ -77,19 +77,43 @@ Current deployed `luna_pinyin_simp` uses `express_editor`. Its ordinary Return m
 | Symbol choices | `# @ /` and backslash, then `[ ] { }`; digit 1 for `#`/`@`, Space for the remaining symbol choices | Chinese: `#@、、「」『』`; ASCII keys directly: `#@/` plus backslash and `[]{}` | PASS; choosing a configured symbol is distinct from passing through its source key. |
 | Other symbols | `- + _ $ % ^ & *` and pipe, `< >`, grave, tilde; Space for configured choice lists | Chinese mappings: hyphen/plus unchanged; underscore → `——`, dollar → `￥`, percent → `%`, caret → `……`, ampersand/asterisk unchanged, pipe → `·`, angle keys → `《》`, grave/tilde unchanged. ASCII keys preserved these symbols. | PASS; default choices only, not every alternative. |
 | Slash followed by a digit | `/1`, then Escape; independently `/` then Space | `/1` was pending input; Escape removed it without altering prior text. Standalone slash plus Space committed one `、`. | PASS for cancellation/recovery and standalone slash. The recognizer `^/([0-9]0?\|[A-Za-z]+)$` makes the digit part of a symbol code; the initial assumption that it selected the slash candidate was invalid. Actual symbol-code selection remains NOT_RUN. |
-| Equals | CUA `equal`, isolated and repeated in Chinese, ASCII and system ABC | All three produced `+`; literal `pressKey("=")` was rejected before input with `keyNotFound`. | BLOCKED_AUTOMATION_INPUT. This does not establish an EcholME-specific defect or verify the physical equals key. |
+| Equals automation | CUA `equal`, isolated and repeated in Chinese, ASCII and system ABC | All three produced `+`; literal `pressKey("=")` was rejected before input with `keyNotFound`. | Historical BLOCKED_AUTOMATION_INPUT; physical checks below supersede the physical-acceptance blocker. The tool limitation persists. |
+| Physical equals in ASCII | Repeated physical `=` presses | User reported repeated equals input works; exact count was not supplied. | PASS_USER_REPORTED, bounded to the user's observation; no unbounded-input claim. |
+| Physical equals in Chinese | Physical `=` then Space; independently repeat that pair three times | User confirmed `=` and then `===`, with no spaces between equals; panel closed and underline cleared. | PASS_USER_REPORTED for individual and repeated committed insertion. |
 | Input recovery | Return, fresh `nihao`, then Space after the symbol checks | Final synthetic line contained one `你好` | PASS field result; no claim of panel/underline inspection. |
 
-Candidate-panel closure and underline for this punctuation step were not independently readable through Computer Use. User visual confirmation remains pending. The background process remained running and the final source/mode query returned Hans / `nascii`; this finite check does not prove universal crash freedom or measured latency.
+Candidate-panel closure and underline for this punctuation step were not independently readable through Computer Use. The user subsequently confirmed closure and underline clearing, including both Chinese physical-equals cases. The background process remained running and the final source/mode query returned Hans / `nascii`; this finite check does not prove universal crash freedom or measured latency.
 
-For the automation-blocked equals case, manually use an empty composition in 两仪's ASCII mode and press the physical `=` key once. Expect exactly one `=`. Repeat in Chinese mode, inspect the symbol choice, and finalize the displayed `=` with Space. Report the physical key, mode, observed text and any remaining panel/underline. Do not infer either pass or failure from the CUA alias anomaly.
+In Chinese mode, the user also reported that directly repeating `=` leaves only one equals. The deployed binding maps `equal` to `Page_Down` when `has_menu`, explaining why pending symbol selection differs from repeated committed insertion. These results preserve the inherited key contract; they do not authorize a change or prove that a code operator such as `==` survives uninterrupted Chinese-mode typing. [Follow-up evidence](evidence/notes-format-input-acceptance.json) records the user-operated equals checks separately from automation.
+
+### Guided email, URL and code-style result
+
+**12 literal-preservation checks PASS; 2 FAIL_LITERAL_PRESERVATION.** Seven synthetic payloads were entered by actual key events in each mode, with field observations before and after Return. Only titles/case markers were pasted into two new test notes. No email was sent, no URL opened and no code executed. The matrix tests literal preservation, not exhaustive email/URL grammar or automatic context detection.
+
+| Typed payload | Chinese mode observed text | ASCII mode observed text | Literal-preservation result |
+| --- | --- | --- | --- |
+| `user@example.com` | `user@example.com` | Unchanged | PASS in both modes |
+| `user_01-test@example.com` | `user——01-test@example.com` | Unchanged | Chinese FAIL; ASCII PASS |
+| `user+tag@example.com` | `user+tag@example.com` | Unchanged | PASS in both modes, for this sequence only |
+| `https://example.com/path-01` | Unchanged | Unchanged | PASS in both modes |
+| `www.example.com/path_01` | Unchanged | Unchanged | PASS in both modes |
+| `example.com/path_01` | Unchanged | Unchanged | PASS in both modes |
+| `call_fn(12+3);` | `擦了路——愤怒（12+3）；` | Unchanged | Chinese FAIL; ASCII PASS |
+
+Notes auto-linked ASCII-mode emails/URLs after Return. CUA represented them as Markdown-like links; their visible labels and pre-Return text matched the payloads. The [structured evidence](evidence/notes-format-input-acceptance.json) retains both representations instead of treating link formatting as text corruption.
+
+Open issue **R0-UAT-001**: the underscore in the structured email becomes the configured Chinese dash before the completed email token is protected. This causal explanation is a source-based inference; internal execution was not instrumented. Open issue **R0-UAT-002**: explicit Chinese mode interprets the code-like fragments as pinyin and converts punctuation. Both fail literal preservation and pass the corresponding ASCII control. Neither issue was fixed in this step; no new mode or recognizer contract was approved.
+
+The plus-alias email passed even though plus is outside the deployed email regex's local-part character set. This single observed path does not establish full alias support. Equality-containing operators, quoted code strings and broader address grammars remain untested.
+
+After the matrix, the starting Chinese mode was restored; fresh `nihao` plus Space produced one `你好`. Independent checks confirmed Hans / `nascii` and the running installed process. Candidate closure/underline for this format-input step still requires user visual confirmation. Xcode and Terminal have not been tested for these payloads. Stop for confirmation; do not begin another case or a later round automatically.
 
 ### Pending special-character and environment coverage
 
-The user explicitly requested this coverage. The bounded Notes matrix above is complete except for the physical equals-key check and visual panel confirmation. All punctuation coverage in Xcode and Terminal remains NOT_RUN, with Terminal automation blocked by tool policy. Remaining Notes cases below require separate step authorization:
+The user explicitly requested this coverage. The bounded Notes punctuation matrix and physical-equals follow-up are complete; the email/URL/code matrix exposes two unresolved literal-preservation issues. Visual confirmation for the format-input step is pending. All extended coverage in Xcode and Terminal remains NOT_RUN, with Terminal automation blocked by tool policy. Remaining Notes cases below require separate step authorization:
 
-- Physical equals-key verification; other symbol choices; punctuation during active pinyin composition and arbitrary repeated/interleaved symbol sequences. Record intentional full-width/half-width conversion and configured paging behavior rather than assuming every difference is a bug.
-- Synthetic email, URL and code-like input containing case changes, underscores, hyphens and mixed letters/digits; verify recognizer behavior and preserved text.
+- Other symbol choices; punctuation during active pinyin composition and arbitrary repeated/interleaved symbol sequences. Record intentional full-width/half-width conversion and configured paging behavior rather than assuming every difference is a bug.
+- Broader email/URL/code input, including case changes, equality-containing operators, quotes and additional grammars; the seven payloads above do not establish blanket coverage. Keep R0-UAT-001/002 open until an authorized fix or explicit mode-contract decision is verified.
 - Chinese/Latin mixed segments, spaces, repeated punctuation and editing with Backspace/Delete/arrows/Tab; verify host text and composition boundaries.
 - Non-ASCII input such as emoji, accented text and full-width characters through available entry methods. Distinguish typed events from paste/Character Viewer; neither path proves the other.
 - Return in each composition state, including no matching candidate and after digit selection/cancellation; keypad Enter is a separate untested key path.
