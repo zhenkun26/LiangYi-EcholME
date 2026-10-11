@@ -19,3 +19,7 @@ package/*.xml
 *~
 .*.swp
 .DS_Store
+
+# EcholME Round 0 artifacts are retained locally, never automatically cleaned.
+.artifacts/
+__pycache__/

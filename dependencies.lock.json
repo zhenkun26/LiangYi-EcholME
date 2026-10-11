@@ -1,0 +1,241 @@
+{
+  "format_version": 1,
+  "squirrel_commit": "769ae426f33f500266101a88f694aab0d158e680",
+  "librime_version": "1.17.0",
+  "librime_commit": "33e78140250125871856cdc5b42ddc6a5fcd3cd4",
+  "sparkle_version": "2.6.2",
+  "sparkle_commit": "41847a58cdef7506b257591fcca6f9495df591d4",
+  "architecture": "arm64",
+  "minimum_macos": "14.0",
+  "distribution_ready": false,
+  "provenance_limitations": [
+    "Binary release licenses and source revision inventory are not a complete corresponding-source package. External redistribution remains blocked pending complete source/license review.",
+    "Upstream optional Rime plugins and downloaded language models are not assembled into the app.",
+    "Sparkle release API has no digest; its lock digest was calculated from the official asset during source review."
+  ],
+  "archives": [
+    {
+      "id": "rime",
+      "version": "1.17.0",
+      "release_api": "https://api.github.com/repos/rime/librime/releases/tags/1.17.0",
+      "url": "https://github.com/rime/librime/releases/download/1.17.0/rime-33e7814-macOS-universal.tar.bz2",
+      "sha256": "11d8dc663c6ec06d5ccb6111ba664a9e7b631b703ac6acd07cffbac664021850",
+      "size": 3999581
+    },
+    {
+      "id": "rime-deps",
+      "version": "1.17.0",
+      "release_api": "https://api.github.com/repos/rime/librime/releases/tags/1.17.0",
+      "url": "https://github.com/rime/librime/releases/download/1.17.0/rime-deps-33e7814-macOS-universal.tar.bz2",
+      "sha256": "dfe6047e87be271963d7466bd1a6e3d9e660c30e5e73e4bb94e8782c0a6ac8df",
+      "size": 3197132
+    }
+  ],
+  "headers": [
+    {
+      "path": "src/rime_api.h",
+      "url": "https://raw.githubusercontent.com/rime/librime/33e78140250125871856cdc5b42ddc6a5fcd3cd4/src/rime_api.h",
+      "sha256": "6eb5629162c44761e7b878f1b122f464de5c8685bd3cd5ac1e8519badc6d6424",
+      "size": 20038
+    },
+    {
+      "path": "src/rime_api_stdbool.h",
+      "url": "https://raw.githubusercontent.com/rime/librime/33e78140250125871856cdc5b42ddc6a5fcd3cd4/src/rime_api_stdbool.h",
+      "sha256": "f5a64254e98c1c12ce6628f5d540bcd4e4b542ec287b4873c0b0ce4ed1bece99",
+      "size": 381
+    },
+    {
+      "path": "src/rime_api_deprecated.h",
+      "url": "https://raw.githubusercontent.com/rime/librime/33e78140250125871856cdc5b42ddc6a5fcd3cd4/src/rime_api_deprecated.h",
+      "sha256": "21625c4e16480a4540939299a002f21b11150bb10b69f5331e1580875ac63341",
+      "size": 9538
+    },
+    {
+      "path": "src/rime/key_table.h",
+      "url": "https://raw.githubusercontent.com/rime/librime/33e78140250125871856cdc5b42ddc6a5fcd3cd4/src/rime/key_table.h",
+      "sha256": "7fdb912e9878792c7fb711efa6c539ef16e3ac119565aa7e41dfd395bea954a2",
+      "size": 1638
+    },
+    {
+      "path": "include/X11/keysym.h",
+      "url": "https://raw.githubusercontent.com/rime/librime/33e78140250125871856cdc5b42ddc6a5fcd3cd4/include/X11/keysym.h",
+      "sha256": "8b20fbcdfa52a6ce5bf8c0c1746e2e47fca02e2534561dde0e085893db2a57ca",
+      "size": 2755
+    },
+    {
+      "path": "include/X11/keysymdef.h",
+      "url": "https://raw.githubusercontent.com/rime/librime/33e78140250125871856cdc5b42ddc6a5fcd3cd4/include/X11/keysymdef.h",
+      "sha256": "ff31183de7751c1079b1179fbbcb096f155a3b82c0429dcc8e329be43fb93b72",
+      "size": 168221
+    }
+  ],
+  "source_notices": [
+    {
+      "repository": "rime/librime",
+      "commit": "33e78140250125871856cdc5b42ddc6a5fcd3cd4",
+      "files": [
+        {
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/rime/librime/33e78140250125871856cdc5b42ddc6a5fcd3cd4/LICENSE",
+          "sha256": "f67d27a6d2d586fcfed4b4c886a83747095396a39b6641e18e855086be2ec400",
+          "size": 1513
+        },
+        {
+          "path": "include/COPYING.darts-clone",
+          "url": "https://raw.githubusercontent.com/rime/librime/33e78140250125871856cdc5b42ddc6a5fcd3cd4/include/COPYING.darts-clone",
+          "sha256": "11bf6ca180d01e60656cd3cbe65cff95b738afe4ca5a8a66b9dd1ec594a41d2f",
+          "size": 1481
+        },
+        {
+          "path": "include/utf8.h",
+          "url": "https://raw.githubusercontent.com/rime/librime/33e78140250125871856cdc5b42ddc6a5fcd3cd4/include/utf8.h",
+          "sha256": "90643c1044a58020af389dc8eb73099fc8327a12d0731a1101acb277e03e6a3b",
+          "size": 1521
+        }
+      ]
+    },
+    {
+      "repository": "google/glog",
+      "commit": "7b134a5c82c0c0b5698bb6bf7a835b230c5638e4",
+      "files": [
+        {
+          "path": "COPYING",
+          "url": "https://raw.githubusercontent.com/google/glog/7b134a5c82c0c0b5698bb6bf7a835b230c5638e4/COPYING",
+          "sha256": "136d48dea7a681413691f3db3098f6cf5ffaa3119d96d97bb83b8cff3ce38c4a",
+          "size": 1479
+        },
+        {
+          "path": "AUTHORS",
+          "url": "https://raw.githubusercontent.com/google/glog/7b134a5c82c0c0b5698bb6bf7a835b230c5638e4/AUTHORS",
+          "sha256": "e97c0e63f6ec7f4334de7a07c62e7af05b6da4406d20eb511afd24f1c61c41dc",
+          "size": 1085
+        }
+      ]
+    },
+    {
+      "repository": "google/leveldb",
+      "commit": "99b3c03b3284f5886f9ef9a4ef703d57373e61be",
+      "files": [
+        {
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/google/leveldb/99b3c03b3284f5886f9ef9a4ef703d57373e61be/LICENSE",
+          "sha256": "ccc19f1da0798ed666609b65a5b44dd8b3abe6fc08b9c0592eb76e82e174db19",
+          "size": 1484
+        },
+        {
+          "path": "AUTHORS",
+          "url": "https://raw.githubusercontent.com/google/leveldb/99b3c03b3284f5886f9ef9a4ef703d57373e61be/AUTHORS",
+          "sha256": "75cccce858c06397a2736b5018b304a6fe50fce7148c7ea7fd532dd255d264b9",
+          "size": 293
+        }
+      ]
+    },
+    {
+      "repository": "s-yata/marisa-trie",
+      "commit": "3e87d53b78e15f2f43783d5e376561a8c9722051",
+      "files": [
+        {
+          "path": "COPYING.md",
+          "url": "https://raw.githubusercontent.com/s-yata/marisa-trie/3e87d53b78e15f2f43783d5e376561a8c9722051/COPYING.md",
+          "sha256": "edf58dab34c3dc239ba4ba2d5d3d844d8c5b442aa4dd1149fac81b2d8c6cb8d1",
+          "size": 2275
+        },
+        {
+          "path": "AUTHORS",
+          "url": "https://raw.githubusercontent.com/s-yata/marisa-trie/3e87d53b78e15f2f43783d5e376561a8c9722051/AUTHORS",
+          "sha256": "e6e63af57574b0c74b11e2bb8e52679e6eb68427420529fe50224b2bc3820041",
+          "size": 36
+        }
+      ]
+    },
+    {
+      "repository": "BYVoid/OpenCC",
+      "commit": "556ed22496d650bd0b13b6c163be9814637970ae",
+      "files": [
+        {
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/BYVoid/OpenCC/556ed22496d650bd0b13b6c163be9814637970ae/LICENSE",
+          "sha256": "b534e465949558eec2597b04f5092b5e161236a68dfbfd04d547592ac3964308",
+          "size": 9165
+        },
+        {
+          "path": "AUTHORS",
+          "url": "https://raw.githubusercontent.com/BYVoid/OpenCC/556ed22496d650bd0b13b6c163be9814637970ae/AUTHORS",
+          "sha256": "cb34e252fa994679bcbfc8355581e821ceda44bd857875e2cfe15b7ec4eec006",
+          "size": 277
+        }
+      ]
+    },
+    {
+      "repository": "jbeder/yaml-cpp",
+      "commit": "2f86d13775d119edbb69af52e5f566fd65c6953b",
+      "files": [
+        {
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/jbeder/yaml-cpp/2f86d13775d119edbb69af52e5f566fd65c6953b/LICENSE",
+          "sha256": "aa6fcc27be034e41e21dd832f9175bfe694a48491d9e14ff0fa278e19ad14f1b",
+          "size": 1061
+        }
+      ]
+    }
+  ],
+  "recursive_source_revisions": [
+    {
+      "repository": "google/glog",
+      "commit": "7b134a5c82c0c0b5698bb6bf7a835b230c5638e4"
+    },
+    {
+      "repository": "google/leveldb",
+      "commit": "99b3c03b3284f5886f9ef9a4ef703d57373e61be"
+    },
+    {
+      "repository": "s-yata/marisa-trie",
+      "commit": "3e87d53b78e15f2f43783d5e376561a8c9722051"
+    },
+    {
+      "repository": "BYVoid/OpenCC",
+      "commit": "556ed22496d650bd0b13b6c163be9814637970ae"
+    },
+    {
+      "repository": "jbeder/yaml-cpp",
+      "commit": "2f86d13775d119edbb69af52e5f566fd65c6953b"
+    },
+    {
+      "repository": "google/googletest",
+      "commit": "f8d7d77c06936315286eb55f8de22cd23c188571",
+      "scope": "upstream tests only; not assembled"
+    }
+  ],
+  "other_source_dependencies": [
+    {
+      "name": "Boost",
+      "upstream_default_version": "1.89.0",
+      "evidence": "librime/install-boost.sh at pinned revision",
+      "binary_source_match": "not independently proven; complete corresponding-source audit pending"
+    }
+  ],
+  "excluded_archives": [
+    {
+      "id": "sparkle",
+      "version": "2.6.2",
+      "release_api": "https://api.github.com/repos/sparkle-project/Sparkle/releases/tags/2.6.2",
+      "url": "https://github.com/sparkle-project/Sparkle/releases/download/2.6.2/Sparkle-2.6.2.tar.xz",
+      "sha256": "2300a7dc2545a4968e54621b7f351d388ddf1a5cb49e79f6c99e9a09d826f5e8",
+      "size": 13298916
+    }
+  ],
+  "excluded_components": [
+    {
+      "name": "Sparkle",
+      "reason": "Automatic updating is outside v0.1; inherited framework and source are not compiled or assembled."
+    },
+    {
+      "name": "Rime optional plugins",
+      "reason": "luna_pinyin_simp baseline does not require lua, octagram, or predict; not assembled."
+    },
+    {
+      "name": "plum executable",
+      "reason": "Dynamic recipe installation is not run or bundled under the audited no-deletion workflow."
+    }
+  ]
+}

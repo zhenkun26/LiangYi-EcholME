@@ -19,6 +19,19 @@ This is the decision index for the approved [delivery plan](PLAN.md). An accepte
 | ADR-009 | Deliver sequentially and stop after Round 0 for confirmation. | ACCEPTED | Current authorization covers plan persistence, Git version management, and Round 0 only. |
 | ADR-010 | Honor no filesystem deletion and independent product storage. | ACCEPTED | Review scripts, stop on existing install targets, and never alter Squirrel user data or evade replacement restrictions. |
 
+## Round 0 decision updates
+
+The planning baseline was committed as `041b643` and Squirrel source/history was imported in `8b507af`. Detailed reasoning and remaining evidence are in [Round 0 foundation](../round0/FOUNDATION.md). These statuses distinguish a selected design from a verified implementation.
+
+| ID | Current decision | Status / remaining evidence |
+| --- | --- | --- |
+| ADR-011 | Squirrel `769ae426f33f500266101a88f694aab0d158e680`; inherited librime `33e78140250125871856cdc5b42ddc6a5fcd3cd4` / v1.17.0 and Sparkle `41847a58cdef7506b257591fcca6f9495df591d4` / 2.6.2 references; `dependencies.lock.json` and `data/schema-manifest.json` identify artifact/data inputs. | BUILD_VERIFIED on macOS 26.5/arm64; Sparkle excluded. Artifact/data/notice checks pass; complete distribution closure remains pending. |
+| ADR-012 | Product identity root `io.github.zhenkun26.inputmethod.EcholME`; user install `~/Library/Input Methods/EcholME.app`; data `~/Library/Application Support/LiangYi/Rime/`; logs `~/Library/Logs/LiangYi/`; runtime updater disabled. | STATIC_CHECKS_PASS; both mode defaults false, installed bundle verified; real coexistence remains unverified. |
+| ADR-013 | IMK adapter owns host access; session state owns lifecycle; engine adapter owns librime; presentation tracks displayed identity; one commit coordinator writes to the host; translation consumes copied values. | DESIGN_ACCEPTED; no Round 1 state/translation implementation is claimed. |
+| ADR-014 | Use privacy-preserving capability probes and separate source, AX, and real IMK evidence. | Notes AX metadata PASS; Xcode editor NOT_RUN; Terminal BLOCKED_TOOL_POLICY; real IMK BLOCKED_NO_DELETION_POLICY. |
+| ADR-015 | Isolate long cloud work in a service process; XPC is a proposed mechanism requiring lifecycle, signing, peer-authentication, and failure validation. | DESIGN_PROPOSED; no service implementation or validated platform result. Round 4 remains unauthorized. |
+| ADR-016 | Review recursive tooling; absent-target user installation only; stop at existing target; no cleanup/deletion or system-wide reload; separate registration from selection and input. | BUILD_INSTALL_REGISTER_PASS; engine deployment/startup, deliberate enable/select, reload, and actual input are BLOCKED_NO_DELETION_POLICY because pinned librime removes generated dictionary/prism files. A narrow user decision is needed before those Round 0 checks. |
+
 ## Decisions and evidence still required
 
 | ID | Question | Owner round | Exit requirement |

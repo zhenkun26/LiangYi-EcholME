@@ -2,6 +2,8 @@ name: pull request ci
 on: [pull_request]
 jobs:
   build:
+    # EcholME 2026-10-11: keep legacy upstream automation inactive in derived repositories.
+    if: github.repository == 'rime/squirrel'
     runs-on: macos-26
     steps:
       - name: Set Xcode version

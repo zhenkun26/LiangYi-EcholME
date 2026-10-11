@@ -1,6 +1,7 @@
 //
 //  SquirrelInputController.swift
 //  Squirrel
+//  Modified for EcholME on 2026-10-11: isolated notifications; remove update actions.
 //
 //  Created by Leo Liu on 5/7/24.
 //
@@ -202,7 +203,7 @@ final class SquirrelInputController: IMKInputController {
     createSession()
 
     NotificationCenter.default.addObserver(
-      forName: .init("SquirrelSetASCIIModeNotification"),
+      forName: EcholMENotification.setASCII,
       object: nil,
       queue: nil
     ) { [weak self] notification in
@@ -210,7 +211,7 @@ final class SquirrelInputController: IMKInputController {
     }
 
     NotificationCenter.default.addObserver(
-      forName: .init("SquirrelReportASCIIModeNotification"),
+      forName: EcholMENotification.reportASCII,
       object: nil,
       queue: nil
     ) { [weak self] notification in
@@ -251,8 +252,6 @@ final class SquirrelInputController: IMKInputController {
     setting.target = self
     let wiki = NSMenuItem(title: NSLocalizedString("Rime Wiki...", comment: "Menu item"), action: #selector(openWiki), keyEquivalent: "")
     wiki.target = self
-    let update = NSMenuItem(title: NSLocalizedString("Check for updates...", comment: "Menu item"), action: #selector(checkForUpdates), keyEquivalent: "")
-    update.target = self
 
     let menu = NSMenu()
     menu.addItem(deploy)
@@ -260,7 +259,6 @@ final class SquirrelInputController: IMKInputController {
     menu.addItem(logDir)
     menu.addItem(setting)
     menu.addItem(wiki)
-    menu.addItem(update)
 
     return menu
   }
@@ -279,10 +277,6 @@ final class SquirrelInputController: IMKInputController {
 
   @objc func openRimeFolder() {
     NSApp.squirrelAppDelegate.openRimeFolder()
-  }
-
-  @objc func checkForUpdates() {
-    NSApp.squirrelAppDelegate.checkForUpdates()
   }
 
   @objc func openWiki() {
@@ -634,7 +628,7 @@ private extension SquirrelInputController {
     let status = isASCIIMode ? "ascii" : "nascii"
 
     DistributedNotificationCenter.default().postNotificationName(
-      .init("SquirrelASCIIModeResponse"),
+      EcholMENotification.asciiResponse,
       object: status
     )
   }

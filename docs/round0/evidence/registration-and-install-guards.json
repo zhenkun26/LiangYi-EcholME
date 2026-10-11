@@ -1,0 +1,31 @@
+{
+  "registration_cli_exit_code": 0,
+  "registration_output": "Register request returned OSStatus 0 for io.github.zhenkun26.inputmethod.EcholME\nVisible EcholME modes after registration: [\"io.github.zhenkun26.inputmethod.EcholME.Hans\", \"io.github.zhenkun26.inputmethod.EcholME.Hant\"]",
+  "visible_modes": [
+    {
+      "enabled": false,
+      "id": "io.github.zhenkun26.inputmethod.EcholME.Hant",
+      "selectable": true,
+      "selected": false
+    },
+    {
+      "enabled": false,
+      "id": "io.github.zhenkun26.inputmethod.EcholME.Hans",
+      "selectable": true,
+      "selected": false
+    }
+  ],
+  "current_input_source": "com.apple.inputmethod.SCIM.ITABC",
+  "reinstall_refusal_exit_code": 1,
+  "reinstall_refusal": "FAIL: Installation target already exists. It was not replaced, moved, or deleted: /Users/zhenkun/Library/Input Methods/EcholME.app",
+  "installed_files_unchanged_by_refused_reinstall": true,
+  "installed_files_match_corrected_round0_final_build": true,
+  "file_count": 84,
+  "ime_running": false,
+  "user_data_directory_created": false,
+  "metadata_correction": "Initial inherited Hans default=true enabled the mode at registration without selection or runtime start. Explicit TIS disable returned 0. Source and newly created build/install Info.plist default states are now false; those two metadata files were edited in place and bundles re-signed. No files were deleted and no existing bundle was replaced. Both modes remained disabled after a second registration.",
+  "initial_system_registration_notices": [
+    "TISFileInterrogator cache invalid notice",
+    "duplicate keyboard layout identifiers replaced (-17410, -30769, -14934); origin not established"
+  ]
+}

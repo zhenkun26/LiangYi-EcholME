@@ -3,6 +3,7 @@
 //  Squirrel
 //
 //  Created by Leo Liu on 5/10/24.
+//  Modified for EcholME on 2026-10-11: isolated source IDs and truthful TIS results.
 //
 
 import Foundation
@@ -11,20 +12,22 @@ import InputMethodKit
 final class SquirrelInstaller {
   enum InputMode: String, CaseIterable {
     static let primary = Self.hans
-    case hans = "im.rime.inputmethod.Squirrel.Hans"
-    case hant = "im.rime.inputmethod.Squirrel.Hant"
+    case hans = "io.github.zhenkun26.inputmethod.EcholME.Hans"
+    case hant = "io.github.zhenkun26.inputmethod.EcholME.Hant"
   }
-  private lazy var inputSources: [String: TISInputSource] = {
+  // TIS state can change after registration or a System Settings action. Never
+  // retain a lazy snapshot across CLI operations.
+  private func inputSources() -> [String: TISInputSource] {
     var inputSources = [String: TISInputSource]()
-    var matchingSources = [InputMode: TISInputSource]()
-    let sourceList = TISCreateInputSourceList(nil, true).takeRetainedValue() as! [TISInputSource]
+    guard let sourceList = TISCreateInputSourceList(nil, true)?.takeRetainedValue() as? [TISInputSource] else {
+      return inputSources
+    }
     for inputSource in sourceList {
-      let sourceIDRef = TISGetInputSourceProperty(inputSource, kTISPropertyInputSourceID)
-      guard let sourceID = unsafeBitCast(sourceIDRef, to: CFString?.self) as String? else { continue }
+      guard let sourceID = Self.getString(for: inputSource, key: kTISPropertyInputSourceID) else { continue }
       inputSources[sourceID] = inputSource
     }
     return inputSources
-  }()
+  }
 
   func enabledModes() -> [InputMode] {
     var enabledModes = Set<InputMode>()
@@ -39,76 +42,88 @@ final class SquirrelInstaller {
     return Array(enabledModes)
   }
 
-  func register() {
-    let enabledInputModes = enabledModes()
-    if !enabledInputModes.isEmpty {
-      print("User already registered Squirrel method(s): \(enabledInputModes.map { $0.rawValue })")
-      return
+  func register() -> Bool {
+    guard Bundle.main.bundleIdentifier == SquirrelApp.bundleIdentifier,
+          SquirrelApp.appDir.pathExtension == "app" else {
+      SquirrelApp.reportCommandError("Refusing to register a bundle without EcholME's application identity.")
+      return false
     }
-    TISRegisterInputSource(SquirrelApp.appDir as CFURL)
-    print("Registered input source from \(SquirrelApp.appDir)")
+    let status = TISRegisterInputSource(SquirrelApp.appDir as CFURL)
+    guard report(status, action: "Register", sourceID: SquirrelApp.bundleIdentifier) else { return false }
+    let registered = getInputSource(modes: InputMode.allCases).keys.map(\.rawValue).sorted()
+    print("Visible EcholME modes after registration: \(registered)")
+    // OSStatus confirms the request result. Registration visibility, enablement,
+    // selection, and real typing are separate checks, never implied by this line.
+    return true
   }
 
-  func enable(modes: [InputMode] = []) {
+  func enable(modes: [InputMode] = []) -> Bool {
     let enabledInputModes = enabledModes()
     if !enabledInputModes.isEmpty && modes.isEmpty {
-      print("User already enabled Squirrel method(s): \(enabledInputModes.map { $0.rawValue })")
+      print("User already enabled EcholME method(s): \(enabledInputModes.map { $0.rawValue }.sorted())")
       // Preserve manually enabled input modes.
-      return
+      return true
     }
     let modesToEnable = modes.isEmpty ? [.primary] : modes
-    for (mode, inputSource) in getInputSource(modes: modesToEnable) {
-      if let enabled = getBool(for: inputSource, key: kTISPropertyInputSourceIsEnabled), !enabled {
-        let error = TISEnableInputSource(inputSource)
-        print("Enable \(error == noErr ? "succeeds" : "fails") for input source: \(mode.rawValue)")
+    var succeeded = true
+    for mode in modesToEnable {
+      guard let inputSource = getInputSource(modes: [mode])[mode],
+            let enabled = getBool(for: inputSource, key: kTISPropertyInputSourceIsEnabled) else {
+        SquirrelApp.reportCommandError("Input source is unavailable: \(mode.rawValue)")
+        succeeded = false
+        continue
+      }
+      if !enabled {
+        let status = TISEnableInputSource(inputSource)
+        if !report(status, action: "Enable", sourceID: mode.rawValue) { succeeded = false }
       }
     }
+    return succeeded
   }
 
-  func select(mode: InputMode? = nil) {
-    let enabledInputModes = enabledModes()
+  func select(mode: InputMode? = nil) -> Bool {
     let modeToSelect = mode ?? .primary
-    if !enabledInputModes.contains(modeToSelect) {
-      if mode != nil {
-        enable(modes: [modeToSelect])
-      } else {
-        print("Default method not enabled yet: \(modeToSelect.rawValue)")
-        return
-      }
+    guard let inputSource = getInputSource(modes: [modeToSelect])[modeToSelect],
+          getBool(for: inputSource, key: kTISPropertyInputSourceIsEnabled) == true,
+          getBool(for: inputSource, key: kTISPropertyInputSourceIsSelectCapable) == true else {
+      SquirrelApp.reportCommandError("Input source must be explicitly enabled and selectable first: \(modeToSelect.rawValue)")
+      return false
     }
-    for (mode, inputSource) in getInputSource(modes: [modeToSelect]) {
-      if let enabled = getBool(for: inputSource, key: kTISPropertyInputSourceIsEnabled),
-         let selectable = getBool(for: inputSource, key: kTISPropertyInputSourceIsSelectCapable),
-         let selected = getBool(for: inputSource, key: kTISPropertyInputSourceIsSelected),
-         enabled && selectable && !selected {
-        let error = TISSelectInputSource(inputSource)
-        print("Selection \(error == noErr ? "succeeds" : "fails") for input source: \(mode.rawValue)")
-      } else {
-        print("Failed to select \(mode.rawValue)")
-      }
+    if getBool(for: inputSource, key: kTISPropertyInputSourceIsSelected) == true {
+      print("Input source is already selected: \(modeToSelect.rawValue)")
+      return true
     }
+    return report(TISSelectInputSource(inputSource), action: "Select", sourceID: modeToSelect.rawValue)
   }
 
   static func currentInputSourceID() -> String? {
-    let source = TISCopyCurrentKeyboardInputSource().takeRetainedValue()
-    let idRef = TISGetInputSourceProperty(source, kTISPropertyInputSourceID)
-    return unsafeBitCast(idRef, to: CFString?.self) as String?
+    guard let source = TISCopyCurrentKeyboardInputSource()?.takeRetainedValue() else { return nil }
+    return getString(for: source, key: kTISPropertyInputSourceID)
   }
 
-  func disable(modes: [InputMode] = []) {
+  func disable(modes: [InputMode] = []) -> Bool {
     let modesToDisable = modes.isEmpty ? InputMode.allCases : modes
-    for (mode, inputSource) in getInputSource(modes: modesToDisable) {
-      if let enabled = getBool(for: inputSource, key: kTISPropertyInputSourceIsEnabled), enabled {
-        let error = TISDisableInputSource(inputSource)
-        print("Disable \(error == noErr ? "succeeds" : "fails") for input source: \(mode.rawValue)")
+    var succeeded = true
+    for mode in modesToDisable {
+      guard let inputSource = getInputSource(modes: [mode])[mode],
+            let enabled = getBool(for: inputSource, key: kTISPropertyInputSourceIsEnabled) else {
+        SquirrelApp.reportCommandError("Input source is unavailable: \(mode.rawValue)")
+        succeeded = false
+        continue
+      }
+      if enabled {
+        let status = TISDisableInputSource(inputSource)
+        if !report(status, action: "Disable", sourceID: mode.rawValue) { succeeded = false }
       }
     }
+    return succeeded
   }
 
   private func getInputSource(modes: [InputMode]) -> [InputMode: TISInputSource] {
     var matchingSources = [InputMode: TISInputSource]()
+    let sources = inputSources()
     for mode in modes {
-      if let inputSource = inputSources[mode.rawValue] {
+      if let inputSource = sources[mode.rawValue] {
         matchingSources[mode] = inputSource
       }
     }
@@ -116,8 +131,22 @@ final class SquirrelInstaller {
   }
 
   private func getBool(for inputSource: TISInputSource, key: CFString!) -> Bool? {
-    let enabledRef = TISGetInputSourceProperty(inputSource, key)
-    guard let enabled = unsafeBitCast(enabledRef, to: CFBoolean?.self) else { return nil }
-    return CFBooleanGetValue(enabled)
+    guard let value = TISGetInputSourceProperty(inputSource, key) else { return nil }
+    return Unmanaged<CFTypeRef>.fromOpaque(value).takeUnretainedValue() as? Bool
+  }
+
+  private static func getString(for inputSource: TISInputSource, key: CFString) -> String? {
+    guard let value = TISGetInputSourceProperty(inputSource, key) else { return nil }
+    return Unmanaged<CFTypeRef>.fromOpaque(value).takeUnretainedValue() as? String
+  }
+
+  private func report(_ status: OSStatus, action: String, sourceID: String) -> Bool {
+    let message = "\(action) request returned OSStatus \(status) for \(sourceID)"
+    if status == noErr {
+      print(message)
+      return true
+    }
+    SquirrelApp.reportCommandError(message)
+    return false
   }
 }

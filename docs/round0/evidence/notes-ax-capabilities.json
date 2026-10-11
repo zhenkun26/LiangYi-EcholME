@@ -1,0 +1,39 @@
+{
+  "ax" : {
+    "advertises_bounds_for_range" : true,
+    "advertises_language" : false,
+    "advertises_selected_range" : true,
+    "advertises_selected_text" : true,
+    "advertises_text_value" : true,
+    "application_bundle_id" : "com.apple.Notes",
+    "attribute_names_status" : 0,
+    "caret_bounds_finite_nonzero_height" : true,
+    "caret_bounds_status" : 0,
+    "document_text_read" : false,
+    "elapsed_ms" : 34.440125000000002,
+    "element_timeout_status" : 0,
+    "focused_element_status" : 0,
+    "parameter_names_status" : 0,
+    "permission_prompt_requested" : false,
+    "role" : "AXTextArea",
+    "role_status" : 0,
+    "scope" : "external AX process; not proof of IMK client support or IME AX permission",
+    "secure_field_assessment" : "unknown",
+    "selection_range_status" : 0,
+    "status" : "METADATA_PROBED",
+    "subrole_status" : -25205,
+    "timeout_scope" : "per AX message; run under an external process deadline for a total bound",
+    "timeout_status" : 0,
+    "total_elapsed_ms" : 45.889125,
+    "trusted" : true
+  },
+  "current_input_source" : "com.apple.keylayout.ABC",
+  "matching_input_sources" : [
+
+  ],
+  "mutations_performed" : false,
+  "os" : "Version 26.5 (Build 25F71)",
+  "schema_version" : 1,
+  "timestamp" : "2026-10-11T04:11:37Z",
+  "tis_list_available" : true
+}

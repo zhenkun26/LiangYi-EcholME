@@ -1,0 +1,45 @@
+[
+  {
+    "args": [
+      "--help"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "output": "Supported arguments:\nPerform actions:\n  --quit                     quit EcholME processes only\n  --reload                   request deployment (delivery is not an acknowledgment)\n  --sync                     sync user data\n  --build                    deploy schemas into EcholME's Rime user directory\n  --ascii                    turn on ASCII mode\n  --nascii                   turn off ASCII mode\n  --getascii                 get current ASCII mode status\nInstall EcholME:\n  --install, --register-input-source    register this bundle; does not enable or select\n  --enable-input-source [source id...]  input source list optional\n  --disable-input-source [source id...] input source list optional\n  --select-input-source [source id]     select an already enabled source"
+  },
+  {
+    "args": [
+      "--unknown"
+    ],
+    "exit_code": 1,
+    "expected_exit_code": 1,
+    "output": "Unknown argument. Use --help for supported commands."
+  },
+  {
+    "args": [
+      "--register-input-source",
+      "unexpected"
+    ],
+    "exit_code": 1,
+    "expected_exit_code": 1,
+    "output": "This command does not accept additional arguments. Use --help for supported commands."
+  },
+  {
+    "args": [
+      "--enable-input-source",
+      "invalid-id"
+    ],
+    "exit_code": 1,
+    "expected_exit_code": 1,
+    "output": "Unknown EcholME input source ID: invalid-id"
+  },
+  {
+    "args": [
+      "--select-input-source",
+      "invalid-id"
+    ],
+    "exit_code": 1,
+    "expected_exit_code": 1,
+    "output": "Unknown EcholME input source ID: invalid-id\nSelect accepts at most one EcholME input source ID."
+  }
+]

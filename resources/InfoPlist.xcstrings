@@ -2,24 +2,25 @@
   "sourceLanguage" : "en",
   "strings" : {
     "CFBundleDisplayName" : {
+      "comment" : "EcholME product identity; modified 2026-10-11.",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Squirrel"
+            "value" : "EcholME"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鼠须管"
+            "value" : "两仪"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鼠鬚管"
+            "value" : "兩儀"
           }
         }
       }
@@ -31,88 +32,88 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Squirrel"
+            "value" : "EcholME"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鼠须管"
+            "value" : "两仪"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鼠鬚管"
+            "value" : "兩儀"
           }
         }
       }
     },
-    "im.rime.inputmethod.Squirrel" : {
+    "io.github.zhenkun26.inputmethod.EcholME" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Squirrel"
+            "value" : "EcholME"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鼠须管"
+            "value" : "两仪"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鼠鬚管"
+            "value" : "兩儀"
           }
         }
       }
     },
-    "im.rime.inputmethod.Squirrel.Hans" : {
+    "io.github.zhenkun26.inputmethod.EcholME.Hans" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Squirrel - Simplified"
+            "value" : "EcholME - Simplified"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鼠须管"
+            "value" : "两仪"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鼠须管"
+            "value" : "两仪"
           }
         }
       }
     },
-    "im.rime.inputmethod.Squirrel.Hant" : {
+    "io.github.zhenkun26.inputmethod.EcholME.Hant" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Squirrel - Traditional"
+            "value" : "EcholME - Traditional"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鼠鬚管"
+            "value" : "兩儀"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鼠鬚管"
+            "value" : "兩儀"
           }
         }
       }

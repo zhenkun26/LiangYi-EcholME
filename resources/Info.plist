@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
+<!-- Modified for EcholME on 2026-10-11: independent source identity; updates disabled. -->
 <dict>
 	<key>TISInputSourceID</key>
-	<string>im.rime.inputmethod.Squirrel</string>
+	<string>io.github.zhenkun26.inputmethod.EcholME</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>Squirrel</string>
+	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIconFile</key>
 	<string>RimeIcon.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +16,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Squirrel</string>
+	<string>EcholME</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
@@ -26,10 +27,10 @@
 	<dict>
 		<key>tsInputModeListKey</key>
 		<dict>
-			<key>im.rime.inputmethod.Squirrel.Hans</key>
+			<key>io.github.zhenkun26.inputmethod.EcholME.Hans</key>
 			<dict>
 				<key>TISInputSourceID</key>
-				<string>im.rime.inputmethod.Squirrel.Hans</string>
+				<string>io.github.zhenkun26.inputmethod.EcholME.Hans</string>
 				<key>TISIntendedLanguage</key>
 				<string>zh-Hans</string>
 				<key>tsInputModeAlternateMenuIconFileKey</key>
@@ -40,7 +41,7 @@
 					<string>Hant</string>
 				</array>
 				<key>tsInputModeDefaultStateKey</key>
-				<true/>
+				<false/>
 				<key>tsInputModeIsVisibleKey</key>
 				<true/>
 				<key>tsInputModeKeyEquivalentModifiersKey</key>
@@ -54,10 +55,10 @@
 				<key>tsInputModeScriptKey</key>
 				<string>smUnicodeScript</string>
 			</dict>
-			<key>im.rime.inputmethod.Squirrel.Hant</key>
+			<key>io.github.zhenkun26.inputmethod.EcholME.Hant</key>
 			<dict>
 				<key>TISInputSourceID</key>
-				<string>im.rime.inputmethod.Squirrel.Hant</string>
+				<string>io.github.zhenkun26.inputmethod.EcholME.Hant</string>
 				<key>TISIntendedLanguage</key>
 				<string>zh-Hant</string>
 				<key>tsInputModeAlternateMenuIconFileKey</key>
@@ -85,12 +86,12 @@
 		</dict>
 		<key>tsVisibleInputModeOrderedArrayKey</key>
 		<array>
-			<string>im.rime.inputmethod.Squirrel.Hans</string>
-			<string>im.rime.inputmethod.Squirrel.Hant</string>
+			<string>io.github.zhenkun26.inputmethod.EcholME.Hans</string>
+			<string>io.github.zhenkun26.inputmethod.EcholME.Hant</string>
 		</array>
 	</dict>
 	<key>InputMethodConnectionName</key>
-	<string>Squirrel_Connection</string>
+	<string>EcholME_Connection</string>
 	<key>InputMethodServerControllerClass</key>
 	<string>Squirrel.SquirrelInputController</string>
 	<key>InputMethodServerDelegateClass</key>
@@ -102,14 +103,10 @@
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>SUEnableAutomaticChecks</key>
-	<true/>
-	<key>SUFeedURL</key>
-	<string>https://rime.github.io/release/squirrel/appcast.xml</string>
-	<key>SUPublicEDKey</key>
-	<string>ukvWq2dKOWn3B9AsdsQIwOptiDdDKdUjAVNgFxSvB2o=</string>
+	<false/>
 	<key>TICapsLockLanguageSwitchCapable</key>
 	<true/>
 	<key>SUEnableInstallerLauncherService</key>
-	<true/>
+	<false/>
 </dict>
 </plist>

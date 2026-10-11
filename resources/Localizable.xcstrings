@@ -101,7 +101,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Squirrel is ready."
+            "value" : "EcholME is ready."
           }
         },
         "zh-Hans" : {
@@ -163,47 +163,59 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在线文档..."
+            "value" : "Rime 上游文档..."
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在線文檔..."
+            "value" : "Rime 上游文件..."
           }
         }
       }
     },
     "Settings..." : {
-      "comment" : "Menu item",
+      "comment" : "Opens the isolated Rime configuration directory; not a settings UI.",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Rime Folder..."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "用户设定..."
+            "value" : "打开 Rime 配置目录..."
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "用戶設定"
+            "value" : "開啟 Rime 設定目錄..."
           }
         }
       }
     },
     "Squirrel" : {
-      "comment" : "Menu title",
+      "comment" : "EcholME product name; upstream lookup key retained. Modified 2026-10-11.",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "EcholME"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鼠须管"
+            "value" : "两仪"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鼠鬚管"
+            "value" : "兩儀"
           }
         }
       }

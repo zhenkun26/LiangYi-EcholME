@@ -1,0 +1,36 @@
+{
+  "ax" : {
+    "document_text_read" : false,
+    "permission_prompt_requested" : false,
+    "scope" : "external AX process; not proof of IMK client support or IME AX permission",
+    "status" : "BLOCKED_APP_NOT_RUNNING",
+    "total_elapsed_ms" : 7.835375,
+    "trusted" : true
+  },
+  "current_input_source" : "com.apple.inputmethod.SCIM.ITABC",
+  "matching_input_sources" : [
+    {
+      "enabled" : false,
+      "id" : "io.github.zhenkun26.inputmethod.EcholME",
+      "selectable" : false,
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "io.github.zhenkun26.inputmethod.EcholME.Hant",
+      "selectable" : true,
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "io.github.zhenkun26.inputmethod.EcholME.Hans",
+      "selectable" : true,
+      "selected" : false
+    }
+  ],
+  "mutations_performed" : false,
+  "os" : "Version 26.5 (Build 25F71)",
+  "schema_version" : 1,
+  "timestamp" : "2026-10-11T04:18:24Z",
+  "tis_list_available" : true
+}

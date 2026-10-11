@@ -1,0 +1,5 @@
+# EcholME Round 0 baseline. The upstream default.yaml remains byte-identical.
+# Optional schemas, models, and plugins are deliberately outside this baseline.
+patch:
+  schema_list:
+    - schema: luna_pinyin_simp
