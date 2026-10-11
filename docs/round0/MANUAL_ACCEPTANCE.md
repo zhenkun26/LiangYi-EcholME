@@ -12,6 +12,8 @@ Dedicated synthetic Notes fixtures were used. Letter sequences, Space, digit 1, 
 
 Current state: Hans enabled/selected, Hant disabled/unselected, installed EcholME running. Original-source restoration and shutdown are NOT_RUN. The source was not restored automatically at a step boundary.
 
+The separately authorized punctuation step used an observed empty note and a new synthetic note. Digits and 31 distinct symbol keys were exercised in Chinese and ASCII modes, with existing mode CLI commands used only between completed compositions. A temporary system ABC control reproduced the automated equals-key anomaly and ASCII quote transforms. Hans and the starting `nascii` mode were restored and independently verified. This control is not a complete source-switch regression test. No input-method source changed; [structured punctuation evidence](evidence/notes-punctuation-acceptance.json) contains only synthetic cases and status-safe observations.
+
 ## 1. Install the fixed artifact before testing input
 
 **This installation step is complete for the current machine.** The initial app had the path-encoding bug; the user removed it and the fixed app was installed only after the destination was absent. The procedure below is retained for reproduction. Never enable an old, unfixed app or rerun `install-first` over an existing target.
@@ -62,11 +64,31 @@ Run each row in Notes and Xcode and record the observed outcome separately. Resu
 
 Current deployed `luna_pinyin_simp` uses `express_editor`. Its ordinary Return maps to `CommitRawInput`; Space confirms a selection. This explains retaining raw unselected letters rather than choosing Chinese on Return. See the [pinned librime implementation](https://github.com/rime/librime/blob/33e78140250125871856cdc5b42ddc6a5fcd3cd4/src/rime/gear/editor.cc#L192-L202). Future mode/translation shortcuts remain undecided; this baseline evidence does not settle ADR-017.
 
+### Guided punctuation result
+
+**PASS applies to the observed field results; equals is BLOCKED_AUTOMATION_INPUT.** These cases started without an active pinyin composition. They do not validate punctuation-as-paging during composition, every possible symbol sequence, or all hosts.
+
+| Case | Actual keys / finalization | Observed Notes result | Status / limit |
+| --- | --- | --- | --- |
+| Digits outside composition | `1234567890`, in both modes | Exactly `1234567890` | PASS; candidate-selection digits remain a separate case above. |
+| Common punctuation | `. , ! ? : ;` | Chinese: `。，！？：；`; ASCII: `.,!?:;` | PASS; intentional Chinese mappings. |
+| Paired quotes | Two double-quote presses, then two single-quote presses | Chinese: `“”‘’`; ASCII: `“”’’` | PASS for observed baseline behavior. System ABC reproduced the ASCII result, consistent with Notes/system smart-quote transformation; literal ASCII quote preservation is not established in this host. |
+| Parentheses | `( )` | Chinese: `（）`; ASCII: `()` | PASS. |
+| Symbol choices | `# @ /` and backslash, then `[ ] { }`; digit 1 for `#`/`@`, Space for the remaining symbol choices | Chinese: `#@、、「」『』`; ASCII keys directly: `#@/` plus backslash and `[]{}` | PASS; choosing a configured symbol is distinct from passing through its source key. |
+| Other symbols | `- + _ $ % ^ & *` and pipe, `< >`, grave, tilde; Space for configured choice lists | Chinese mappings: hyphen/plus unchanged; underscore → `——`, dollar → `￥`, percent → `%`, caret → `……`, ampersand/asterisk unchanged, pipe → `·`, angle keys → `《》`, grave/tilde unchanged. ASCII keys preserved these symbols. | PASS; default choices only, not every alternative. |
+| Slash followed by a digit | `/1`, then Escape; independently `/` then Space | `/1` was pending input; Escape removed it without altering prior text. Standalone slash plus Space committed one `、`. | PASS for cancellation/recovery and standalone slash. The recognizer `^/([0-9]0?\|[A-Za-z]+)$` makes the digit part of a symbol code; the initial assumption that it selected the slash candidate was invalid. Actual symbol-code selection remains NOT_RUN. |
+| Equals | CUA `equal`, isolated and repeated in Chinese, ASCII and system ABC | All three produced `+`; literal `pressKey("=")` was rejected before input with `keyNotFound`. | BLOCKED_AUTOMATION_INPUT. This does not establish an EcholME-specific defect or verify the physical equals key. |
+| Input recovery | Return, fresh `nihao`, then Space after the symbol checks | Final synthetic line contained one `你好` | PASS field result; no claim of panel/underline inspection. |
+
+Candidate-panel closure and underline for this punctuation step were not independently readable through Computer Use. User visual confirmation remains pending. The background process remained running and the final source/mode query returned Hans / `nascii`; this finite check does not prove universal crash freedom or measured latency.
+
+For the automation-blocked equals case, manually use an empty composition in 两仪's ASCII mode and press the physical `=` key once. Expect exactly one `=`. Repeat in Chinese mode, inspect the symbol choice, and finalize the displayed `=` with Space. Report the physical key, mode, observed text and any remaining panel/underline. Do not infer either pass or failure from the CUA alias anomaly.
+
 ### Pending special-character and environment coverage
 
-The user explicitly requested this coverage. All entries below remain NOT_RUN in Notes, Xcode and Terminal until separately confirmed and exercised:
+The user explicitly requested this coverage. The bounded Notes matrix above is complete except for the physical equals-key check and visual panel confirmation. All punctuation coverage in Xcode and Terminal remains NOT_RUN, with Terminal automation blocked by tool policy. Remaining Notes cases below require separate step authorization:
 
-- Digits outside composition versus candidate-selection digits; punctuation and symbols such as `. , ! ? : ; @ # / ( ) [ ] { }`, backslash and single/double quotes in Chinese and ASCII modes. Record intentional full-width/half-width conversion rather than assuming every difference is a bug.
+- Physical equals-key verification; other symbol choices; punctuation during active pinyin composition and arbitrary repeated/interleaved symbol sequences. Record intentional full-width/half-width conversion and configured paging behavior rather than assuming every difference is a bug.
 - Synthetic email, URL and code-like input containing case changes, underscores, hyphens and mixed letters/digits; verify recognizer behavior and preserved text.
 - Chinese/Latin mixed segments, spaces, repeated punctuation and editing with Backspace/Delete/arrows/Tab; verify host text and composition boundaries.
 - Non-ASCII input such as emoji, accented text and full-width characters through available entry methods. Distinguish typed events from paste/Character Viewer; neither path proves the other.

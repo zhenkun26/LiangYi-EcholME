@@ -1,0 +1,362 @@
+{
+  "recorded_date": "2026-10-11",
+  "timezone": "America/New_York",
+  "implementation_commit": "3975903",
+  "previous_documentation_checkpoint": "c5e5266",
+  "environment": {
+    "os": "macOS 26.5",
+    "architecture": "arm64",
+    "host": "Notes"
+  },
+  "scope": "Actual CUA key events in synthetic Notes fixtures; empty initial composition for symbol groups; no implementation changes.",
+  "fixture_setup": "Used an observed empty note and a newly created note. Pasted only committed fixture markers; tested digits and punctuation were real key events.",
+  "deployed_schema": {
+    "id": "luna_pinyin_simp",
+    "sha256": "c7a7ca6b3d2261533bcf4078ac78b669aeda4113127d59d3d5411dfae229fbf6",
+    "editor": "express_editor"
+  },
+  "evidence_method": "CUA AX synthetic-field values, including exact cumulative-value assertions for Chinese symbol-choice groups; TIS read-only probe and existing bundle-specific mode CLI. No candidate-panel accessibility or measured latency claim.",
+  "digits": {
+    "keys": "1234567890",
+    "chinese_observed": "1234567890",
+    "ascii_observed": "1234567890",
+    "result": "PASS"
+  },
+  "symbol_cases": [
+    {
+      "physical_symbol": ".",
+      "cua_key": "period",
+      "chinese_observed": "。",
+      "chinese_finalize_key": null,
+      "ascii_observed": ".",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": ",",
+      "cua_key": "comma",
+      "chinese_observed": "，",
+      "chinese_finalize_key": null,
+      "ascii_observed": ",",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": "!",
+      "cua_key": "shift+1",
+      "chinese_observed": "！",
+      "chinese_finalize_key": null,
+      "ascii_observed": "!",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": "?",
+      "cua_key": "shift+slash",
+      "chinese_observed": "？",
+      "chinese_finalize_key": null,
+      "ascii_observed": "?",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": ":",
+      "cua_key": "shift+semicolon",
+      "chinese_observed": "：",
+      "chinese_finalize_key": null,
+      "ascii_observed": ":",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": ";",
+      "cua_key": "semicolon",
+      "chinese_observed": "；",
+      "chinese_finalize_key": null,
+      "ascii_observed": ";",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": "\"",
+      "cua_key": "shift+apostrophe",
+      "chinese_observed": "“”",
+      "chinese_finalize_key": null,
+      "ascii_observed": "“”",
+      "result": "PASS_FIELD_RESULT",
+      "note": "Two presses; ASCII quote transforms reproduced with system ABC."
+    },
+    {
+      "physical_symbol": "'",
+      "cua_key": "apostrophe",
+      "chinese_observed": "‘’",
+      "chinese_finalize_key": null,
+      "ascii_observed": "’’",
+      "result": "PASS_FIELD_RESULT",
+      "note": "Two presses; ASCII quote transforms reproduced with system ABC."
+    },
+    {
+      "physical_symbol": "(",
+      "cua_key": "shift+9",
+      "chinese_observed": "（",
+      "chinese_finalize_key": null,
+      "ascii_observed": "(",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": ")",
+      "cua_key": "shift+0",
+      "chinese_observed": "）",
+      "chinese_finalize_key": null,
+      "ascii_observed": ")",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": "#",
+      "cua_key": "shift+3",
+      "chinese_observed": "#",
+      "chinese_finalize_key": "1",
+      "ascii_observed": "#",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": "@",
+      "cua_key": "shift+2",
+      "chinese_observed": "@",
+      "chinese_finalize_key": "1",
+      "ascii_observed": "@",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": "/",
+      "cua_key": "slash",
+      "chinese_observed": "、",
+      "chinese_finalize_key": "Space",
+      "ascii_observed": "/",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": "\\",
+      "cua_key": "backslash",
+      "chinese_observed": "、",
+      "chinese_finalize_key": "Space",
+      "ascii_observed": "\\",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": "[",
+      "cua_key": "bracketleft",
+      "chinese_observed": "「",
+      "chinese_finalize_key": "Space",
+      "ascii_observed": "[",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": "]",
+      "cua_key": "bracketright",
+      "chinese_observed": "」",
+      "chinese_finalize_key": "Space",
+      "ascii_observed": "]",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": "{",
+      "cua_key": "shift+bracketleft",
+      "chinese_observed": "『",
+      "chinese_finalize_key": "Space",
+      "ascii_observed": "{",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": "}",
+      "cua_key": "shift+bracketright",
+      "chinese_observed": "』",
+      "chinese_finalize_key": "Space",
+      "ascii_observed": "}",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": "-",
+      "cua_key": "minus",
+      "chinese_observed": "-",
+      "chinese_finalize_key": null,
+      "ascii_observed": "-",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": "+",
+      "cua_key": "shift+equal",
+      "chinese_observed": "+",
+      "chinese_finalize_key": null,
+      "ascii_observed": "+",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": "_",
+      "cua_key": "shift+minus",
+      "chinese_observed": "——",
+      "chinese_finalize_key": null,
+      "ascii_observed": "_",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": "$",
+      "cua_key": "shift+4",
+      "chinese_observed": "￥",
+      "chinese_finalize_key": "Space",
+      "ascii_observed": "$",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": "%",
+      "cua_key": "shift+5",
+      "chinese_observed": "%",
+      "chinese_finalize_key": "Space",
+      "ascii_observed": "%",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": "^",
+      "cua_key": "shift+6",
+      "chinese_observed": "……",
+      "chinese_finalize_key": null,
+      "ascii_observed": "^",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": "&",
+      "cua_key": "shift+7",
+      "chinese_observed": "&",
+      "chinese_finalize_key": null,
+      "ascii_observed": "&",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": "*",
+      "cua_key": "shift+8",
+      "chinese_observed": "*",
+      "chinese_finalize_key": "Space",
+      "ascii_observed": "*",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": "|",
+      "cua_key": "shift+backslash",
+      "chinese_observed": "·",
+      "chinese_finalize_key": "Space",
+      "ascii_observed": "|",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": "<",
+      "cua_key": "shift+comma",
+      "chinese_observed": "《",
+      "chinese_finalize_key": "Space",
+      "ascii_observed": "<",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": ">",
+      "cua_key": "shift+period",
+      "chinese_observed": "》",
+      "chinese_finalize_key": "Space",
+      "ascii_observed": ">",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": "`",
+      "cua_key": "grave",
+      "chinese_observed": "`",
+      "chinese_finalize_key": "Space",
+      "ascii_observed": "`",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    },
+    {
+      "physical_symbol": "~",
+      "cua_key": "shift+grave",
+      "chinese_observed": "~",
+      "chinese_finalize_key": "Space",
+      "ascii_observed": "~",
+      "result": "PASS_FIELD_RESULT",
+      "note": ""
+    }
+  ],
+  "equal_sign": {
+    "result": "BLOCKED_AUTOMATION_INPUT",
+    "cua_key": "equal",
+    "observed_chinese": "+",
+    "observed_ascii": "+",
+    "observed_system_ABC": "+",
+    "literal_key_attempt": "pressKey(\"=\") rejected with keyNotFound before input",
+    "assessment": "The automated key does not establish physical equals-key behavior. The anomaly is also present with system ABC; an EcholME-specific failure is not established. Physical-keyboard verification remains pending."
+  },
+  "slash_numeric_prefix": {
+    "keys": [
+      "slash",
+      "1"
+    ],
+    "observed_pending": "/1",
+    "initial_expectation": "A simple symbol-selection digit; this expectation was invalid for the configured recognizer.",
+    "schema_pattern": "^/([0-9]0?|[A-Za-z]+)$",
+    "escape_result": "PASS: removed /1 without changing prior committed text",
+    "standalone_slash_space_result": "PASS: committed one 、",
+    "symbol_code_selection": "NOT_RUN"
+  },
+  "recovery": {
+    "keys": [
+      "Return",
+      "n",
+      "i",
+      "h",
+      "a",
+      "o",
+      "Space"
+    ],
+    "observed_final_line": "你好",
+    "result": "PASS_FIELD_RESULT"
+  },
+  "source_control": {
+    "shortcut": "Control+Space",
+    "verified_control_source": "com.apple.keylayout.ABC",
+    "equal_observed": "+",
+    "two_double_quotes_observed": "“”",
+    "two_single_quotes_observed": "’’",
+    "restored_source": "io.github.zhenkun26.inputmethod.EcholME.Hans"
+  },
+  "final_state": {
+    "source": "io.github.zhenkun26.inputmethod.EcholME.Hans",
+    "mode": "nascii",
+    "mode_query_exit": 0,
+    "installed_process_running": true,
+    "probe_mutations": false
+  },
+  "limits": [
+    "Panel closure and underline after these symbol cases require human visual confirmation.",
+    "No full-symbol-sequence stress test, punctuation during pinyin composition, email/URL/code recognizer suite, emoji/accented input, editing/navigation, keypad Enter, or other-host input acceptance.",
+    "The temporary ABC control is not a focus/source-switch regression pass.",
+    "No finite run proves universal crash freedom or sub-150ms latency."
+  ],
+  "delivery": "Bounded punctuation step complete with one automation-blocked physical-key case; stop for user confirmation. No Round 1, push, release or source changes."
+}

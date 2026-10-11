@@ -63,6 +63,8 @@ The installed app's `--register-input-source` returned OSStatus 0 and exposed Ha
 
 Five basic Notes cases passed in dedicated synthetic notes: Space commit, numeric selection, Escape cancellation/recovery, Return committing raw unselected letters and Return creating a newline with an empty composition. Computer Use observed the synthetic field results; the user confirmed candidate identity and panel closure because the background candidate panel could not be reliably read through automation. Composing Return was user-operated; empty-composition Return used pasted fixture markers around one real Return event. Full case evidence and remaining coverage are in [MANUAL_ACCEPTANCE.md](MANUAL_ACCEPTANCE.md).
 
+A later, separately authorized Notes punctuation step exercised digits and 31 distinct symbol keys in Chinese and ASCII modes. Field results matched the configured Chinese mappings or ASCII behavior, with quote transforms also reproduced under system ABC. Slash followed by a digit entered the configured symbol-code recognizer; Escape removed the pending `/1`, and standalone slash plus Space committed `、`. Fresh `nihao` plus Space still produced one `你好`. Automated `equal` produced `+` in both EcholME modes and ABC, so physical equals verification is **BLOCKED_AUTOMATION_INPUT**, not an established EcholME-specific failure. Candidate closure/underline confirmation for this step remains pending. The final independent probe confirmed Hans / `nascii` and a running installed process. See [synthetic punctuation evidence](evidence/notes-punctuation-acceptance.json).
+
 The first `nihao` composition ended before the separately authorized Space step. Its already-committed result was not presented as evidence of that Space event; the assistant used a fresh fixture for the controlled Space test. Subsequent fixtures retained prior synthetic notes and avoided overwriting unrelated notes. No screenshots or private note text were copied into project evidence.
 
 ## Verification ledger
@@ -81,7 +83,8 @@ The first `nihao` composition ended before the separately authorized Space step.
 | Guard tests | PASS | Existing 12 tests rerun after verifier change; [output](evidence/runtime-guard-tests.txt). |
 | Corrected build installation / registration | PASS | User removal followed by reviewed absent-target installation; installed static verification and registration OSStatus 0. |
 | Notes basic actual input | PASS (five bounded cases) | CUA synthetic-field observations plus user candidate/closure confirmations; composing Return was user-operated. See the manual ledger. |
-| Extended Notes / Xcode / Terminal input | NOT_RUN / BLOCKED_TOOL_POLICY | Special-character, no-candidate Return, caret/focus/switch/reload checks and Xcode are pending; Terminal remains user-operated. |
+| Notes punctuation / symbols | PASS (bounded field results); equals BLOCKED_AUTOMATION_INPUT | Digits and 31 symbol keys in two modes, configured mappings, slash cancellation and recovery; physical equals and visual panel/underline confirmation pending. No measured latency claim. |
+| Remaining Notes / Xcode / Terminal input | NOT_RUN / BLOCKED_TOOL_POLICY | Composition-time punctuation, mixed/Unicode/editing cases, Return branches, caret/focus/switch/reload checks and Xcode are pending; Terminal remains user-operated. |
 | Input-source selection | PASS | Hans independently confirmed enabled/selected; active session responded `nascii`. |
 | Original-source restoration | NOT_RUN | Original source was Apple Simplified Pinyin; the current guided checkpoint keeps Hans active pending further user-confirmed tests. |
 | Concurrent Squirrel coexistence | NOT_RUN | No Squirrel installation/data here; static identity/path isolation and standard-path absence were checked. |
@@ -102,7 +105,7 @@ The candidate panel remains vertical and Chinese-only. The user confirmed a futu
 
 ## Reproduction and next gate
 
-Use [MANUAL_ACCEPTANCE.md](MANUAL_ACCEPTANCE.md) to continue the remaining, separately confirmed Notes/Xcode/Terminal checks, including special characters, Return branches, inherited focus-loss behavior, caret placement, source switching and input after reload. Fixed installation is complete. The assistant performed no deletion or existing-target overwrite; optional cleanup of the accidental encoded-path child is a user decision.
+Use [MANUAL_ACCEPTANCE.md](MANUAL_ACCEPTANCE.md) to continue the remaining, separately confirmed Notes/Xcode/Terminal checks, including physical equals and visual confirmation, composition-time punctuation, mixed/Unicode input, Return branches, inherited focus-loss behavior, caret placement, source switching and input after reload. Fixed installation is complete. The assistant performed no deletion or existing-target overwrite; optional cleanup of the accidental encoded-path child is a user decision.
 
 Safe automated reproduction commands from the repository root:
 
