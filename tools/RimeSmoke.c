@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 // Copyright 2026 EcholME contributors.
-// Round 0 synthetic librime acceptance. No IMK client, UI, sync, or cleanup.
+// Round 0/1 synthetic librime acceptance. No IMK client, UI, sync, or cleanup.
+// Optional Round 1 run ID uses fresh Validation/<id> data/log directories.
 // Engine-managed maintenance is permitted only in LiangYi's own data/log roots.
 
 #include "rime_api.h"
@@ -28,6 +29,10 @@ typedef struct {
   bool maintenance_started;
   bool deployment_failure;
   bool finalized;
+  bool round1;
+  int preview_passes;
+  int translated_clear_passes;
+  int partial_scope_passes;
   const char *error;
 } SmokeResult;
 
@@ -350,6 +355,39 @@ static bool run_cycle(RimeApi *api, RimeSessionId session,
   return true;
 }
 
+static bool whole_preview(RimeApi *api, RimeSessionId session, bool *eligible,
+                          SmokeResult *result) {
+  RIME_STRUCT(RimeContext, context);
+  if (!api->get_context(session, &context)) return fail(result, "preview_context_unavailable");
+  int index = context.menu.highlighted_candidate_index;
+  bool valid = context.menu.candidates != NULL && index >= 0 && index < context.menu.num_candidates &&
+               context.menu.candidates[index].text != NULL && context.commit_text_preview != NULL &&
+               context.composition.preedit != NULL;
+  *eligible = valid && context.composition.sel_start == 0 &&
+              context.composition.sel_end == (int)strlen(context.composition.preedit) &&
+              strcmp(context.menu.candidates[index].text, context.commit_text_preview) == 0;
+  if (!api->free_context(&context)) return fail(result, "preview_free_failed");
+  return valid || fail(result, "preview_fields_missing");
+}
+
+static bool run_round1_cycle(RimeApi *api, RimeSessionId session, SmokeResult *result) {
+  bool eligible = false;
+  if (!clear_and_check(api, session, result) || !type_synthetic(api, session, "nihao", result) ||
+      !whole_preview(api, session, &eligible, result)) return false;
+  if (!eligible) return fail(result, "whole_nihao_preview_not_eligible");
+  ++result->preview_passes;
+  // This is the engine half of the frontend translated commit boundary:
+  // clearing before a host insert must leave no later original commit.
+  if (!clear_and_check(api, session, result)) return false;
+  ++result->translated_clear_passes;
+  if (!type_synthetic(api, session, "nihaozhongguo", result)) return false;
+  api->set_caret_pos(session, 5);
+  if (!whole_preview(api, session, &eligible, result)) return false;
+  if (eligible) return fail(result, "partial_candidate_incorrectly_eligible");
+  ++result->partial_scope_passes;
+  return clear_and_check(api, session, result);
+}
+
 static void emit_result(const SmokeResult *result) {
   printf("{\n"
          "  \"schema_version\": 1,\n"
@@ -357,6 +395,8 @@ static void emit_result(const SmokeResult *result) {
          "  \"status\": \"%s\",\n"
          "  \"cycles_requested\": %d,\n"
          "  \"cycles_completed\": %d,\n"
+         "  \"round1_isolated_roots\": %s,\n"
+         "  \"round1_checks\": {\"whole_preview\": %d, \"clear_without_original\": %d, \"partial_scope_rejected\": %d},\n"
          "  \"cases\": {\n"
          "    \"nihao_space_exact_commit\": %d,\n"
          "    \"zhongguo_numeric_matches_displayed_first\": %d,\n"
@@ -372,7 +412,8 @@ static void emit_result(const SmokeResult *result) {
          "  \"manual_cleanup_performed\": false,\n"
          "  \"error\": ",
          result->error == NULL ? "PASS" : "FAIL", kCycles,
-         result->completed_cycles, result->space_passes,
+         result->completed_cycles, result->round1 ? "true" : "false", result->preview_passes,
+         result->translated_clear_passes, result->partial_scope_passes, result->space_passes,
          result->numeric_passes, result->escape_passes,
          result->roots_preflight ? "true" : "false",
          result->roots_postflight ? "true" : "false",
@@ -398,8 +439,15 @@ int main(int argc, char **argv) {
   char prebuilt[PATH_MAX];
   char shared[PATH_MAX];
 
-  if (argc != 2) {
+  if (argc != 2 && argc != 3) {
     fail(&result, "usage_shared_support_path_required");
+    goto finished;
+  }
+  result.round1 = argc == 3;
+  if (result.round1 && (strlen(argv[2]) == 0 || strlen(argv[2]) > 100 ||
+      strspn(argv[2], "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-") != strlen(argv[2]) ||
+      strcmp(argv[2], ".") == 0 || strcmp(argv[2], "..") == 0)) {
+    fail(&result, "invalid_round1_run_id");
     goto finished;
   }
   struct passwd *account = getpwuid(geteuid());
@@ -409,13 +457,24 @@ int main(int argc, char **argv) {
     fail(&result, "account_home_unavailable_or_unsafe");
     goto finished;
   }
-  if (!append_path(data_root, sizeof(data_root), account->pw_dir,
-                   "Library/Application Support/LiangYi/Rime") ||
-      !append_path(log_root, sizeof(log_root), account->pw_dir,
-                   "Library/Logs/LiangYi") ||
+  char data_suffix[256], log_suffix[256];
+  if (result.round1) {
+    snprintf(data_suffix, sizeof(data_suffix), "Library/Application Support/LiangYi/Validation/%s/Rime", argv[2]);
+    snprintf(log_suffix, sizeof(log_suffix), "Library/Logs/LiangYi/Validation/%s", argv[2]);
+  } else {
+    snprintf(data_suffix, sizeof(data_suffix), "%s", "Library/Application Support/LiangYi/Rime");
+    snprintf(log_suffix, sizeof(log_suffix), "%s", "Library/Logs/LiangYi");
+  }
+  if (!append_path(data_root, sizeof(data_root), account->pw_dir, data_suffix) ||
+      !append_path(log_root, sizeof(log_root), account->pw_dir, log_suffix) ||
       !append_path(staging, sizeof(staging), data_root, "build") ||
       !append_path(prebuilt, sizeof(prebuilt), argv[1], "build")) {
     fail(&result, "path_too_long");
+    goto finished;
+  }
+  struct stat existing;
+  if (result.round1 && (lstat(data_root, &existing) == 0 || lstat(log_root, &existing) == 0)) {
+    fail(&result, "round1_output_exists_preserved");
     goto finished;
   }
   if (!check_ancestors(argv[1], true) ||
@@ -442,7 +501,7 @@ int main(int argc, char **argv) {
   traits.log_dir = log_root;
   traits.prebuilt_data_dir = prebuilt;
   traits.staging_dir = staging;
-  traits.distribution_name = "LiangYi Round 0 engine smoke";
+  traits.distribution_name = result.round1 ? "LiangYi Round 1 engine smoke" : "LiangYi Round 0 engine smoke";
   traits.distribution_code_name = "EcholME";
   traits.distribution_version = "0.0.1";
   traits.app_name = "liangyi.echolme-smoke";
@@ -470,6 +529,10 @@ int main(int argc, char **argv) {
     goto finished;
   }
   api->set_option(session, "ascii_mode", False);
+  if (result.round1) {
+    api->set_option(session, "_linear", True);
+    api->set_option(session, "_vertical", False);
+  }
   RIME_STRUCT(RimeStatus, status);
   if (!api->get_status(session, &status)) {
     fail(&result, "schema_status_unavailable");
@@ -489,6 +552,7 @@ int main(int argc, char **argv) {
     if (!run_cycle(api, session, &result)) {
       break;
     }
+    if (result.round1 && !run_round1_cycle(api, session, &result)) break;
   }
 
 finished:
@@ -504,7 +568,8 @@ finished:
       fail(&result, "writable_root_postflight_failed");
     }
   }
-  if (result.error == NULL && result.completed_cycles != kCycles) {
+  if (result.error == NULL && (result.completed_cycles != kCycles ||
+      (result.round1 && result.partial_scope_passes != kCycles))) {
     fail(&result, "incomplete_cycles");
   }
   emit_result(&result);

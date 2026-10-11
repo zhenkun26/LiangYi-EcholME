@@ -204,6 +204,7 @@ final class SquirrelApplicationDelegate: NSObject, NSApplicationDelegate {
 
   func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
     print("EcholME is quitting.")
+    NotificationCenter.default.post(name: EcholMENotification.engineWillReset, object: nil)
     rimeAPI.cleanup_all_sessions()
     return .terminateNow
   }
@@ -361,6 +362,7 @@ private extension SquirrelApplicationDelegate {
   }
 
   func shutdownRime() {
+    NotificationCenter.default.post(name: EcholMENotification.engineWillReset, object: nil)
     config?.close()
     rimeAPI.finalize()
   }

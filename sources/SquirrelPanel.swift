@@ -1,6 +1,7 @@
 //
 //  SquirrelPanel.swift
 //  Squirrel
+//  Modified for EcholME on 2026-10-11: horizontal two-line snapshots and identity guards.
 //
 //  Created by Leo Liu on 5/10/24.
 //
@@ -10,7 +11,10 @@ import AppKit
 final class SquirrelPanel: NSPanel {
   private let view: SquirrelView
   private let back: NSView
-  var inputController: SquirrelInputController?
+  weak var inputController: SquirrelInputController?
+  private var displayedSnapshot: CandidateSnapshot?
+  private var pressedCandidate: CandidateIdentity?
+  private var hoveredCandidate: CandidateIdentity?
 
   var position: NSRect
   private var screenRect: NSRect = .zero
@@ -52,10 +56,12 @@ final class SquirrelPanel: NSPanel {
   }
 
   var linear: Bool {
-    view.currentTheme.linear
+    true
   }
+  override var canBecomeKey: Bool { false }
+  override var canBecomeMain: Bool { false }
   var vertical: Bool {
-    view.currentTheme.vertical
+    false
   }
   var inlinePreedit: Bool {
     view.currentTheme.inlinePreedit
@@ -66,6 +72,32 @@ final class SquirrelPanel: NSPanel {
 
   // swiftlint:disable:next cyclomatic_complexity
   override func sendEvent(_ event: NSEvent) {
+    if let snapshot = displayedSnapshot {
+      let hit = view.click(at: mousePosition()).0
+      switch event.type {
+      case .leftMouseDown:
+        pressedCandidate = hit.flatMap { snapshot.candidates.indices.contains($0) ? snapshot.candidates[$0].id : nil }
+      case .leftMouseUp:
+        let released = hit.flatMap { snapshot.candidates.indices.contains($0) ? snapshot.candidates[$0].id : nil }
+        if let released, released == pressedCandidate {
+          _ = inputController?.selectCandidate(released)
+        }
+        pressedCandidate = nil
+      case .mouseEntered: acceptsMouseMovedEvents = true
+      case .mouseExited:
+        acceptsMouseMovedEvents = false
+        hoveredCandidate = nil
+        _ = view.displayBilingual(snapshot, maximumWidth: frame.width)
+      case .mouseMoved:
+        hoveredCandidate = hit.flatMap { snapshot.candidates.indices.contains($0) ? snapshot.candidates[$0].id : nil }
+        _ = view.displayBilingual(snapshot, maximumWidth: frame.width, hovered: hit)
+      case .scrollWheel:
+        handleScroll(event)
+      default: break
+      }
+      super.sendEvent(event)
+      return
+    }
     switch event.type {
     case .leftMouseDown:
       let (index, _, pagingUp) =  view.click(at: mousePosition())
@@ -109,33 +141,7 @@ final class SquirrelPanel: NSPanel {
         update(preedit: preedit, selRange: selRange, caretPos: caretPos, candidates: candidates, comments: comments, labels: labels, highlighted: index, page: page, lastPage: lastPage, update: false)
       }
     case .scrollWheel:
-      if event.phase == .began {
-        scrollDirection = .zero
-      } else if event.phase == .ended || (event.phase == .init(rawValue: 0) && event.momentumPhase != .init(rawValue: 0)) {
-        if abs(scrollDirection.dx) > abs(scrollDirection.dy) && abs(scrollDirection.dx) > 10 {
-          _ = inputController?.page(up: (scrollDirection.dx < 0) == vertical)
-        } else if abs(scrollDirection.dx) < abs(scrollDirection.dy) && abs(scrollDirection.dy) > 10 {
-          _ = inputController?.page(up: scrollDirection.dy > 0)
-        }
-        scrollDirection = .zero
-      } else if event.phase == .init(rawValue: 0) && event.momentumPhase == .init(rawValue: 0) {
-        if scrollTime.timeIntervalSinceNow < -1 {
-          scrollDirection = .zero
-        }
-        scrollTime = .now
-        if (scrollDirection.dy >= 0 && event.scrollingDeltaY > 0) || (scrollDirection.dy <= 0 && event.scrollingDeltaY < 0) {
-          scrollDirection.dy += event.scrollingDeltaY
-        } else {
-          scrollDirection = .zero
-        }
-        if abs(scrollDirection.dy) > 10 {
-          _ = inputController?.page(up: scrollDirection.dy > 0)
-          scrollDirection = .zero
-        }
-      } else {
-        scrollDirection.dx += event.scrollingDeltaX
-        scrollDirection.dy += event.scrollingDeltaY
-      }
+      handleScroll(event)
     default:
       break
     }
@@ -143,6 +149,9 @@ final class SquirrelPanel: NSPanel {
   }
 
   func hide() {
+    displayedSnapshot = nil
+    pressedCandidate = nil
+    hoveredCandidate = nil
     statusTimer?.invalidate()
     statusTimer = nil
     orderOut(nil)
@@ -151,6 +160,8 @@ final class SquirrelPanel: NSPanel {
 
   // swiftlint:disable:next cyclomatic_complexity function_parameter_count
   func update(preedit: String, selRange: NSRange, caretPos: Int, candidates: [String], comments: [String], labels: [String], highlighted index: Int, page: Int, lastPage: Bool, update: Bool) {
+    displayedSnapshot = nil
+    view.clearBilingual()
     if update {
       self.preedit = preedit
       self.selRange = selRange
@@ -325,9 +336,72 @@ final class SquirrelPanel: NSPanel {
       view.lightTheme.load(config: config, dark: isDark)
     }
   }
+
+  func update(snapshot: CandidateSnapshot) {
+    guard !snapshot.candidates.isEmpty || !snapshot.preedit.isEmpty else { hide(); return }
+    statusTimer?.invalidate()
+    statusTimer = nil
+    statusMessage = ""
+    // Mouse down/release identities survive subtitle-only refresh; revisions
+    // changed by typing/page/focus will naturally reject the old identity.
+    if displayedSnapshot?.token != snapshot.token { hoveredCandidate = nil }
+    displayedSnapshot = snapshot
+    let screen = NSScreen.screens.first { $0.frame.contains(position.origin) } ?? NSScreen.main
+    guard let screen else { return }
+    appearance = NSApp.effectiveAppearance
+    let size = view.displayBilingual(snapshot, maximumWidth: screen.visibleFrame.width * 0.95,
+                                    hovered: hoveredCandidate?.index)
+    let panelRect = BilingualCandidateLayout.panelFrame(size: size, caret: position, screen: screen.visibleFrame)
+    setFrame(panelRect, display: true)
+    contentView?.boundsRotation = 0
+    contentView?.frame = NSRect(origin: .zero, size: panelRect.size)
+    contentView?.bounds = NSRect(origin: .zero, size: size)
+    view.frame = NSRect(origin: .zero, size: size)
+    back.isHidden = true
+    alphaValue = view.currentTheme.alpha
+    invalidateShadow()
+    orderFront(nil) // Nonactivating panel; never makeKey/orderFrontRegardless.
+  }
+
+  func displayedCandidate(_ identity: CandidateIdentity, controller: SquirrelInputController) -> CandidateValue? {
+    guard isVisible, inputController === controller, let snapshot = displayedSnapshot,
+          snapshot.token == identity.token, snapshot.candidates.indices.contains(identity.index) else { return nil }
+    let candidate = snapshot.candidates[identity.index]
+    return candidate.id == identity ? candidate : nil
+  }
 }
 
 private extension SquirrelPanel {
+  func handleScroll(_ event: NSEvent) {
+    if event.phase == .began {
+      scrollDirection = .zero
+    } else if event.phase == .ended || (event.phase == .init(rawValue: 0) && event.momentumPhase != .init(rawValue: 0)) {
+      if abs(scrollDirection.dx) > abs(scrollDirection.dy) && abs(scrollDirection.dx) > 10 {
+        _ = inputController?.page(up: (scrollDirection.dx < 0) == vertical)
+      } else if abs(scrollDirection.dx) < abs(scrollDirection.dy) && abs(scrollDirection.dy) > 10 {
+        _ = inputController?.page(up: scrollDirection.dy > 0)
+      }
+      scrollDirection = .zero
+    } else if event.phase == .init(rawValue: 0) && event.momentumPhase == .init(rawValue: 0) {
+      if scrollTime.timeIntervalSinceNow < -1 {
+        scrollDirection = .zero
+      }
+      scrollTime = .now
+      if (scrollDirection.dy >= 0 && event.scrollingDeltaY > 0) || (scrollDirection.dy <= 0 && event.scrollingDeltaY < 0) {
+        scrollDirection.dy += event.scrollingDeltaY
+      } else {
+        scrollDirection = .zero
+      }
+      if abs(scrollDirection.dy) > 10 {
+        _ = inputController?.page(up: scrollDirection.dy > 0)
+        scrollDirection = .zero
+      }
+    } else {
+      scrollDirection.dx += event.scrollingDeltaX
+      scrollDirection.dy += event.scrollingDeltaY
+    }
+  }
+
   func mousePosition() -> NSPoint {
     var point = NSEvent.mouseLocation
     point = self.convertPoint(fromScreen: point)
@@ -529,6 +603,8 @@ private extension SquirrelPanel {
   }
 
   func show(status message: String) {
+    displayedSnapshot = nil
+    view.clearBilingual()
     let theme = view.currentTheme
     let text = NSMutableAttributedString(string: message, attributes: theme.attrs)
     text.addAttribute(.paragraphStyle, value: theme.paragraphStyle, range: NSRange(location: 0, length: text.length))

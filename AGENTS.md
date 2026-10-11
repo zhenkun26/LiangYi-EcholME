@@ -8,19 +8,20 @@ project memory. The latest explicit user instruction takes precedence.
 
 - The approved direction is a Squirrel-derived macOS input method named
   **LiangYi / 两仪**, with the English product name **EcholME**.
-- Only **Round 0** is authorized for implementation. Stop after its delivery and
-  wait for the user's confirmation before Round 1.
+- **Round 1** is authorized: define the key contract, unify state/commit
+  management, and implement horizontal two-line candidates with example
+  subtitles. Stop after delivery; Round 2 needs new confirmation.
 - Keep Git commits local. No push, GitHub repository creation, public release,
-  deployment, or notarization is authorized by the Round 0 request.
+  deployment, or notarization is authorized by the current request.
 - The user authorized closing Round 0 on 2026-10-11. Remaining bounded checks
   and the final delivery record are in scope; this supersedes earlier per-case
-  waiting checkpoints for this closeout. Stop after delivery. Unavailable checks
-  must remain explicit, and Round 1 still requires a new confirmation.
+  waiting checkpoints for that closeout. Round 0 is closed with verification
+  limits. The later explicit Round 1 authorization above is now controlling.
 - The user authorized remaining Round 0 runtime acceptance on 2026-10-11.
   librime may perform normal generated-file and database maintenance only
   inside `~/Library/Application Support/LiangYi/` and `~/Library/Logs/LiangYi/`.
   This exception does not permit manual deletion, bundle replacement,
-  Squirrel/other user-data changes, or work on Round 1. Provide manual steps
+  Squirrel/other user-data changes, or work on Round 2. Provide manual steps
   for checks that automation cannot perform.
 
 ## Safety and scope

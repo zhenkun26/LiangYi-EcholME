@@ -1,0 +1,27 @@
+{
+  "data_log_fingerprints_after": [
+    {
+      "digest": "67565fafa86222fd43646e0d11903fdbbecdb32f0ea047bcddadde2f51233ff6",
+      "entry_count": 18
+    },
+    {
+      "digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "entry_count": 0
+    }
+  ],
+  "data_log_fingerprints_before": [
+    {
+      "digest": "67565fafa86222fd43646e0d11903fdbbecdb32f0ea047bcddadde2f51233ff6",
+      "entry_count": 18
+    },
+    {
+      "digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "entry_count": 0
+    }
+  ],
+  "engine_existing_root_guard": true,
+  "engine_initialized": false,
+  "scope": "Real refusal before engine initialization/test compilation; no deletion or private document access",
+  "status": "PASS",
+  "test_runner_existing_output_guard": true
+}

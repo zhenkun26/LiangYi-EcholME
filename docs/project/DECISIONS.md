@@ -16,10 +16,10 @@ This is the decision index for the approved [delivery plan](PLAN.md). An accepte
 | ADR-006 | Prefer field type and nearby text for automatic direction, with explicit rules and stable fallback. | ACCEPTED | Freeze direction per composition; learned preferences never override explicit rules. |
 | ADR-007 | Provide local-only, local-first, and API-first translation policies. | ACCEPTED | API-first cannot block primary-text input. Service support requires protocol and live-verification evidence. |
 | ADR-008 | Prepare for GPL-derived distribution throughout development. | ACCEPTED | Preserve upstream rights and provide corresponding-source materials before external binary distribution. Exact grant/SPDX and dependency/data inventory still require verification. |
-| ADR-009 | Deliver sequentially and stop after Round 0 for confirmation. | ACCEPTED | Current authorization covers plan persistence, Git version management, and Round 0 only. |
+| ADR-009 | Deliver sequentially and stop after each authorized round for confirmation. | ACCEPTED | Round 0 is closed; latest authorization covers Round 1 only. Stop before Round 2; keep commits local. |
 | ADR-010 | Honor no filesystem deletion and independent product storage. | ACCEPTED | Review scripts, stop on existing install targets, and never alter Squirrel user data or evade replacement restrictions. |
 
-Runtime acceptance authorization update (2026-10-11): the user permits librime's normal generated-file/database maintenance only within `~/Library/Application Support/LiangYi/` and `~/Library/Logs/LiangYi/`. This supersedes the earlier engine-maintenance blocker for audited, confined operations. Manual deletion, Squirrel/other data changes, Round 1, and pushing remain outside scope. Historical verification below records the initial delivery; follow-up runtime results are recorded in [RUNTIME_ACCEPTANCE.md](../round0/RUNTIME_ACCEPTANCE.md).
+Runtime acceptance authorization update (2026-10-11): the user permits librime's normal generated-file/database maintenance only within `~/Library/Application Support/LiangYi/` and `~/Library/Logs/LiangYi/`. This supersedes the earlier engine-maintenance blocker for audited, confined operations. Manual deletion, Squirrel/other data changes and pushing remain outside scope. Round 1 was outside scope at that historical authorization; its later explicit authorization is recorded above. Historical verification below records the initial delivery; follow-up runtime results are recorded in [RUNTIME_ACCEPTANCE.md](../round0/RUNTIME_ACCEPTANCE.md).
 
 ## Round 0 decision updates
 
@@ -29,7 +29,7 @@ The planning baseline was committed as `041b643` and Squirrel source/history was
 | --- | --- | --- |
 | ADR-011 | Squirrel `769ae426f33f500266101a88f694aab0d158e680`; inherited librime `33e78140250125871856cdc5b42ddc6a5fcd3cd4` / v1.17.0 and Sparkle `41847a58cdef7506b257591fcca6f9495df591d4` / 2.6.2 references; `dependencies.lock.json` and `data/schema-manifest.json` identify artifact/data inputs. | BUILD_VERIFIED on macOS 26.5/arm64; Sparkle excluded. Artifact/data/notice checks pass; complete distribution closure remains pending. |
 | ADR-012 | Product identity root `io.github.zhenkun26.inputmethod.EcholME`; user install `~/Library/Input Methods/EcholME.app`; data `~/Library/Application Support/LiangYi/Rime/`; logs `~/Library/Logs/LiangYi/`; runtime updater disabled. | FIXED_INSTALL_REGISTER_SELECT_PASS; both bundled mode defaults false. User removed the initial app; fixed app installed at the absent target. Hans currently enabled/selected, Hant disabled. Real Squirrel coexistence remains unverified. |
-| ADR-013 | IMK adapter owns host access; session state owns lifecycle; engine adapter owns librime; presentation tracks displayed identity; one commit coordinator writes to the host; translation consumes copied values. | DESIGN_ACCEPTED; no Round 1 state/translation implementation is claimed. |
+| ADR-013 | IMK adapter owns host access; session state owns lifecycle; engine adapter owns librime; presentation tracks displayed identity; one commit coordinator writes to the host; translation consumes copied values. | IMPLEMENTED_IN_ROUND_1 with fixture translations. Automated state/host/layout/engine checks are separate from pending installed IMK acceptance. |
 | ADR-014 | Use privacy-preserving capability probes and separate source, AX, and real IMK evidence. | Notes metadata/basic/punctuation and closeout field checks passed within scope; physical equals/punctuation closure user-confirmed. Format: 7 ASCII passes; 7 Chinese observations; false fault labels withdrawn. Closeout editing/mixed/switch/reload passed; Unicode paste-only and same-app focus observation. Panel/Return branches remain unverified. Xcode BLOCKED_NO_UI_SURFACE; Terminal BLOCKED_TOOL_POLICY. |
 | ADR-015 | Isolate long cloud work in a service process; XPC is a proposed mechanism requiring lifecycle, signing, peer-authentication, and failure validation. | DESIGN_PROPOSED; no service implementation or validated platform result. Round 4 remains unauthorized. |
 | ADR-016 | Review recursive tooling; absent-target user installation only; stop at existing target; no cleanup/deletion or system-wide reload; separate registration from selection and input. | ROUND_0_DELIVERED_WITH_LIMITS; confined maintenance authorized. Fixed startup/idle reload/30 engine checks historical PASS. Installed closeout reload: 3 success, 0 failure, followed by Notes input PASS. Static verification and 12 guards rerun; no input-source implementation changed. Other hosts/restoration remain unverified. No assistant deletion or push. |
@@ -44,6 +44,24 @@ Round 0 closeout is authorized and delivered with verification limits. A same-ap
 
 ## Decisions and evidence still required
 
+### Round 1 decisions now resolved
+
+| ID | Decision | Evidence and remaining limit |
+| --- | --- | --- |
+| ADR-017 | Adopt the [key contract](../round1/KEY_CONTRACT.md). Option+Return is user-selected; Return commits raw composition without newline; empty Return belongs to host. Chinese numeric labels retain schema recognizers; English digits extend a token. Tab/Command finalize raw then pass through; Esc cancels. | Shared policy tests PASS. Chinese engine checks PASS. Real installed Notes/Xcode/Terminal key acceptance remains NOT_RUN for Round 1. |
+| ADR-018 | Use immutable snapshots with session UUID, focus generation, composition revision and candidate index. Copy primary text, label, engine comment, explicit whole preview and example state separately. Subtitle arrival preserves identities/highlight/page. | Core/layout tests PASS. The existing Squirrel Panel/View is reused; no new UI dependency. Translated commit requires a ready displayed candidate, matching preview, and engine selection covering the whole preedit. Real panel focus/mouse/multiple-display acceptance remains NOT_RUN. |
+
+The commit coordinator reserves and invalidates state before any external marking or
+insertion. The Objective-C host adapter checks selectors, uses NSNotFound for
+replacement, and contains NSException; failed/uncertain inserts are not retried.
+This does not impose a hard timeout on synchronous IMK IPC, catch native C++
+crashes, or establish universal crash freedom. Focus deactivation commits raw
+text into the bound old client; an unexpected different client discards old
+state. Fixtures are ten hand-authored entries per direction, not licensed
+dictionary coverage, model support or measured real translation latency.
+
+### Remaining decisions and platform evidence
+
 | ID | Question | Owner round | Exit requirement |
 | --- | --- | --- | --- |
 | ADR-011 | Which exact Squirrel revision, compatible librime revision, recursive dependencies, and toolchain form the baseline? | Round 0 | Record pinned versions, licenses, source provenance, and observed build compatibility. Planning snapshots do not decide this automatically. |
@@ -52,8 +70,8 @@ Round 0 closeout is authorized and delivered with verification limits. A same-ap
 | ADR-014 | What host context/caret information is available in Notes, Xcode, and Terminal on the tested environment? | Round 0 | Record capability evidence, time/call boundaries, and fallback; do not assume all fields or AX attributes are available on macOS 14. |
 | ADR-015 | How will long-running cloud tasks be isolated and authenticated? | Round 0 design; Round 4 implementation | Choose a concrete service mechanism based on capability validation; define peer authentication and bounded messages rather than treating process separation as authentication. |
 | ADR-016 | What safe build/install/reload procedures work under the no-deletion policy? | Round 0 | Inspect side effects, stop on existing targets, and distinguish install/register/select/input states. |
-| ADR-017 | What do Space, digits, Tab, Return, Esc, punctuation, focus loss, phrase entry, and Off mean in each mode? | Round 1 | Approve an explicit interaction table; no tentative shortcut becomes a default without this decision. |
-| ADR-018 | What candidate value model represents segment text, full commit preview, engine comment, subtitle, and displayed revision? | Round 1 | Prevent stale selection and align translation scope with actual commit scope. |
+| ADR-017 | Runtime evidence for the resolved key contract above; phrase entry and full Off mode. | Round 1 acceptance; later feature rounds | Complete installed IMK acceptance; do not treat core tests or Example Off as full product mode acceptance. |
+| ADR-018 | Runtime evidence for the implemented snapshot/display model above. | Round 1 acceptance; Round 5 geometry | Test mouse press/release, focus, subtitle arrival, screen edges and scale on the installed bundle. |
 | ADR-019 | Which licensed dictionary and phrase resources meet offline bidirectional quality targets? | Round 2 | Record provenance, licensing, counts, corpus, and independent directional quality. |
 | ADR-020 | What is the measured local latency envelope on the supported devices and corpus? | Round 2 baseline; Round 5 acceptance | Measure valid visible translation end-to-end; report cold/warm distributions, maxima, misses, and timeouts without weakening the 150 ms criterion. |
 | ADR-021 | What exact outbound-text, retention, cache, and sensitive-field policies apply? | Round 3–4 | Define visible user controls and default behavior; avoid whole-field outbound text and plaintext diagnostic content by default. |

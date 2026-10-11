@@ -43,3 +43,30 @@ See [FOUNDATION.md](docs/round0/FOUNDATION.md) for the design decisions and [VER
 The user authorized normal librime generated-file/database maintenance only in LiangYi data/log roots. The first actual launch exposed percent-encoded URL paths; the process was stopped and incident files retained. Decoded filesystem strings now reach librime and directory checks, and `--build` explicitly sets its own shared-data source. The fixed build passed startup/deployment, idle reload and 30 standalone real-engine synthetic checks. A GPL-3.0-only C probe was added without new dependencies; it is not bundled in the app. The static verifier no longer reports a stale policy blocker.
 
 The initial installed bundle is unchanged, unfixed and disabled. Manual replacement and actual IMK host checks remain pending under the no-deletion/existing-target rule. See [runtime acceptance](docs/round0/RUNTIME_ACCEPTANCE.md) and [manual steps](docs/round0/MANUAL_ACCEPTANCE.md). No Round 1, push or distribution occurred.
+
+## 2026-10-11 — Round 1 state, commit and example panel
+
+The preceding Round 0 entries preserve their original delivery-time state.
+The user later removed the old bundle; the fixed Round 0 was installed and
+closed out in `92fb453`, with disclosed host/visual limitations.
+
+Round 1 adds session/focus/revision snapshots, an ASCII token composer, a shared
+key policy, one guarded commit coordinator and an Objective-C selector/exception
+adapter. Existing Squirrel InputController, ApplicationDelegate, Main, bridge,
+Panel/View and Xcode project are modified to integrate them. Panel/View now
+render horizontal primary/subtitle columns without a second UI dependency.
+Option+Return submits only a ready, displayed, verified whole-candidate example.
+Engine reset/quit and focus changes invalidate old tasks; raw/translated commit
+clears the old engine composition before inserting.
+
+Added Swift/ObjC tests and reviewed Python/C check entry points cover state,
+layout, host exceptions and the pinned real engine. Authored fixtures have ten
+entries per direction; they are source-owned deterministic examples, not a new
+third-party dictionary. No dependency, provider, network call or captured host
+text was added. The development bundle version is 0.0.2. Upstream copyright,
+GPL and dependency/data notices remain preserved.
+
+See [Round 1 delivery](docs/round1/DELIVERY.md) for final artifacts, verification
+and limits. Installed Round 1 input acceptance is pending; the current installed
+package remains the fixed Round 0. Complete corresponding-source preparation
+remains an external-distribution gate. No Round 2, push or release occurred.

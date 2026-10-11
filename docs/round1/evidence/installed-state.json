@@ -1,0 +1,28 @@
+{
+  "files": {
+    "Contents/Frameworks/librime.1.dylib": {
+      "installed": "0364ba17630816031277033d94d822b0a1ef47994d103c7ae8e7e93d4039c066",
+      "matches": true,
+      "retained_round0_fixed_artifact": "0364ba17630816031277033d94d822b0a1ef47994d103c7ae8e7e93d4039c066"
+    },
+    "Contents/Info.plist": {
+      "installed": "28719004b61e77e9366623e29a54872d0516e5a08965fa1e777131878e59973c",
+      "matches": true,
+      "retained_round0_fixed_artifact": "28719004b61e77e9366623e29a54872d0516e5a08965fa1e777131878e59973c"
+    },
+    "Contents/MacOS/EcholME": {
+      "installed": "c3e9afe2acc4e5a04648ef8203d1bc844bb55a68f4af09673b2386f9620ffcac",
+      "matches": true,
+      "retained_round0_fixed_artifact": "c3e9afe2acc4e5a04648ef8203d1bc844bb55a68f4af09673b2386f9620ffcac"
+    },
+    "Contents/MacOS/EcholME.debug.dylib": {
+      "installed": "3ee90ae05bf257fca63772057c08967d516647789a13ff787f04903c389daa40",
+      "matches": true,
+      "retained_round0_fixed_artifact": "3ee90ae05bf257fca63772057c08967d516647789a13ff787f04903c389daa40"
+    }
+  },
+  "installed_version": "0.0.1",
+  "round1_installed": false,
+  "scope": "Critical-file comparison to retained Round 0 fixed artifact, not a system-wide trace or first-install manifest comparison",
+  "status": "PASS"
+}

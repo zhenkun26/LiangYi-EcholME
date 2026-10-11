@@ -2,7 +2,21 @@
 
 Recorded: 2026-10-11, America/New_York.
 
-## Current state
+## Current state — Round 1
+
+- Authorization: Round 1 only; the user selected Option+Return. Round 2 requires new confirmation. No push, release, replacement installation or new dependency.
+- Delivery: **IMPLEMENTED_AND_BUILT_WITH_RUNTIME_ACCEPTANCE_PENDING**. [Round 1 report](../round1/DELIVERY.md), [key contract](../round1/KEY_CONTRACT.md), and [manual installation/acceptance](../round1/MANUAL_ACCEPTANCE.md).
+- Branch: `feat/round-1-composition`, based on the Round 0 closeout `92fb453`. The final increment hash is available in Git history and the delivery reply; no self-referential hash commit is needed.
+- Implemented: copied/versioned candidate snapshots; English token composition; unified primary/raw/example commit; focus/mode/engine-reset invalidation; guarded Objective-C host calls; horizontal two-line rendering in the existing Squirrel Panel/View.
+- Examples: ten hand-authored entries per direction, delayed 80 ms to exercise refresh. These are not dictionary coverage, real translation quality, cloud support or a measured latency result.
+- Final bundle: `.artifacts/builds/round1-final/DerivedData/Build/Products/Debug/EcholME.app`, version **0.0.2**, macOS 14 deployment target, arm64 Debug/ad-hoc signed.
+- Final automated verification: build/static signature/resource/link checks PASS; 50 shared policy/state/commit/layout checks PASS; 22 host-wrapper checks PASS; 12 mocked tooling guards PASS; 10 cycles / 60 real librime checks PASS in fresh LiangYi validation data/log roots. Production renderer previews visually inspected; not real IMK screenshots.
+- Warning: one inherited AppIntents metadata extraction warning; no compiler/linker warnings. macOS 14/Intel runtime, actual latency and universal crash freedom are unverified.
+- Installed state: still the fixed Round 0 package, version **0.0.1**; critical files equal the retained fixed artifact. New Round 1 installation/Notes/Xcode/Terminal input acceptance is **NOT_RUN**. The initial-install hash manifest predates the Round 0 fix and is not the current installed-bundle comparator.
+- GPL: inherited notices and dated modification record retained; new source/fixtures GPL-3.0-only; no added dependency/data. Complete corresponding-source/dependency/data distribution review remains an external release gate.
+- Next: install and perform Round 1 real input acceptance with the user. Stop before Round 2; keep commits local. Preserve the historical Round 0 outcomes below.
+
+## Round 0 closeout snapshot (historical)
 
 - Plan: **PLAN_APPROVED_AND_COMMITTED**, `041b643`.
 - Upstream baseline: **IMPORTED_WITH_HISTORY**, `8b507af`, Squirrel `769ae426f33f500266101a88f694aab0d158e680`.
@@ -20,7 +34,7 @@ Recorded: 2026-10-11, America/New_York.
 
 The complete durable plan is [PLAN.md](PLAN.md), decisions are in [DECISIONS.md](DECISIONS.md), and the final Round 0 report is [RUNTIME_ACCEPTANCE.md](../round0/RUNTIME_ACCEPTANCE.md). Case outcomes and manual carryovers are in [MANUAL_ACCEPTANCE.md](../round0/MANUAL_ACCEPTANCE.md). This closeout changes documentation/evidence only; no extra self-referential commit is required.
 
-## Verified scope
+## Round 0 verified scope (historical)
 
 | Check | Result | Evidence / limit |
 | --- | --- | --- |
@@ -46,7 +60,7 @@ The complete durable plan is [PLAN.md](PLAN.md), decisions are in [DECISIONS.md]
 | macOS 14 / Intel runtime | NOT_RUN | Deployment target and runtime support are separate. |
 | GPL external-distribution readiness | NOT_RUN | Provenance/notices recorded; complete corresponding-source and dependency/data review remain release gates. |
 
-## Material limitations and next gate
+## Round 0 material limitations and original next gate (historical)
 
 The fixed app is installed, registered and active. The replacement blocker was resolved by the user's Trash operation followed by absent-target installation. No input-method implementation changed during guided acceptance or closeout; recorded fixed-build input hashes still match. Installed executable, Debug library and Info.plist match the fixed artifact.
 
@@ -58,4 +72,4 @@ The accidental `~/Library/Application%20Support/LiangYi/` directory contains onl
 
 [MANUAL_ACCEPTANCE.md](../round0/MANUAL_ACCEPTANCE.md) preserves replacement instructions, results and concrete remaining host/visual/Return/restoration steps. Current source is still Hans / `nascii`; the original Apple Simplified Pinyin restoration is NOT_RUN. The system input-menu surface was not exposed in the inspected Computer Use inventory, so the active source was not disabled and the IME was not quit. Installation, logs, synthetic fixtures and incident evidence remain intact.
 
-Round 0 is closed as a bounded delivery with these disclosed verification limits. Do not begin Round 1, push, publicly distribute, or claim full acceptance. The next implementation gate is explicit user confirmation for Round 1, including ADR-017's key contract and the approved horizontal two-line layout with fixture subtitles.
+Round 0 was closed as a bounded delivery with these disclosed verification limits. Its original next gate was explicit Round 1 confirmation; the user subsequently provided it, as recorded in the current state above. No push/public distribution or full-acceptance claim is authorized by either round.

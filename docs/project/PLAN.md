@@ -1,6 +1,6 @@
 # LiangYi / EcholME — Approved Delivery Plan
 
-Status: **Approved for sequential delivery; Round 0 delivered with verification limits. Round 1 is not authorized.**
+Status: **Approved for sequential delivery; Round 0 closed with verification limits. Round 1 implementation authorized; stop before Round 2.**
 
 Plan recorded: 2026-10-11, America/New_York.
 
@@ -10,21 +10,21 @@ This document preserves the plan approved in the project conversation. It is the
 
 ## 1. Authorization and delivery boundaries
 
-The user approved the Squirrel-derived route, requested that the complete plan be saved in project documentation and version-controlled, and authorized **Round 0 only**. After its delivery report, stop and wait for explicit confirmation before Round 1. Repeat this confirmation boundary between all later rounds.
+The user approved the Squirrel-derived route and requested durable project documentation and Git version management. Initial authorization covered Round 0 only. After its closeout, the user explicitly authorized **Round 1 only**: define the key contract, unify state/commit management, and implement horizontal two-line candidates with example subtitles. Option+Return was selected for translated commit. Stop after Round 1 delivery and wait for confirmation before Round 2. Repeat this boundary between all later rounds.
 
 The authorized sequence is:
 
 1. Persist the complete plan and establish appropriate Git version management.
-2. Carry out Round 0 only.
+2. Carry out the currently authorized round only (now Round 1).
 3. Report changes, verification results, limitations, and remaining work.
-4. Wait for the user before beginning Round 1.
+4. Wait for the user before beginning Round 2.
 
 Additional boundaries:
 
 - Do not push commits, create a public release, notarize, deploy, or distribute publicly without explicit authorization for that action and destination. Approval to implement is not approval to publish.
 - Preserve unrelated user work. Do not invent Git author identity, credentials, test results, supported platforms, or performance measurements.
 - Follow the user's no-deletion rule: no filesystem deletion, trash operation, whole-file deletion, destructive cleanup, or equivalent workaround. Existing install targets must cause a preflight stop. Do not rename or move an existing target merely to evade this boundary.
-- Runtime acceptance exception authorized on 2026-10-11: librime may perform normal generated-file/database maintenance only inside the independent LiangYi data and log directories. Squirrel and other user data remain protected. Continue Round 0 and provide manual steps for checks automation cannot perform; Round 1 and pushing remain unauthorized.
+- Runtime acceptance exception authorized on 2026-10-11: librime may perform normal generated-file/database maintenance only inside the independent LiangYi data and log directories. Squirrel and other user data remain protected. The original exception accompanied Round 0; later Round 1 authorization does not broaden its writable roots or permit manual deletion or pushing.
 - Round 0 closeout was authorized on 2026-10-11. The bounded remaining checks and delivery record supersede earlier per-case waiting checkpoints. See [STATUS.md](STATUS.md) for what passed and what remains unverified; closeout does not turn missing checks into passes.
 - Inspect upstream build, install, test, and dependency scripts for deletion and other side effects before running them. Installing already-declared dependencies within the approved scope is distinct from adding a new dependency; ask before introducing dependencies beyond the approved Squirrel/librime baseline. The approved route does not preapprove every upstream optional component, resource, dataset, or new service.
 - Build/install success, automated checks, manual acceptance, and measured runtime behavior are separate claims.
@@ -51,7 +51,7 @@ Additional boundaries:
 
 The design starts from `Auto`, `Zh→En`, `En→Zh`, and `Off`. Round 1 must define the exact meaning of Off and every key action. These names do not resolve whether an operation affects translation, composition, or input passthrough.
 
-The following remain open until explicitly specified and reviewed: translation commit shortcut, phrase boundary entry, Space behavior, digit handling, Tab and Return passthrough, Esc semantics, punctuation, deactivation, and focus loss. Previously discussed shortcuts such as Option+Return and Shift+Space are proposals, not approved defaults. Do not occupy Tab or Return for translation by assumption.
+Round 1 specifies Space, digits, Tab, Return/keypad Enter, Esc, punctuation, deactivation and focus loss in the [key contract](../round1/KEY_CONTRACT.md). The user selected Option+Return for translated commit. English words are letter-started tokens; spaces commit a token and retain the separator. Multiword English phrase composition, automatic direction and the complete mode UI remain later work. The temporary Example Off control disables examples and English token interception; it is not the complete future Off mode. Tab remains a host action after raw finalization.
 
 ### MVP boundaries
 

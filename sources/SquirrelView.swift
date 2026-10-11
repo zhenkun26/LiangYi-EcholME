@@ -1,6 +1,7 @@
 //
 //  SquirrelView.swift
 //  Squirrel
+//  Modified for EcholME on 2026-10-11: reuse view with shared two-line renderer/hit testing.
 //
 //  Created by Leo Liu on 5/9/24.
 //
@@ -24,6 +25,10 @@ extension NSAttributedString.Key {
 
 final class SquirrelView: NSView {
   let textView: NSTextView
+  private(set) var bilingualSnapshot: CandidateSnapshot?
+  private(set) var bilingualLayout: BilingualCandidateLayout?
+  private var bilingualHighlight = 0
+  private var bilingualHover: Int?
 
   private let squirrelLayoutDelegate: SquirrelLayoutDelegate
   var candidateRanges: [NSRange] = []
@@ -128,6 +133,12 @@ final class SquirrelView: NSView {
 
   // swiftlint:disable:next cyclomatic_complexity
   override func draw(_ dirtyRect: NSRect) {
+    if let snapshot = bilingualSnapshot, let layout = bilingualLayout {
+      BilingualCandidateRenderer.draw(snapshot: snapshot, layout: layout, highlighted: bilingualHighlight,
+                                      font: currentTheme.font, background: currentTheme.backgroundColor,
+                                      hovered: bilingualHover)
+      return
+    }
     var backgroundPath: CGPath?
     var preeditPath: CGPath?
     var candidatePaths: CGMutablePath?
@@ -301,6 +312,9 @@ final class SquirrelView: NSView {
   }
 
   func click(at clickPoint: NSPoint) -> (Int?, Int?, Bool?) {
+    if let layout = bilingualLayout {
+      return (layout.candidateIndex(at: clickPoint), nil, nil)
+    }
     var index = 0
     var candidateIndex: Int?
     var preeditIndex: Int?
@@ -338,6 +352,22 @@ final class SquirrelView: NSView {
       }
     }
     return (candidateIndex, preeditIndex, nil)
+  }
+  func displayBilingual(_ snapshot: CandidateSnapshot, maximumWidth: CGFloat, hovered: Int? = nil) -> NSSize {
+    bilingualSnapshot = snapshot
+    let layout = BilingualCandidateLayout(snapshot: snapshot, maximumWidth: maximumWidth, font: currentTheme.font)
+    bilingualLayout = layout
+    bilingualHighlight = snapshot.highlighted
+    bilingualHover = hovered
+    textView.isHidden = true
+    needsDisplay = true
+    return layout.size
+  }
+
+  func clearBilingual() {
+    bilingualSnapshot = nil
+    bilingualLayout = nil
+    textView.isHidden = false
   }
 }
 

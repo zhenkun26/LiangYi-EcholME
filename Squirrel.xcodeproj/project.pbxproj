@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E10000000000000000000002 /* CompositionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000001 /* CompositionState.swift */; };
+		E10000000000000000000004 /* ExampleTranslation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000003 /* ExampleTranslation.swift */; };
+		E10000000000000000000006 /* BilingualCandidateLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000005 /* BilingualCandidateLayout.swift */; };
+		E10000000000000000000008 /* SafeIMEClient.m in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000007 /* SafeIMEClient.m */; };
 		E00000000000000000000002 /* default.custom.yaml in Copy Shared Support Files */ = {isa = PBXBuildFile; fileRef = E00000000000000000000001 /* default.custom.yaml */; };
 		441E637D22B7E96F006DCCDD /* stroke.dict.yaml in Copy Shared Support Files */ = {isa = PBXBuildFile; fileRef = 441E636922B7E90D006DCCDD /* stroke.dict.yaml */; };
 		441E637E22B7E96F006DCCDD /* stroke.schema.yaml in Copy Shared Support Files */ = {isa = PBXBuildFile; fileRef = 441E636B22B7E90D006DCCDD /* stroke.schema.yaml */; };
@@ -161,6 +165,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E10000000000000000000001 /* CompositionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = sources/CompositionState.swift; sourceTree = "<group>"; };
+		E10000000000000000000003 /* ExampleTranslation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = sources/ExampleTranslation.swift; sourceTree = "<group>"; };
+		E10000000000000000000005 /* BilingualCandidateLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = sources/BilingualCandidateLayout.swift; sourceTree = "<group>"; };
+		E10000000000000000000007 /* SafeIMEClient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = sources/SafeIMEClient.m; sourceTree = "<group>"; };
+		E10000000000000000000009 /* SafeIMEClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sources/SafeIMEClient.h; sourceTree = "<group>"; };
 		E00000000000000000000001 /* default.custom.yaml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = data/default.custom.yaml; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -255,6 +264,11 @@
 			children = (
 				B38E9B902BE9AE1E0036ABEF /* SquirrelApplicationDelegate.swift */,
 				B38E9B942BEAFEFD0036ABEF /* SquirrelInputController.swift */,
+				E10000000000000000000001 /* CompositionState.swift */,
+				E10000000000000000000003 /* ExampleTranslation.swift */,
+				E10000000000000000000005 /* BilingualCandidateLayout.swift */,
+				E10000000000000000000007 /* SafeIMEClient.m */,
+				E10000000000000000000009 /* SafeIMEClient.h */,
 				B39771222BECEA150093A49B /* MacOSKeyCodes.swift */,
 				B397712C2BEEB39D0093A49B /* InputSource.swift */,
 				B397712E2BEECBED0093A49B /* Main.swift */,
@@ -500,6 +514,10 @@
 				B39771232BECEA150093A49B /* MacOSKeyCodes.swift in Sources */,
 				B39771292BEDAF4A0093A49B /* SquirrelView.swift in Sources */,
 				B38E9B952BEAFEFD0036ABEF /* SquirrelInputController.swift in Sources */,
+				E10000000000000000000002 /* CompositionState.swift in Sources */,
+				E10000000000000000000004 /* ExampleTranslation.swift in Sources */,
+				E10000000000000000000006 /* BilingualCandidateLayout.swift in Sources */,
+				E10000000000000000000008 /* SafeIMEClient.m in Sources */,
 				B39771252BED899F0093A49B /* SquirrelConfig.swift in Sources */,
 				B397712F2BEECBED0093A49B /* Main.swift in Sources */,
 				B397712D2BEEB39D0093A49B /* InputSource.swift in Sources */,
@@ -525,7 +543,7 @@
 				CODE_SIGN_ENTITLEMENTS = resources/Squirrel.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 0.0.1;
+				CURRENT_PROJECT_VERSION = 0.0.2;
 				DEAD_CODE_STRIPPING = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
@@ -573,7 +591,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = resources/Squirrel.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 0.0.1;
+				CURRENT_PROJECT_VERSION = 0.0.2;
 				DEAD_CODE_STRIPPING = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;

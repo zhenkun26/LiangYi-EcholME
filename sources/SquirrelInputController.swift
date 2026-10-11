@@ -1,7 +1,7 @@
 //
 //  SquirrelInputController.swift
 //  Squirrel
-//  Modified for EcholME on 2026-10-11: isolated notifications; remove update actions.
+//  Modified for EcholME on 2026-10-11: isolated identity; Round 1 state/commit and examples.
 //
 //  Created by Leo Liu on 5/7/24.
 //
@@ -13,6 +13,13 @@ final class SquirrelInputController: IMKInputController {
   private static var unknownAppCnt: UInt = 0
 
   private weak var client: IMKTextInput?
+  private let composition = CompositionSession()
+  private let commits = CommitCoordinator()
+  private var exampleWork: DispatchWorkItem?
+  private var scheduledExampleToken: CompositionToken?
+  private var examplesEnabled = true
+  private var englishShiftTap = false
+  private var observers: [NSObjectProtocol] = []
   private let rimeAPI: RimeApi_stdbool = rime_get_api_stdbool().pointee
   private var preedit: String = ""
   private var selRange: NSRange = .empty
@@ -31,7 +38,7 @@ final class SquirrelInputController: IMKInputController {
 
   // swiftlint:disable:next cyclomatic_complexity
   override func handle(_ event: NSEvent!, client sender: Any!) -> Bool {
-    guard let event = event else { return false }
+    guard let event = event, Thread.isMainThread else { return false }
     let modifiers = event.modifierFlags
     let changes = lastModifiers.symmetricDifference(modifiers)
 
@@ -39,16 +46,41 @@ final class SquirrelInputController: IMKInputController {
     var handled = false
 
     if session == 0 || !rimeAPI.find_session(session) {
+      cancelExamples()
+      composition.deactivate()
       createSession()
       if session == 0 {
         return false
       }
     }
 
-    self.client ?= sender as? IMKTextInput
-    if let app = client?.bundleIdentifier(), currentApp != app {
+    guard attachClient(sender) else { return false }
+    if let client, let app = EcholMEClientBundleIdentifier(client), currentApp != app {
       currentApp = app
       updateAppOptions()
+    }
+
+    if event.type == .flagsChanged, !changes.intersection([.command, .control, .option]).isEmpty {
+      englishShiftTap = false
+    }
+    if event.type == .keyDown {
+      englishShiftTap = false
+      if let disposition = handleCompositionKey(event) { return disposition }
+    } else if event.type == .flagsChanged, event.keyCode == 56,
+              rimeAPI.get_option(session, "ascii_mode"), changes.contains(.shift) {
+      if modifiers.contains(.shift) {
+        englishShiftTap = modifiers.intersection([.command, .control, .option]).isEmpty
+      } else if englishShiftTap {
+        englishShiftTap = false
+        finalizeRawComposition()
+        rimeAPI.set_option(session, "ascii_mode", false)
+        rimeUpdate()
+      }
+      lastModifiers = modifiers
+      return true
+    } else if event.type == .flagsChanged, changes.contains(.capsLock),
+              !composition.englishInput.isEmpty {
+      finalizeRawComposition()
     }
 
     switch event.type {
@@ -132,8 +164,18 @@ final class SquirrelInputController: IMKInputController {
     return success
   }
 
+  func selectCandidate(_ identity: CandidateIdentity) -> Bool {
+    guard let candidate = composition.candidate(identity), let snapshot = composition.snapshot else { return false }
+    if snapshot.direction == .english {
+      return commit(string: candidate.descriptor.primary, expected: snapshot.token)
+    }
+    guard rawEngineInput() == snapshot.rawInput else { return false }
+    return selectCandidate(identity.index)
+  }
+
   // swiftlint:disable:next identifier_name
   func page(up: Bool) -> Bool {
+    guard composition.active, composition.snapshot?.direction != .english else { return false }
     var handled = false
     handled = rimeAPI.change_page(session, up)
     if handled {
@@ -166,7 +208,10 @@ final class SquirrelInputController: IMKInputController {
   }
 
   override func activateServer(_ sender: Any!) {
-    self.client ?= sender as? IMKTextInput
+    guard attachClient(sender) else { return }
+    finalizeRawComposition()
+    cancelExamples()
+    composition.activate()
     var keyboardLayout = NSApp.squirrelAppDelegate.config?.getString("keyboard_layout") ?? ""
     if keyboardLayout == "last" || keyboardLayout == "" {
       keyboardLayout = ""
@@ -176,7 +221,7 @@ final class SquirrelInputController: IMKInputController {
       keyboardLayout = "com.apple.keylayout.\(keyboardLayout)"
     }
     if keyboardLayout != "" {
-      client?.overrideKeyboard(withKeyboardNamed: keyboardLayout)
+      if let client { EcholMEOverrideKeyboard(client, keyboardLayout) }
     }
     // Activation delivers no flagsChanged event, and NSEvent.modifierFlags
     // only reflects this process's own event stream, so lastModifiers may
@@ -202,42 +247,58 @@ final class SquirrelInputController: IMKInputController {
     super.init(server: server, delegate: delegate, client: client)
     createSession()
 
-    NotificationCenter.default.addObserver(
+    observers.append(NotificationCenter.default.addObserver(
       forName: EcholMENotification.setASCII,
       object: nil,
-      queue: nil
+      queue: .main
     ) { [weak self] notification in
       self?.handleASCIIModeToggle(notification)
-    }
+    })
 
-    NotificationCenter.default.addObserver(
+    observers.append(NotificationCenter.default.addObserver(
       forName: EcholMENotification.reportASCII,
       object: nil,
-      queue: nil
+      queue: .main
     ) { [weak self] notification in
       self?.reportASCIIMode(notification)
-    }
+    })
+
+    observers.append(NotificationCenter.default.addObserver(forName: EcholMENotification.engineWillReset,
+                                           object: nil, queue: .main) { [weak self] _ in
+      self?.finalizeRawComposition()
+      self?.cancelExamples()
+      self?.composition.deactivate()
+      self?.hidePalettes()
+    })
   }
 
   override func deactivateServer(_ sender: Any!) {
-    hidePalettes()
     commitComposition(sender)
+    cancelExamples()
+    composition.deactivate()
+    hidePalettes()
     client = nil
   }
 
   override func hidePalettes() {
-    NSApp.squirrelAppDelegate.panel?.hide()
+    if let panel = NSApp.squirrelAppDelegate.panel, panel.inputController === self {
+      panel.hide()
+    }
     super.hidePalettes()
   }
 
   override func commitComposition(_ sender: Any!) {
-    self.client ?= sender as? IMKTextInput
-    if session != 0 {
-      if let input = rimeAPI.get_input(session) {
-        commit(string: String(cString: input))
-        rimeAPI.clear_composition(session)
-      }
+    // Never rebind to a new client during finalization.
+    if let incoming = sender as? IMKTextInput, let client,
+       (incoming as AnyObject) !== (client as AnyObject) {
+      discardCurrentComposition()
+      return
     }
+    finalizeRawComposition()
+  }
+
+  override func cancelComposition() {
+    discardCurrentComposition()
   }
 
   override func menu() -> NSMenu! {
@@ -254,6 +315,11 @@ final class SquirrelInputController: IMKInputController {
     wiki.target = self
 
     let menu = NSMenu()
+    let examples = NSMenuItem(title: "Example translations", action: #selector(toggleExamples), keyEquivalent: "")
+    examples.target = self
+    examples.state = examplesEnabled ? .on : .off
+    menu.addItem(examples)
+    menu.addItem(.separator())
     menu.addItem(deploy)
     menu.addItem(sync)
     menu.addItem(logDir)
@@ -265,6 +331,14 @@ final class SquirrelInputController: IMKInputController {
 
   @objc func deploy() {
     NSApp.squirrelAppDelegate.deploy()
+  }
+
+  @objc func toggleExamples() {
+    finalizeRawComposition()
+    cancelExamples()
+    composition.invalidate()
+    examplesEnabled.toggle()
+    rimeUpdate()
   }
 
   @objc func syncUserData() {
@@ -300,6 +374,7 @@ final class SquirrelInputController: IMKInputController {
   }
 
   deinit {
+    for observer in observers { NotificationCenter.default.removeObserver(observer) }
     destroySession()
   }
 }
@@ -354,7 +429,7 @@ private extension SquirrelInputController {
   }
 
   func createSession() {
-    let app = client?.bundleIdentifier() ?? {
+    let app = client.flatMap { EcholMEClientBundleIdentifier($0) } ?? {
       SquirrelInputController.unknownAppCnt &+= 1
       return "UnknownApp\(SquirrelInputController.unknownAppCnt)"
     }()
@@ -386,6 +461,8 @@ private extension SquirrelInputController {
   }
 
   func destroySession() {
+    cancelExamples()
+    composition.deactivate()
     if session != 0 {
       _ = rimeAPI.destroy_session(session)
       session = 0
@@ -432,7 +509,7 @@ private extension SquirrelInputController {
     var commitText = RimeCommit.rimeStructInit()
     if rimeAPI.get_commit(session, &commitText) {
       if let text = commitText.text {
-        commit(string: String(cString: text))
+        _ = commit(string: String(cString: text))
       }
       _ = rimeAPI.free_commit(&commitText)
     }
@@ -440,10 +517,12 @@ private extension SquirrelInputController {
 
   // Preserve reserved comment marks when librime requests a UI-only refresh.
   func rimeUpdate(clearReservedComments: Bool = true) {
+    guard composition.active, client != nil else { return }
     if clearReservedComments {
       specialCommentIndices = [:]
     }
     rimeConsumeCommittedText()
+    guard composition.active, client != nil, session != 0, rimeAPI.find_session(session) else { return }
 
     var status = RimeStatus_stdbool.rimeStructInit()
     if rimeAPI.get_status(session, &status) {
@@ -460,13 +539,21 @@ private extension SquirrelInputController {
       _ = rimeAPI.free_status(&status)
     }
 
+    if rimeAPI.get_option(session, "ascii_mode"), !composition.englishInput.isEmpty {
+      updateEnglish()
+      return
+    }
     var ctx = RimeContext_stdbool.rimeStructInit()
     if rimeAPI.get_context(session, &ctx) {
       let preedit = ctx.composition.preedit.map({ String(cString: $0) }) ?? ""
 
-      let start = String.Index(preedit.utf8.index(preedit.utf8.startIndex, offsetBy: Int(ctx.composition.sel_start)), within: preedit) ?? preedit.startIndex
-      let end = String.Index(preedit.utf8.index(preedit.utf8.startIndex, offsetBy: Int(ctx.composition.sel_end)), within: preedit) ?? preedit.startIndex
-      let caretPos = String.Index(preedit.utf8.index(preedit.utf8.startIndex, offsetBy: Int(ctx.composition.cursor_pos)), within: preedit) ?? preedit.startIndex
+      func boundedIndex(_ byteOffset: Int32) -> String.Index {
+        let offset = max(0, min(preedit.utf8.count, Int(byteOffset)))
+        return String.Index(preedit.utf8.index(preedit.utf8.startIndex, offsetBy: offset), within: preedit) ?? preedit.startIndex
+      }
+      let start = boundedIndex(ctx.composition.sel_start)
+      let end = max(start, boundedIndex(ctx.composition.sel_end))
+      let caretPos = boundedIndex(ctx.composition.cursor_pos)
 
       if inlineCandidate {
         var candidatePreview = ctx.commit_text_preview.map { String(cString: $0) } ?? ""
@@ -521,7 +608,7 @@ private extension SquirrelInputController {
         }
       }
 
-      let numCandidates = Int(ctx.menu.num_candidates)
+      let numCandidates = ctx.menu.candidates == nil ? 0 : max(0, min(10, Int(ctx.menu.num_candidates)))
       var candidates = [String]()
       var comments = [String]()
       for i in 0..<numCandidates {
@@ -534,7 +621,7 @@ private extension SquirrelInputController {
       if let select_keys = ctx.menu.select_keys {
         labels = String(cString: select_keys).map { String($0) }
       } else if let select_labels = ctx.select_labels {
-        let pageSize = Int(ctx.menu.page_size)
+        let pageSize = max(0, min(numCandidates, Int(ctx.menu.page_size)))
         for i in 0..<pageSize {
           labels.append(select_labels[i].map { String(cString: $0) } ?? "")
         }
@@ -542,39 +629,66 @@ private extension SquirrelInputController {
       // swiftlint:enable identifier_name
       let page = Int(ctx.menu.page_no)
       let lastPage = ctx.menu.is_last_page
+      let highlighted = Int(ctx.menu.highlighted_candidate_index)
+      let fullPreview = ctx.commit_text_preview.map { String(cString: $0) }
+      let coversWholeComposition = ctx.composition.sel_start == 0 &&
+        Int(ctx.composition.sel_end) == preedit.utf8.count
+      let rawInput = rawEngineInput()
+      let descriptors = candidates.enumerated().map { index, text in
+        CandidateDescriptor(primary: text, engineComment: comments[index],
+                            label: index < labels.count ? labels[index] : "\(index + 1)",
+                            fullCommitPreview: index == highlighted && coversWholeComposition ? fullPreview : nil)
+      }
 
-      let selRange = NSRange(location: start.utf16Offset(in: preedit), length: preedit.utf16.distance(from: start, to: end))
-      showPanel(preedit: inlinePreedit ? "" : preedit, selRange: selRange, caretPos: caretPos.utf16Offset(in: preedit),
-                candidates: candidates, comments: comments, labels: labels, highlighted: Int(ctx.menu.highlighted_candidate_index),
-                page: page, lastPage: lastPage)
+      if rawInput.isEmpty && candidates.isEmpty {
+        cancelExamples()
+        composition.invalidate()
+        hidePalettes()
+      } else if let snapshot = composition.replace(direction: .chinese, rawInput: rawInput, preedit: preedit,
+                                                    candidates: descriptors, highlighted: highlighted, page: page,
+                                                    lastPage: lastPage, examplesEnabled: examplesEnabled) {
+        present(snapshot)
+        scheduleExamples(snapshot)
+      }
       _ = rimeAPI.free_context(&ctx)
     } else {
+      cancelExamples()
+      composition.invalidate()
       hidePalettes()
     }
   }
 
-  func commit(string: String) {
-    guard let client = client else { return }
+  @discardableResult
+  func commit(string: String, expected: CompositionToken? = nil) -> Bool {
+    guard let client, composition.active else { return false }
 
     let forceMarkedText =
       session != 0 &&
       rimeAPI.get_option(session, "force_marked_text_for_direct_commit")
 
-    // Direct commits such as full-width punctuation do not necessarily have an
-    // active marked-text phase. Some NSTextInputClient implementations require
-    // one before accepting insertText.
-    if forceMarkedText && preedit.isEmpty && !string.isEmpty {
-      let markedText = NSMutableAttributedString(string: string)
-      client.setMarkedText(
-        markedText,
-        selectionRange: NSRange(location: markedText.length, length: 0),
-        replacementRange: .empty
-      )
+    let needsMarkedText = forceMarkedText && preedit.isEmpty && !string.isEmpty
+    let expected = expected ?? composition.token
+    cancelExamples()
+    let success = commits.commit(string, expected: expected, state: composition,
+                                 host: ClosureCommitHost { text in
+      // Reserve before every external host call, including the inherited
+      // workaround. A reentrant focus change during marking cancels insertion.
+      if needsMarkedText {
+        let markedText = NSAttributedString(string: text)
+        _ = EcholMESetMarkedText(client, markedText, NSRange(location: markedText.length, length: 0))
+      }
+      guard self.composition.active, self.composition.token.generation == expected.generation,
+            self.composition.token.revision == expected.revision &+ 1,
+            let bound = self.client, (bound as AnyObject) === (client as AnyObject) else { return false }
+      return EcholMEInsertText(client, text)
+    })
+    if composition.token.generation == expected.generation,
+       composition.token.revision == expected.revision &+ 1 {
+      preedit = ""
+      hidePalettes()
     }
-
-    client.insertText(string, replacementRange: .empty)
-    preedit = ""
-    hidePalettes()
+    if !success { NSLog("EcholME: host insertion rejected or interrupted; no retry.") }
+    return success
   }
 
   func show(preedit: String, selRange: NSRange, caretPos: Int) {
@@ -587,35 +701,26 @@ private extension SquirrelInputController {
     self.caretPos = caretPos
     self.selRange = selRange
 
-    let start = selRange.location
+    let start = max(0, min(selRange.location, preedit.utf16.count))
     let attrString = NSMutableAttributedString(string: preedit)
     if start > 0 {
-      let attrs = mark(forStyle: kTSMHiliteConvertedText, at: NSRange(location: 0, length: start))! as! [NSAttributedString.Key: Any]
+      let attrs = mark(forStyle: kTSMHiliteConvertedText, at: NSRange(location: 0, length: start)) as? [NSAttributedString.Key: Any] ?? [:]
       attrString.setAttributes(attrs, range: NSRange(location: 0, length: start))
     }
     let remainingRange = NSRange(location: start, length: preedit.utf16.count - start)
-    let attrs = mark(forStyle: kTSMHiliteSelectedRawText, at: remainingRange)! as! [NSAttributedString.Key: Any]
+    let attrs = mark(forStyle: kTSMHiliteSelectedRawText, at: remainingRange) as? [NSAttributedString.Key: Any] ?? [:]
     attrString.setAttributes(attrs, range: remainingRange)
-    client.setMarkedText(attrString, selectionRange: NSRange(location: caretPos, length: 0), replacementRange: .empty)
-  }
-
-  // swiftlint:disable:next function_parameter_count
-  func showPanel(preedit: String, selRange: NSRange, caretPos: Int, candidates: [String], comments: [String], labels: [String], highlighted: Int, page: Int, lastPage: Bool) {
-    guard let client = client else { return }
-    var inputPos = NSRect()
-    client.attributes(forCharacterIndex: 0, lineHeightRectangle: &inputPos)
-    if let panel = NSApp.squirrelAppDelegate.panel {
-      panel.position = inputPos
-      panel.inputController = self
-      panel.update(preedit: preedit, selRange: selRange, caretPos: caretPos, candidates: candidates, comments: comments, labels: labels,
-                   highlighted: highlighted, page: page, lastPage: lastPage, update: true)
-    }
+    _ = EcholMESetMarkedText(client, attrString, NSRange(location: max(0, min(caretPos, preedit.utf16.count)), length: 0))
   }
 
   private func handleASCIIModeToggle(_ notification: Notification) {
     guard let enableASCII = notification.object as? Bool else { return }
+    guard composition.active else { return }
     guard session != 0 && rimeAPI.find_session(session) else { return }
 
+    finalizeRawComposition()
+    cancelExamples()
+    composition.invalidate()
     rimeAPI.set_option(session, "ascii_mode", enableASCII)
     rimeUpdate()
   }
@@ -633,4 +738,149 @@ private extension SquirrelInputController {
     )
   }
 
+}
+
+private extension SquirrelInputController {
+  func attachClient(_ sender: Any?) -> Bool {
+    guard let incoming = sender as? IMKTextInput else { return false }
+    if let client, (incoming as AnyObject) !== (client as AnyObject) {
+      // Focus callbacks can be missing/reordered. Discard the old session,
+      // never finalize its text through the newly supplied client.
+      discardCurrentComposition()
+      composition.deactivate()
+    }
+    client = incoming
+    if !composition.active { composition.activate() }
+    return true
+  }
+
+  func rawEngineInput() -> String {
+    guard session != 0, rimeAPI.find_session(session), let input = rimeAPI.get_input(session) else { return "" }
+    return String(cString: input)
+  }
+
+  func clearEngine() {
+    guard session != 0, rimeAPI.find_session(session) else { return }
+    rimeAPI.clear_composition(session)
+    // Drain without delivering after a translated/raw/cancel boundary. This
+    // is intentionally different from normal engine commits in rimeUpdate.
+    var pending = RimeCommit.rimeStructInit()
+    if rimeAPI.get_commit(session, &pending) { _ = rimeAPI.free_commit(&pending) }
+    clearChord()
+  }
+
+  func cancelExamples() {
+    exampleWork?.cancel()
+    exampleWork = nil
+    scheduledExampleToken = nil
+  }
+
+  func discardCurrentComposition() {
+    cancelExamples()
+    clearEngine()
+    composition.invalidate()
+    if let client { _ = EcholMESetMarkedText(client, NSAttributedString(string: ""), NSRange(location: 0, length: 0)) }
+    preedit = ""
+    hidePalettes()
+  }
+
+  func finalizeRawComposition() {
+    guard composition.active else { return }
+    let text = composition.englishInput.isEmpty ? rawEngineInput() : composition.englishInput
+    let expected = composition.token
+    cancelExamples()
+    clearEngine() // Clear before insertion: reentrant deactivation cannot append originals.
+    if !text.isEmpty { _ = commit(string: text, expected: expected) }
+  }
+
+  func handleCompositionKey(_ event: NSEvent) -> Bool? {
+    let flags = event.modifierFlags
+    let action = CompositionKeyPolicy.action(
+      keyCode: event.keyCode, text: event.characters,
+      command: flags.contains(.command), control: flags.contains(.control),
+      option: flags.contains(.option), shift: flags.contains(.shift),
+      hasComposition: !composition.englishInput.isEmpty || !rawEngineInput().isEmpty,
+      englishInput: composition.englishInput,
+      englishEnabled: rimeAPI.get_option(session, "ascii_mode") && examplesEnabled)
+    switch action {
+    case .engine:
+      if flags.intersection([.command, .control, .option]).isEmpty,
+         let snapshot = composition.snapshot, snapshot.direction == .chinese,
+         let index = event.keyCode == 49 ? Optional(snapshot.highlighted) :
+           snapshot.candidates.firstIndex(where: { $0.descriptor.label == event.characters }),
+         snapshot.candidates.indices.contains(index) {
+        let candidate = snapshot.candidates[index]
+        // Retain schema recognizers, but never submit a stale displayed page.
+        guard composition.candidate(candidate.id) != nil, rawEngineInput() == snapshot.rawInput,
+              NSApp.squirrelAppDelegate.panel?.displayedCandidate(candidate.id, controller: self)?.descriptor == candidate.descriptor else {
+          rimeUpdate()
+          return true
+        }
+      }
+      return nil
+    case .host: return false
+    case .rawThenHost: finalizeRawComposition(); return false
+    case .raw: finalizeRawComposition(); return true
+    case .cancel: discardCurrentComposition(); return true
+    case .translated:
+      if let candidate = composition.snapshot?.highlightedCandidate,
+         NSApp.squirrelAppDelegate.panel?.displayedCandidate(candidate.id, controller: self) == candidate,
+         let text = composition.translatedText(for: candidate.id) {
+        let expected = candidate.id.token
+        clearEngine()
+        _ = commit(string: text, expected: expected)
+      }
+      return true
+    case .englishSpace:
+      _ = commit(string: composition.englishInput + " ")
+      return true
+    case .englishBackspace:
+      composition.backspaceEnglish()
+      if composition.englishInput.isEmpty { discardCurrentComposition() } else { updateEnglish() }
+      return true
+    case .englishText(let text):
+      if composition.appendEnglish(text) { updateEnglish(); return true }
+      finalizeRawComposition()
+      return false
+    }
+  }
+
+  func updateEnglish() {
+    let text = composition.englishInput
+    show(preedit: text, selRange: NSRange(location: 0, length: text.utf16.count), caretPos: text.utf16.count)
+    let candidate = CandidateDescriptor(primary: text, engineComment: "", label: "", fullCommitPreview: text)
+    if let snapshot = composition.replace(direction: .english, rawInput: text, preedit: text,
+                                          candidates: [candidate], highlighted: 0, page: 0, lastPage: true,
+                                          examplesEnabled: examplesEnabled) {
+      present(snapshot)
+      scheduleExamples(snapshot)
+    }
+  }
+
+  func present(_ snapshot: CandidateSnapshot) {
+    guard composition.active, snapshot.token == composition.token, let client,
+          let panel = NSApp.squirrelAppDelegate.panel else { return }
+    var caret = NSRect.zero
+    if EcholMEGetCaretRect(client, &caret) { panel.position = caret }
+    // Missing geometry keeps the previous safe panel anchor; no AX lookup or
+    // private field contents are read here.
+    panel.inputController = self
+    panel.update(snapshot: snapshot)
+  }
+
+  func scheduleExamples(_ snapshot: CandidateSnapshot) {
+    guard snapshot.examplesEnabled, !snapshot.candidates.isEmpty,
+          scheduledExampleToken != snapshot.token else { return }
+    cancelExamples()
+    scheduledExampleToken = snapshot.token
+    let work = DispatchWorkItem { [weak self] in
+      guard let self,
+            let value = self.composition.applyExamples(ExampleTranslation.results(for: snapshot), for: snapshot.token) else { return }
+      self.present(value)
+    }
+    exampleWork = work
+    // Deterministic delayed delivery exercises version/focus guards. The lookup
+    // is a tiny bounded fixture; real backend scheduling belongs to Round 2.
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.08, execute: work)
+  }
 }
