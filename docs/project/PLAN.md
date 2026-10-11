@@ -38,6 +38,7 @@ Additional boundaries:
 - A native InputMethodKit input method derived from Squirrel and using librime rather than a newly written pinyin engine.
 - The first usable internal version must support both directions: Chinese pinyin input with English subtitles, and English input with Chinese subtitles.
 - Main candidate text and its translated subtitle have explicit, separate commit actions.
+- Candidate layout confirmed during Round 0 acceptance: candidates run horizontally; each candidate column shows primary text on the top line and its corresponding opposite-language translation below. English primary input reverses the two languages. Round 1 owns the initial layout with fixtures; Round 2 supplies real translations. This requirement does not authorize a Round 0 layout change.
 - Automatic direction primarily uses nearby text and field type. App-level rules are fallback signals; explicit user rules and manual choices remain authoritative within the defined priority system.
 - Words and common phrases are the initial translation priority: offline, lightweight, and fast.
 - Users may select local-only, local-first, or model-API-first translation behavior.
@@ -83,7 +84,7 @@ Squirrel provides the initial host and librime integration. Reuse its existing n
 | Adapt | Product identity and storage | Isolate bundle ID, input-source IDs, IMK connection, configuration, user dictionaries, logs, notifications, and update endpoints. |
 | Adapt | Input controller | Add Chinese, English, and passthrough routing without placing translation business logic throughout the controller. |
 | Adapt | Candidate data path | Replace assumptions based on parallel text arrays with snapshots carrying stable candidate identity, composition revision, and displayed revision. |
-| Adapt | Candidate Panel/View | Add two-line rendering, translation states, partial refresh, explicit subtitle actions, and accessibility descriptions. |
+| Adapt | Candidate Panel/View | Add horizontal candidate columns with primary text above the matching translation, translation states, partial refresh, explicit subtitle actions, and accessibility descriptions. |
 | Adapt | App rules | Integrate with one priority system so application rules do not compete with context detection. |
 | Adapt | Build and installation | Pin dependencies, support user-directory installation, and inspect upstream script side effects. |
 | New | `EnglishComposer` | Manage English words, phrases, spaces, punctuation, cancellation, and raw-text commit. |
@@ -161,6 +162,7 @@ Each round's user-facing delivery includes: objective, changed file tree, releva
 - Report build, install, registration, selectability, and real input as separate results.
 - Verify coexistence without modifying the user's Squirrel configuration or dictionaries.
 - Regress inherited Chinese input behavior.
+- Exercise Return with a composition, without a candidate, and with an empty composition separately. Cover punctuation, digits, special characters and mixed input in Notes, Xcode and Terminal; record untested combinations explicitly. Paste-based fixtures do not establish typed-key behavior.
 - Context/caret capability failures have documented fallbacks and do not block input.
 - No new compiler warnings; list unresolved inherited warnings explicitly.
 - Do not include license-unknown dependencies or data in the accepted baseline.
@@ -176,7 +178,7 @@ Each round's user-facing delivery includes: objective, changed file tree, releva
 
 - Candidate snapshots, session state, and unified commit coordinator.
 - Baseline English composition and primary-text commit.
-- Initial two-line panel layout.
+- Initial horizontal, two-line panel layout: one primary/translation pair per candidate column.
 - Deterministic translation fixtures used only to test asynchronous rendering and commit behavior.
 - Explicit keyboard interaction table and fake-host tests.
 
