@@ -10,6 +10,7 @@ Minimum deployment target: macOS 14. Swift is the main frontend language. The En
 
 - [Approved full plan](docs/project/PLAN.md): reuse, changes, new modules, rounds, risks, acceptance, and GPL distribution work.
 - [Delivery status](docs/project/STATUS.md) and [verification evidence](docs/round0/VERIFICATION.md): distinguish build, installation, registration, and real input.
+- [Runtime acceptance](docs/round0/RUNTIME_ACCEPTANCE.md) and [manual installation/input checks](docs/round0/MANUAL_ACCEPTANCE.md): follow these before enabling an earlier development artifact.
 - [Decisions](docs/project/DECISIONS.md) and [Round 0 foundation](docs/round0/FOUNDATION.md): identity, architecture, safe commands, and limitations.
 - [Upstream provenance](UPSTREAM.md), [changes](CHANGES_FROM_UPSTREAM.md), and [third-party notices](THIRD_PARTY_NOTICES.md).
 
@@ -66,6 +67,7 @@ No push or release is authorized by the current Round 0 request. Inherited upstr
 
 - [完整计划](docs/project/PLAN.md)：复用、改造、新增模块、各轮交付、风险、验收及 GPL 分发事项。
 - [交付状态](docs/project/STATUS.md)与[验证记录](docs/round0/VERIFICATION.md)：分别报告构建、安装、注册和实际输入。
+- [运行验收](docs/round0/RUNTIME_ACCEPTANCE.md)与[手动安装／输入检查](docs/round0/MANUAL_ACCEPTANCE.md)：启用旧开发包前先按此核对和更新。
 - [技术决策](docs/project/DECISIONS.md)与[本轮基础说明](docs/round0/FOUNDATION.md)：身份、架构、操作命令和限制。
 - [上游来源](UPSTREAM.md)、[改动说明](CHANGES_FROM_UPSTREAM.md)与[第三方声明](THIRD_PARTY_NOTICES.md)。
 

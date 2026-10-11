@@ -1,0 +1,31 @@
+{
+  "compiler_command": [
+    "/usr/bin/xcrun",
+    "clang",
+    "-std=c11",
+    "-Wall",
+    "-Wextra",
+    "-Wpedantic",
+    "-Werror",
+    "-arch",
+    "arm64",
+    "-mmacosx-version-min=14.0",
+    "-I",
+    "/Users/zhenkun/GitHub/LiangYi-EcholME/.artifacts/headers/librime/src",
+    "/Users/zhenkun/GitHub/LiangYi-EcholME/tools/RimeSmoke.c",
+    "/Users/zhenkun/GitHub/LiangYi-EcholME/.artifacts/builds/round0-path-fix/DerivedData/Build/Products/Debug/EcholME.app/Contents/Frameworks/librime.1.dylib",
+    "-Wl,-rpath,/Users/zhenkun/GitHub/LiangYi-EcholME/.artifacts/builds/round0-path-fix/DerivedData/Build/Products/Debug/EcholME.app/Contents/Frameworks",
+    "-o",
+    "/Users/zhenkun/GitHub/LiangYi-EcholME/build/round0-diagnostics/rime-smoke-runtime-01"
+  ],
+  "exit": 0,
+  "stdout": "",
+  "stderr": "",
+  "scope": "standalone C engine probe compiler; warnings treated as errors",
+  "hashes": {
+    "tools/RimeSmoke.c": "57894613d68691ba02f440398ef999cd055762a16028f7ab3ebe6f3bf69ee8fb",
+    ".artifacts/headers/librime/src/rime_api.h": "6eb5629162c44761e7b878f1b122f464de5c8685bd3cd5ac1e8519badc6d6424",
+    ".artifacts/builds/round0-path-fix/DerivedData/Build/Products/Debug/EcholME.app/Contents/Frameworks/librime.1.dylib": "0364ba17630816031277033d94d822b0a1ef47994d103c7ae8e7e93d4039c066",
+    "build/round0-diagnostics/rime-smoke-runtime-01": "37c01bc7d21a368f324a8c8f47eec941523abc11d5a2f7a5a7081c562316cabf"
+  }
+}

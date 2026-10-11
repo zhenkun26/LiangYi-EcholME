@@ -438,7 +438,7 @@ def verify_bundle(bundle: Path) -> dict:
                 raise BuildError(f"Nested executable lacks arm64: {file}")
             verify_link_paths(bundle, file, binary, main_rpaths)
     signature = run(["/usr/bin/codesign", "--verify", "--deep", "--strict", "--verbose=2", str(bundle)])
-    return {"result": "PASS", "scope": "static bundle identity, resources, arm64 dependency-path resolution, and local signature; not runtime input acceptance", "bundle": str(bundle), "bundle_identifier": info["CFBundleIdentifier"], "minimum_macos": info["LSMinimumSystemVersion"], "architectures": architectures, "signature": (signature.stdout + signature.stderr).strip(), "dynamic_loading": "NOT_RUN", "notarized": False, "distribution_ready": False, "runtime_input": "BLOCKED", "runtime_blocker": "Pinned librime dictionary deployment invokes file removal (dict_compiler.cc Table::Remove / Prism::Remove -> mapped_file.cc file_mapping::remove). No IME launch, deployment, or input test is performed under the no-deletion restriction."}
+    return {"result": "PASS", "scope": "static bundle identity, resources, arm64 dependency-path resolution, and local signature; not runtime input acceptance", "bundle": str(bundle), "bundle_identifier": info["CFBundleIdentifier"], "minimum_macos": info["LSMinimumSystemVersion"], "architectures": architectures, "signature": (signature.stdout + signature.stderr).strip(), "dynamic_loading": "NOT_RUN", "notarized": False, "distribution_ready": False, "runtime_input": "NOT_RUN_BY_STATIC_VERIFIER", "runtime_note": "This command performs static verification only. Runtime acceptance and its authorization are recorded separately in docs/round0/RUNTIME_ACCEPTANCE.md."}
 
 
 def install_first(bundle: Path) -> None:

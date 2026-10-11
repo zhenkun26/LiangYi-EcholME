@@ -1,0 +1,9 @@
+{
+  "requested_at": "2026-10-11T04:29:37.372832+00:00",
+  "pid": 12617,
+  "cli_exit": 0,
+  "cli_stdout": "",
+  "cli_stderr": "",
+  "info_log_bytes_before": 61722,
+  "scope": "CLI delivery only; maintenance observation is recorded separately"
+}

@@ -19,7 +19,9 @@ The selected artifact hashes, headers, notices, and recursive source references 
 
 ## ADR-012 — Product identity and coexistence
 
-Status: **SOURCE_AND_BUNDLE_CHECKS_PASS; RUNTIME_COEXISTENCE_NOT_RUN**.
+Status: **FIXED_BUILD_PATH_CHECKS_PASS; MANUAL_FIXED_INSTALL_AND_HOST_UAT_PENDING; RUNTIME_COEXISTENCE_NOT_RUN**.
+
+The first runtime invalidated the initial path-confinement claim because `URL.path()` encoded spaces. All C API filesystem strings now explicitly use `path(percentEncoded: false)`; the fixed build deployed into the intended root. See [the incident and runtime results](RUNTIME_ACCEPTANCE.md). The installed initial app remains unfixed and disabled pending manual replacement.
 
 | Surface | EcholME design |
 | --- | --- |
@@ -62,9 +64,9 @@ Round 0 preserves inherited input behavior and documents these boundaries. It do
 
 ## ADR-014 — Context and caret capability
 
-Status: **NOTES_AX_METADATA_PROBED; XCODE_EDITOR_NOT_RUN; TERMINAL_TOOL_BLOCKED; REAL_IMK_BLOCKED**.
+Status: **NOTES_AX_METADATA_PROBED; XCODE_EDITOR_NOT_RUN; TERMINAL_TOOL_BLOCKED; REAL_IMK_MANUAL_ACCEPTANCE_PENDING**.
 
-The real-IMK portion is additionally **BLOCKED_NO_DELETION_POLICY** under the current authorization; see ADR-016. A standalone read-only probe may report capabilities, but cannot clear that runtime blocker.
+The engine-maintenance policy conflict is resolved by a narrow user authorization; see ADR-016. Real IMK checks require manual fixed-bundle installation and a safe synthetic field. Standalone AX and engine probes do not establish host-input behavior.
 
 Round 0 investigates capabilities without collecting document contents. Record the OS/app version, whether relevant interfaces are exposed, permission state, success/failure categories, and durations when safely measurable. Do not persist nearby text or request Accessibility permission automatically.
 
@@ -90,7 +92,7 @@ Round 0 adds no network service, provider code, model credentials, or translatio
 
 ## ADR-016 — Build, install, and reload policy
 
-Status: **BUILD_INSTALL_REGISTER_CHECKS_PASS; RUNTIME_BLOCKED**.
+Status: **FIXED_BUILD_STARTUP_IDLE_RELOAD_PASS; MANUAL_FIXED_INSTALL_AND_HOST_UAT_PENDING**.
 
 - Review scripts and recursive invocations before execution. Inherited Makefile, package, release, and install scripts remain upstream material, not the approved operational entry point.
 - Do not run `clean` targets, deletion-based copy/replace operations, keyboard-cache deletion, system-directory permission changes, or generic system-wide reload commands.
@@ -117,7 +119,7 @@ python3 tools/round0.py install-first --bundle "$PWD/.artifacts/builds/round0-lo
 "$HOME/Library/Input Methods/EcholME.app/Contents/MacOS/EcholME" --register-input-source
 ```
 
-Registration is a deliberate system-state change. The CLI exits before IMK/engine startup for this command. Do not append enable/select/launch/reload/deploy while the runtime blocker below remains unresolved. Inspect the CLI's OSStatus and the separate TIS result; do not infer enablement from registration success.
+Registration is a deliberate system-state change. The CLI exits before IMK/engine startup for this command. The initial installed app has a measured path defect and must not be enabled. Follow [MANUAL_ACCEPTANCE.md](MANUAL_ACCEPTANCE.md) to install the fixed artifact before enable/select/real-input checks. Inspect the CLI's OSStatus and the separate TIS result; do not infer enablement from registration success.
 
 Compile the optional standalone probe to an unused output name:
 
@@ -129,11 +131,13 @@ build/round0-diagnostics/capability-probe-local com.apple.Notes
 
 The AX messaging timeout is 0.2 seconds per call, not a total deadline. Automation should use `subprocess.run(..., timeout=10)` to bound the standalone process. Permission/interface failures retain distinct states; attribute advertisement does not prove actual text retrieval. The probe reads neither document text nor clipboard data. When a UI tool denies an application, do not use the probe to bypass that tool boundary.
 
-For debugging the CLI, invoke `--help` or an invalid argument from the built executable and inspect the exit code; these paths do not start IMK. Attaching Xcode/LLDB to a live IME and actual reload require resolution of the runtime blocker first. Logs are isolated at the path in ADR-012; a dedicated diagnostics panel is later-round work.
+For debugging the CLI, invoke `--help` or an invalid argument from the built executable and inspect the exit code; these paths do not start IMK. Fixed-build idle reload is verified; installed real-input reload still requires the manual fixed-install and host checklist. Logs are isolated at the path in ADR-012; a dedicated diagnostics panel is later-round work.
 
 ### Runtime blocker: engine deployment removes generated files
 
-Status: **BLOCKED_NO_DELETION_POLICY**.
+Status: **RESOLVED_BY_NARROW_USER_AUTHORIZATION; FIXED_BUILD_STARTUP_AND_IDLE_RELOAD_PASS**.
+
+Follow-up authorization on 2026-10-11 permits librime's normal generated-file/database maintenance only within the independent LiangYi data and log directories. Audit concrete resolved paths and reject escaping links before runtime checks. This does not authorize bundle replacement, manual deletion, Squirrel/other data changes, Round 1, or pushing. The paragraphs below preserve the rationale for the initial delivery blocker, not a continuing prohibition on the newly authorized confined maintenance.
 
 Source review of the pinned librime identifies calls that remove compiled dictionary/prism files: [`dict_compiler.cc`](https://github.com/rime/librime/blob/33e78140250125871856cdc5b42ddc6a5fcd3cd4/src/rime/dict/dict_compiler.cc#L265) calls `table->Remove()`, and its [prism rebuild](https://github.com/rime/librime/blob/33e78140250125871856cdc5b42ddc6a5fcd3cd4/src/rime/dict/dict_compiler.cc#L358) calls `prism_->Remove()`. [`mapped_file.cc`](https://github.com/rime/librime/blob/33e78140250125871856cdc5b42ddc6a5fcd3cd4/src/rime/dict/mapped_file.cc#L122) implements file removal through `file_mapping::remove`.
 

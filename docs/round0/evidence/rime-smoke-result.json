@@ -1,0 +1,32 @@
+{
+  "command": [
+    "/Users/zhenkun/GitHub/LiangYi-EcholME/build/round0-diagnostics/rime-smoke-runtime-01",
+    "/Users/zhenkun/GitHub/LiangYi-EcholME/.artifacts/builds/round0-path-fix/DerivedData/Build/Products/Debug/EcholME.app/Contents/SharedSupport"
+  ],
+  "cwd": "/Users/zhenkun/GitHub/LiangYi-EcholME/.artifacts/builds/round0-path-fix/DerivedData/Build/Products/Debug/EcholME.app/Contents/SharedSupport",
+  "exit": 0,
+  "elapsed_ms": 621.855,
+  "scope": "standalone librime synthetic tests; not IMK host input",
+  "stdout": {
+    "schema_version": 1,
+    "scope": "real librime only; no IMK client/UI",
+    "status": "PASS",
+    "cycles_requested": 10,
+    "cycles_completed": 10,
+    "cases": {
+      "nihao_space_exact_commit": 10,
+      "zhongguo_numeric_matches_displayed_first": 10,
+      "escape_clears_without_commit": 10
+    },
+    "roots_preflight_passed": true,
+    "roots_postflight_passed": true,
+    "maintenance_started": false,
+    "deployment_failure_observed": false,
+    "finalized": true,
+    "document_text_read": false,
+    "network_requests": false,
+    "manual_cleanup_performed": false,
+    "error": null
+  },
+  "stderr": ""
+}

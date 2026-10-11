@@ -78,13 +78,14 @@ struct SquirrelApp {
           }
           return installer.select(mode: modes.first) ? EXIT_SUCCESS : EXIT_FAILURE
         case "--build":
-          // This explicit deployment command is not executed by Round 0
-          // validation: librime deployment may remove stale generated files.
+          // Deployment maintains generated files. Use decoded filesystem paths;
+          // URL.path() otherwise percent-encodes spaces such as Application Support.
           SquirrelApplicationDelegate.showMessage(msgText: NSLocalizedString("deploy_update", comment: ""))
           var builderTraits = RimeTraits.rimeStructInit()
           builderTraits.setCString("liangyi.echolme-builder", to: \.app_name)
-          builderTraits.setCString(userDir.path(), to: \.user_data_dir)
-          builderTraits.setCString(logDir.path(), to: \.log_dir)
+          builderTraits.setCString(Bundle.main.sharedSupportPath!, to: \.shared_data_dir)
+          builderTraits.setCString(userDir.path(percentEncoded: false), to: \.user_data_dir)
+          builderTraits.setCString(logDir.path(percentEncoded: false), to: \.log_dir)
           rimeAPI.setup(&builderTraits)
           rimeAPI.deployer_initialize(nil)
           return rimeAPI.deploy() ? EXIT_SUCCESS : EXIT_FAILURE

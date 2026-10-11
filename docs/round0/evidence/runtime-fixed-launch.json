@@ -1,0 +1,22 @@
+{
+  "timestamp": "2026-10-11T04:28:56.547335+00:00",
+  "pid": 12617,
+  "bundle": "/Users/zhenkun/GitHub/LiangYi-EcholME/.artifacts/builds/round0-path-fix/DerivedData/Build/Products/Debug/EcholME.app",
+  "installed": false,
+  "registered_or_selected": false,
+  "scope": "fixed build no-argument startup; not real IMK input acceptance",
+  "encoded_incident_files_before": {
+    "Rime/installation.yaml": "8e9cfce24c7695105a6775b713d2cc90c60f1fd885bf1757c60ffeff6860020c",
+    "Rime/user.yaml": "b422ff4c60e2c546eb1a12b147f551f09184e9afc536204cc4c86929f739acf8",
+    "Rime/build/stroke.reverse.bin": "b8f077c76f52b0e254514c189e73187984ad5ccf5d2de85193b3016cc4023757",
+    "Rime/build/luna_pinyin_simp.prism.bin": "bba1d74e4cea9403bff8b4186a0c13d09b73926193f7fce16ecc07d07b1b5890",
+    "Rime/build/luna_pinyin_simp.schema.yaml": "032542197bc0eed9445721274dbde1d6d8786011ba182668242a281a53d7a19a",
+    "Rime/build/squirrel.yaml": "e324c6fdcd26ebe08c3466f3a68617407be748be7644462481e7eeef24144ae4",
+    "Rime/build/stroke.table.bin": "ddde77ed3126f64cc3f7c272b4ba4a8d3d57834ad5281c76dd891670b3967ec8",
+    "Rime/build/stroke.prism.bin": "c2101b03a5033c0bea7838fea368855f68a7913a525e8d4907c0587ffb486160",
+    "Rime/build/stroke.schema.yaml": "739857a3f63f7980044265069142a313c509db002d3fc9011d6639c4d216a4c2",
+    "Rime/build/luna_pinyin.table.bin": "920f6c4a3f89ab56f2a756bb102c96380376da2aef7dd9818b7238bad1ffc763",
+    "Rime/build/luna_pinyin.reverse.bin": "ab79a69aa9541b4f13af8f6eb41e34ea94093eb6f855cda243b48271bbf85e93",
+    "Rime/build/default.yaml": "68c1e2276620e72798dbde23a99babe5a4a78bf2b1e6a522ff38b5fd2f1d10bf"
+  }
+}

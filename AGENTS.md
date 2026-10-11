@@ -12,10 +12,17 @@ project memory. The latest explicit user instruction takes precedence.
   wait for the user's confirmation before Round 1.
 - Keep Git commits local. No push, GitHub repository creation, public release,
   deployment, or notarization is authorized by the Round 0 request.
+- The user authorized remaining Round 0 runtime acceptance on 2026-10-11.
+  librime may perform normal generated-file and database maintenance only
+  inside `~/Library/Application Support/LiangYi/` and `~/Library/Logs/LiangYi/`.
+  This exception does not permit manual deletion, bundle replacement,
+  Squirrel/other user-data changes, or work on Round 1. Provide manual steps
+  for checks that automation cannot perform.
 
 ## Safety and scope
 
-- Do not perform filesystem-level deletion, including clean targets, temporary
+- Except for the narrowly authorized librime maintenance above, do not perform
+  filesystem-level deletion, including clean targets, temporary
   file cleanup, replacement installers that delete existing bundles, or whole
   file deletion through patches. Do not bypass this restriction with moves or
   renames. If removal is necessary, explain it and leave it to the user.

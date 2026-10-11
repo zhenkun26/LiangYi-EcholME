@@ -1,0 +1,52 @@
+{
+  "scope": "fixed build startup/deployment and idle reload only; no host typing",
+  "counts": {
+    "error_lines": 0,
+    "reload_log_grew": true,
+    "workspace_updates_total": 2,
+    "warning_lines_total": 199
+  },
+  "encoded_incident_files_unchanged": true,
+  "compiled_files": [
+    "build/default.yaml",
+    "build/luna_pinyin.reverse.bin",
+    "build/luna_pinyin.table.bin",
+    "build/luna_pinyin_simp.prism.bin",
+    "build/luna_pinyin_simp.schema.yaml",
+    "build/squirrel.yaml",
+    "build/stroke.prism.bin",
+    "build/stroke.reverse.bin",
+    "build/stroke.schema.yaml",
+    "build/stroke.table.bin"
+  ],
+  "all_runtime_links_confined": true,
+  "engine_version": "1.17.0",
+  "reload_metadata_lines": [
+    "I20261011 00:28:59.423011 0x16b1a3000 deployment_tasks.cc:379] dictionary 'stroke' is ready.",
+    "I20261011 00:28:59.423222 0x16b1a3000 deployment_tasks.cc:247] finished updating schemas: 2 success, 0 failure.",
+    "I20261011 00:28:59.423394 0x16b1a3000 deployment_tasks.cc:589] clean up trash.",
+    "I20261011 00:28:59.423440 0x16b1a3000 deployer.cc:97] 3 tasks ran: 3 success, 0 failure.",
+    "I20261011 00:29:37.380117 0x1f5135e80 deployment_tasks.cc:83] updating rime installation info.",
+    "I20261011 00:29:37.380187 0x1f5135e80 deployment_tasks.cc:101] installation info exists. installation id: 95d03c54-9c8f-4511-9beb-fb6a31058fc6",
+    "I20261011 00:29:37.380190 0x1f5135e80 deployment_tasks.cc:112] sync dir: /Users/zhenkun/Library/Application Support/LiangYi/Rime/sync",
+    "I20261011 00:29:37.380191 0x1f5135e80 deployment_tasks.cc:118] previous distribution: EcholME",
+    "I20261011 00:29:37.380192 0x1f5135e80 deployment_tasks.cc:121] previous distribution version: 0.0.1",
+    "I20261011 00:29:37.380193 0x1f5135e80 deployment_tasks.cc:124] previous Rime version: 1.17.0",
+    "I20261011 00:29:37.380196 0x1f5135e80 deployer.cc:119] starting work thread for 3 tasks.",
+    "I20261011 00:29:37.380215 0x16afff000 deployer.cc:80] running deployment tasks:",
+    "I20261011 00:29:37.380241 0x16afff000 deployment_tasks.cc:167] updating workspace.",
+    "I20261011 00:29:37.381377 0x16afff000 deployment_tasks.cc:190] updating schemas.",
+    "I20261011 00:29:37.381379 0x16afff000 deployment_tasks.cc:199] schema: luna_pinyin_simp",
+    "I20261011 00:29:37.387567 0x16afff000 deployment_tasks.cc:362] preparing dictionary 'luna_pinyin'"
+  ],
+  "startup_tasks_completed": true,
+  "reload_tasks_completed": true,
+  "process_alive_at_observation": true,
+  "process_stopped_after_checks": true,
+  "metadata_completion_lines": [
+    "I20261011 00:28:59.423222 0x16b1a3000 deployment_tasks.cc:247] finished updating schemas: 2 success, 0 failure.",
+    "I20261011 00:28:59.423440 0x16b1a3000 deployer.cc:97] 3 tasks ran: 3 success, 0 failure.",
+    "I20261011 00:29:37.423839 0x16afff000 deployment_tasks.cc:247] finished updating schemas: 2 success, 0 failure.",
+    "I20261011 00:29:37.424061 0x16afff000 deployer.cc:97] 3 tasks ran: 3 success, 0 failure."
+  ]
+}

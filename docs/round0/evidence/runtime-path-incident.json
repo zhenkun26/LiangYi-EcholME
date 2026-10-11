@@ -1,0 +1,120 @@
+{
+  "status": "STOPPED_AFTER_PATH_ENCODING_ERROR",
+  "pid": 12259,
+  "signal": "SIGTERM",
+  "manual_cleanup_only": true,
+  "paths": [
+    {
+      "root": "/Users/zhenkun/Library/Application Support/LiangYi",
+      "exists": true,
+      "files": []
+    },
+    {
+      "root": "/Users/zhenkun/Library/Application%20Support/LiangYi",
+      "exists": true,
+      "files": [
+        {
+          "path": "Rime/build/default.yaml",
+          "type": "file",
+          "bytes": 5025
+        },
+        {
+          "path": "Rime/build/luna_pinyin.reverse.bin",
+          "type": "file",
+          "bytes": 252760
+        },
+        {
+          "path": "Rime/build/luna_pinyin.table.bin",
+          "type": "file",
+          "bytes": 13011364
+        },
+        {
+          "path": "Rime/build/luna_pinyin_simp.prism.bin",
+          "type": "file",
+          "bytes": 31728
+        },
+        {
+          "path": "Rime/build/luna_pinyin_simp.schema.yaml",
+          "type": "file",
+          "bytes": 42460
+        },
+        {
+          "path": "Rime/build/squirrel.yaml",
+          "type": "file",
+          "bytes": 10993
+        },
+        {
+          "path": "Rime/build/stroke.prism.bin",
+          "type": "file",
+          "bytes": 3501372
+        },
+        {
+          "path": "Rime/build/stroke.reverse.bin",
+          "type": "file",
+          "bytes": 1498508
+        },
+        {
+          "path": "Rime/build/stroke.schema.yaml",
+          "type": "file",
+          "bytes": 6700
+        },
+        {
+          "path": "Rime/build/stroke.table.bin",
+          "type": "file",
+          "bytes": 4548444
+        },
+        {
+          "path": "Rime/installation.yaml",
+          "type": "file",
+          "bytes": 205
+        },
+        {
+          "path": "Rime/user.yaml",
+          "type": "file",
+          "bytes": 34
+        }
+      ]
+    },
+    {
+      "root": "/Users/zhenkun/Library/Logs/LiangYi",
+      "exists": true,
+      "files": [
+        {
+          "path": "liangyi.echolme.INFO",
+          "type": "symlink",
+          "inside_root": true
+        },
+        {
+          "path": "liangyi.echolme.WARNING",
+          "type": "symlink",
+          "inside_root": true
+        },
+        {
+          "path": "liangyi.echolme.zhenkundeMacBook-Air.local.zhenkun.log.INFO.20261011-002622.12259.log",
+          "type": "file",
+          "bytes": 57626
+        },
+        {
+          "path": "liangyi.echolme.zhenkundeMacBook-Air.local.zhenkun.log.WARNING.20261011-002622.12259.log",
+          "type": "file",
+          "bytes": 20524
+        }
+      ]
+    },
+    {
+      "root": "/Users/zhenkun/Library/Rime",
+      "exists": false,
+      "files": []
+    },
+    {
+      "root": "/Users/zhenkun/Library/Input Methods/Squirrel.app",
+      "exists": false,
+      "files": []
+    },
+    {
+      "root": "/Users/zhenkun/Library/Preferences/im.rime.inputmethod.Squirrel.plist",
+      "exists": false,
+      "files": []
+    }
+  ]
+}

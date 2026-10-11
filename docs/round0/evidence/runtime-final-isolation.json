@@ -1,0 +1,146 @@
+{
+  "scope": "before/after snapshots, not system-wide filesystem tracing",
+  "installed_old_bundle_unchanged": true,
+  "encoded_incident_files_unchanged_after_fixed_checks": true,
+  "standard_squirrel_paths_remain_absent": true,
+  "echolme_process_absent": true,
+  "echolme_modes_disabled_unselected": true,
+  "input_source_matches_initial_delivery_observation": true,
+  "runtime_roots": [
+    {
+      "root": "/Users/zhenkun/Library/Application Support/LiangYi",
+      "items": [
+        {
+          "path": "Rime/build/default.yaml",
+          "type": "file",
+          "bytes": 5025
+        },
+        {
+          "path": "Rime/build/luna_pinyin.reverse.bin",
+          "type": "file",
+          "bytes": 252760
+        },
+        {
+          "path": "Rime/build/luna_pinyin.table.bin",
+          "type": "file",
+          "bytes": 13011364
+        },
+        {
+          "path": "Rime/build/luna_pinyin_simp.prism.bin",
+          "type": "file",
+          "bytes": 31728
+        },
+        {
+          "path": "Rime/build/luna_pinyin_simp.schema.yaml",
+          "type": "file",
+          "bytes": 42460
+        },
+        {
+          "path": "Rime/build/squirrel.yaml",
+          "type": "file",
+          "bytes": 10993
+        },
+        {
+          "path": "Rime/build/stroke.prism.bin",
+          "type": "file",
+          "bytes": 3501372
+        },
+        {
+          "path": "Rime/build/stroke.reverse.bin",
+          "type": "file",
+          "bytes": 1498508
+        },
+        {
+          "path": "Rime/build/stroke.schema.yaml",
+          "type": "file",
+          "bytes": 6700
+        },
+        {
+          "path": "Rime/build/stroke.table.bin",
+          "type": "file",
+          "bytes": 4548444
+        },
+        {
+          "path": "Rime/installation.yaml",
+          "type": "file",
+          "bytes": 205
+        },
+        {
+          "path": "Rime/luna_pinyin.userdb/000005.ldb",
+          "type": "file",
+          "bytes": 253
+        },
+        {
+          "path": "Rime/luna_pinyin.userdb/000006.log",
+          "type": "file",
+          "bytes": 1300
+        },
+        {
+          "path": "Rime/luna_pinyin.userdb/CURRENT",
+          "type": "file",
+          "bytes": 16
+        },
+        {
+          "path": "Rime/luna_pinyin.userdb/LOCK",
+          "type": "file",
+          "bytes": 0
+        },
+        {
+          "path": "Rime/luna_pinyin.userdb/LOG",
+          "type": "file",
+          "bytes": 304
+        },
+        {
+          "path": "Rime/luna_pinyin.userdb/LOG.old",
+          "type": "file",
+          "bytes": 204
+        },
+        {
+          "path": "Rime/luna_pinyin.userdb/MANIFEST-000004",
+          "type": "file",
+          "bytes": 91
+        },
+        {
+          "path": "Rime/user.yaml",
+          "type": "file",
+          "bytes": 136
+        }
+      ]
+    },
+    {
+      "root": "/Users/zhenkun/Library/Logs/LiangYi",
+      "items": [
+        {
+          "path": "liangyi.echolme.INFO",
+          "type": "symlink",
+          "inside_root": true
+        },
+        {
+          "path": "liangyi.echolme.WARNING",
+          "type": "symlink",
+          "inside_root": true
+        },
+        {
+          "path": "liangyi.echolme.zhenkundeMacBook-Air.local.zhenkun.log.INFO.20261011-002622.12259.log",
+          "type": "file",
+          "bytes": 57626
+        },
+        {
+          "path": "liangyi.echolme.zhenkundeMacBook-Air.local.zhenkun.log.INFO.20261011-002857.12617.log",
+          "type": "file",
+          "bytes": 75171
+        },
+        {
+          "path": "liangyi.echolme.zhenkundeMacBook-Air.local.zhenkun.log.WARNING.20261011-002622.12259.log",
+          "type": "file",
+          "bytes": 20524
+        },
+        {
+          "path": "liangyi.echolme.zhenkundeMacBook-Air.local.zhenkun.log.WARNING.20261011-002857.12617.log",
+          "type": "file",
+          "bytes": 20508
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "build_id": "round0-path-fix",
+  "files": {
+    "sources/Main.swift": "7a3ead21160a3499c0ce21354537b41c45e8b6792ef6dd6390ac370d7b013e93",
+    "sources/SquirrelApplicationDelegate.swift": "a67cd2ca99d24bd06b082e9b96ac14896db42ebcf3b3cf874e9f297f11a935c4",
+    "sources/InputSource.swift": "16a15d10a8d32379080b65be1ab386cb30789938f04bd2a6716cd2cab7e69a19",
+    "resources/Info.plist": "8bb421cc537c716354648cc85b3a209f152595ae979f674bc326cdbdd30d982f",
+    "Squirrel.xcodeproj/project.pbxproj": "b2cf3ee2362691a3ba9078534481234605e466c648768f5cb8d6e3ab200398c8",
+    "tools/round0.py": "ab9444d32c5b7954327b17abf9bf6108fa5698250af70128834a1cf2d02d6c10",
+    "dependencies.lock.json": "5536e3b1de4556fd7c07a160fd77e36d0b032f8abb459b463c04e6b72b5e85d6",
+    "data/schema-manifest.json": "0e84f73159dd1aaa9644bf7cb9199adab457ba6dfecaefd04c52f59f10aaf294",
+    "data/default.custom.yaml": "212c04bda12ffb4df8251cf74ea78efc5c5a3e3b57da80b7ce72a724ccff0d86"
+  }
+}

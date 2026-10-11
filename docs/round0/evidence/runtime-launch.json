@@ -1,0 +1,8 @@
+{
+  "timestamp": "2026-10-11T04:26:22.924855+00:00",
+  "pid": 12259,
+  "executable": "/Users/zhenkun/Library/Input Methods/EcholME.app/Contents/MacOS/EcholME",
+  "working_directory": "/Users/zhenkun/Library/Input Methods/EcholME.app/Contents/SharedSupport",
+  "scope": "normal IME startup; no input-source selection or synthetic typing yet",
+  "console": "docs/round0/evidence/runtime-startup-console.txt"
+}

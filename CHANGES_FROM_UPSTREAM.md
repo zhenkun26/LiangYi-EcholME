@@ -26,7 +26,7 @@ Scope of this increment:
 
 Final source builds and signs on the recorded arm64 environment; the app is installed and registered but disabled. The installed metadata correction and all PASS/BLOCKED/NOT_RUN results are recorded in VERIFICATION.md. Both default input-mode states are false to avoid automatic enablement at registration.
 
-The current runtime acceptance boundary is `BLOCKED_NO_DELETION_POLICY`: the pinned librime dictionary compiler can remove generated table/prism files during deployment. Round 0 must not deploy schemas, launch the input method, enable/select it, or run actual-input tests until the user has explicitly resolved that narrow conflict. Do not rewrite the engine or use a hidden deletion workaround. Building, first-install copying, registration-only CLI handling, and read-only input-source inspection remain separate activities subject to their own script audit.
+The initial runtime acceptance boundary was `BLOCKED_NO_DELETION_POLICY`: the pinned librime dictionary compiler can remove generated table/prism files during deployment. Round 0 must not deploy schemas, launch the input method, enable/select it, or run actual-input tests until the user has explicitly resolved that narrow conflict. Do not rewrite the engine or use a hidden deletion workaround. Building, first-install copying, registration-only CLI handling, and read-only input-source inspection remain separate activities subject to their own script audit.
 
 Not part of Round 0:
 
@@ -37,3 +37,9 @@ Not part of Round 0:
 - Push, public release, notarization, or external binary distribution.
 
 See [FOUNDATION.md](docs/round0/FOUNDATION.md) for the design decisions and [VERIFICATION.md](docs/round0/VERIFICATION.md) for the actual evidence ledger. Only verified results should be presented as passing in delivery notes.
+
+## 2026-10-11 — Round 0 runtime follow-up
+
+The user authorized normal librime generated-file/database maintenance only in LiangYi data/log roots. The first actual launch exposed percent-encoded URL paths; the process was stopped and incident files retained. Decoded filesystem strings now reach librime and directory checks, and `--build` explicitly sets its own shared-data source. The fixed build passed startup/deployment, idle reload and 30 standalone real-engine synthetic checks. A GPL-3.0-only C probe was added without new dependencies; it is not bundled in the app. The static verifier no longer reports a stale policy blocker.
+
+The initial installed bundle is unchanged, unfixed and disabled. Manual replacement and actual IMK host checks remain pending under the no-deletion/existing-target rule. See [runtime acceptance](docs/round0/RUNTIME_ACCEPTANCE.md) and [manual steps](docs/round0/MANUAL_ACCEPTANCE.md). No Round 1, push or distribution occurred.

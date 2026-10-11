@@ -2,6 +2,8 @@
 
 Recorded: 2026-10-11, America/New_York.
 
+Historical initial delivery at `6e971c2`. For the subsequent narrow maintenance authorization, actual path-encoding failure/fix, fixed-build runtime checks and pending manual installation/input acceptance, read [RUNTIME_ACCEPTANCE.md](RUNTIME_ACCEPTANCE.md). The initial installed artifact described below remains unfixed and must not be enabled before following the manual replacement steps.
+
 **Delivery: CODE_AND_LOCAL_INSTALL_DELIVERED; RUNTIME_ACCEPTANCE_BLOCKED.** Round 0 is not fully accepted. Round 1 has not started and is not authorized. No push, public release, notarization, or external binary distribution occurred.
 
 ## Goal and delivered scope
