@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "recorded": "2026-10-11",
+  "timezone": "America/New_York",
+  "scope": "Round 0 closeout; no Round 1, push, deletion or new dependency",
+  "implementation_baseline": "3975903",
+  "build_id": "round0-path-fix",
+  "code_modified": false,
+  "build_rerun": false,
+  "build_reuse_reason": "No implementation/input manifest changed; recorded fixed-build hashes still match.",
+  "guard_tests": {
+    "status": "PASS",
+    "exit_code": 0,
+    "test_count": 12,
+    "output": "test_absolute_archive_path_is_rejected (__main__.ArchiveGuardTests.test_absolute_archive_path_is_rejected) ... ok\ntest_archive_hardlink_is_rejected (__main__.ArchiveGuardTests.test_archive_hardlink_is_rejected) ... ok\ntest_parent_traversal_is_rejected (__main__.ArchiveGuardTests.test_parent_traversal_is_rejected) ... ok\ntest_symlink_outside_extraction_root_is_rejected (__main__.ArchiveGuardTests.test_symlink_outside_extraction_root_is_rejected) ... ok\ntest_existing_install_target_is_not_copied_or_replaced (__main__.DestinationGuardTests.test_existing_install_target_is_not_copied_or_replaced) ... ok\ntest_symlink_parent_is_rejected_before_mkdir (__main__.DestinationGuardTests.test_symlink_parent_is_rejected_before_mkdir) ... ok\ntest_automatic_mode_enablement_is_rejected (__main__.IdentityGuardTests.test_automatic_mode_enablement_is_rejected) ... ok\ntest_current_product_identity_is_accepted (__main__.IdentityGuardTests.test_current_product_identity_is_accepted) ... ok\ntest_inherited_input_mode_identity_is_rejected (__main__.IdentityGuardTests.test_inherited_input_mode_identity_is_rejected) ... ok\ntest_inherited_or_wrong_top_level_identity_is_rejected (__main__.IdentityGuardTests.test_inherited_or_wrong_top_level_identity_is_rejected) ... ok\ntest_exact_loader_and_executable_rpaths_are_accepted (__main__.LinkGuardTests.test_exact_loader_and_executable_rpaths_are_accepted) ... ok\ntest_unresolved_rpath_is_rejected (__main__.LinkGuardTests.test_unresolved_rpath_is_rejected) ... ok\n\n----------------------------------------------------------------------\nRan 12 tests in 0.014s\n\nOK\n"
+  },
+  "installed_static_verification": {
+    "result": "PASS",
+    "scope": "static bundle identity, resources, arm64 dependency-path resolution, and local signature; not runtime input acceptance",
+    "bundle": "/Users/zhenkun/Library/Input Methods/EcholME.app",
+    "bundle_identifier": "io.github.zhenkun26.inputmethod.EcholME",
+    "minimum_macos": "14.0",
+    "architectures": "arm64",
+    "signature": "--prepared:/Users/zhenkun/Library/Input Methods/EcholME.app/Contents/MacOS/__preview.dylib\n--validated:/Users/zhenkun/Library/Input Methods/EcholME.app/Contents/MacOS/__preview.dylib\n--prepared:/Users/zhenkun/Library/Input Methods/EcholME.app/Contents/MacOS/rime_dict_manager\n--validated:/Users/zhenkun/Library/Input Methods/EcholME.app/Contents/MacOS/rime_dict_manager\n--prepared:/Users/zhenkun/Library/Input Methods/EcholME.app/Contents/MacOS/rime_deployer\n--prepared:/Users/zhenkun/Library/Input Methods/EcholME.app/Contents/MacOS/EcholME.debug.dylib\n--validated:/Users/zhenkun/Library/Input Methods/EcholME.app/Contents/MacOS/rime_deployer\n--validated:/Users/zhenkun/Library/Input Methods/EcholME.app/Contents/MacOS/EcholME.debug.dylib\n--prepared:/Users/zhenkun/Library/Input Methods/EcholME.app/Contents/Frameworks/librime.1.dylib\n--validated:/Users/zhenkun/Library/Input Methods/EcholME.app/Contents/Frameworks/librime.1.dylib\n/Users/zhenkun/Library/Input Methods/EcholME.app: valid on disk\n/Users/zhenkun/Library/Input Methods/EcholME.app: satisfies its Designated Requirement",
+    "dynamic_loading": "NOT_RUN",
+    "notarized": false,
+    "distribution_ready": false,
+    "runtime_input": "NOT_RUN_BY_STATIC_VERIFIER",
+    "runtime_note": "This command performs static verification only. Runtime acceptance and its authorization are recorded separately in docs/round0/RUNTIME_ACCEPTANCE.md."
+  },
+  "notes_capability": {
+    "ax": {
+      "advertises_bounds_for_range": true,
+      "advertises_language": false,
+      "advertises_selected_range": true,
+      "advertises_selected_text": true,
+      "advertises_text_value": true,
+      "application_bundle_id": "com.apple.Notes",
+      "attribute_names_status": 0,
+      "caret_bounds_finite_nonzero_height": true,
+      "caret_bounds_status": 0,
+      "document_text_read": false,
+      "elapsed_ms": 38.163041,
+      "element_timeout_status": 0,
+      "focused_element_status": 0,
+      "parameter_names_status": 0,
+      "permission_prompt_requested": false,
+      "role": "AXTextArea",
+      "role_status": 0,
+      "scope": "external AX process; not proof of IMK client support or IME AX permission",
+      "secure_field_assessment": "unknown",
+      "selection_range_status": 0,
+      "status": "METADATA_PROBED",
+      "subrole_status": -25205,
+      "timeout_scope": "per AX message; run under an external process deadline for a total bound",
+      "timeout_status": 0,
+      "total_elapsed_ms": 49.75075,
+      "trusted": true
+    },
+    "current_input_source": "io.github.zhenkun26.inputmethod.EcholME.Hans",
+    "matching_input_sources": [
+      {
+        "enabled": true,
+        "id": "io.github.zhenkun26.inputmethod.EcholME",
+        "selectable": false,
+        "selected": false
+      },
+      {
+        "enabled": true,
+        "id": "io.github.zhenkun26.inputmethod.EcholME.Hans",
+        "selectable": true,
+        "selected": true
+      },
+      {
+        "enabled": false,
+        "id": "io.github.zhenkun26.inputmethod.EcholME.Hant",
+        "selectable": true,
+        "selected": false
+      }
+    ],
+    "mutations_performed": false,
+    "os": "Version 26.5 (Build 25F71)",
+    "schema_version": 1,
+    "timestamp": "2026-10-11T13:26:17Z",
+    "tis_list_available": true
+  },
+  "xcode_capability": {
+    "ax": {
+      "application_bundle_id": "com.apple.dt.Xcode",
+      "document_text_read": false,
+      "focused_element_status": -25212,
+      "permission_prompt_requested": false,
+      "scope": "external AX process; not proof of IMK client support or IME AX permission",
+      "status": "BLOCKED_FOCUSED_ELEMENT_UNAVAILABLE",
+      "timeout_scope": "per AX message; run under an external process deadline for a total bound",
+      "timeout_status": 0,
+      "total_elapsed_ms": 44.176583,
+      "trusted": true
+    },
+    "current_input_source": "io.github.zhenkun26.inputmethod.EcholME.Hans",
+    "matching_input_sources": [
+      {
+        "enabled": true,
+        "id": "io.github.zhenkun26.inputmethod.EcholME",
+        "selectable": false,
+        "selected": false
+      },
+      {
+        "enabled": true,
+        "id": "io.github.zhenkun26.inputmethod.EcholME.Hans",
+        "selectable": true,
+        "selected": true
+      },
+      {
+        "enabled": false,
+        "id": "io.github.zhenkun26.inputmethod.EcholME.Hant",
+        "selectable": true,
+        "selected": false
+      }
+    ],
+    "mutations_performed": false,
+    "os": "Version 26.5 (Build 25F71)",
+    "schema_version": 1,
+    "timestamp": "2026-10-11T13:26:17Z",
+    "tis_list_available": true
+  },
+  "xcode_computer_use": {
+    "status": "BLOCKED_NO_UI_SURFACE",
+    "connection_error": "-10005: timeoutReached",
+    "inventory": {
+      "running": true,
+      "window_count": 0
+    },
+    "real_input": "NOT_RUN"
+  },
+  "terminal_computer_use": {
+    "status": "BLOCKED_TOOL_POLICY",
+    "new_attempt_or_bypass": false,
+    "real_input": "NOT_RUN"
+  },
+  "path_preflight": {
+    "approved_data_root": "~/Library/Application Support/LiangYi",
+    "approved_log_root": "~/Library/Logs/LiangYi",
+    "escaping_symlinks_found": 0,
+    "sync_dir_overrides_found": 0,
+    "scope": "inspected roots and YAML configs; not an OS-wide filesystem trace"
+  },
+  "final_checks": {
+    "source_manifest_match": true,
+    "source_manifest_mismatches": [],
+    "installed_fixed_artifact_match": {
+      "Contents/MacOS/EcholME": true,
+      "Contents/MacOS/EcholME.debug.dylib": true,
+      "Contents/Info.plist": true
+    },
+    "reload": {
+      "request_exit_code": 0,
+      "maintenance_summaries": [
+        {
+          "tasks": 3,
+          "success": 3,
+          "failure": 0
+        }
+      ],
+      "new_log_lines": 193,
+      "new_warning_lines": 0,
+      "new_error_lines": 0,
+      "new_fatal_lines": 0
+    },
+    "final_mode": "nascii",
+    "mode_query_exit_code": 0,
+    "echolme_process_present": true,
+    "mode_query_attempts": [
+      {
+        "stage": "metadata-and-hash checks before field reactivation",
+        "exit_code": 1,
+        "response_received": false
+      },
+      {
+        "stage": "after actual Return/paste in dedicated Notes field",
+        "exit_code": 0,
+        "response": "nascii"
+      }
+    ]
+  },
+  "restoration": {
+    "original_source": "com.apple.inputmethod.SCIM.ITABC",
+    "status": "NOT_RUN",
+    "reason": "System input-menu surface not exposed in Computer Use inventory; leave active Hans intact and provide manual instructions. No active source was disabled or IME stopped."
+  },
+  "limits": [
+    "Candidate-panel closure/underline/geometry not independently observable in this closeout.",
+    "No candidate or translation latency measurement.",
+    "macOS 14 and Intel runtime NOT_RUN; concurrent Squirrel runtime NOT_RUN.",
+    "External distribution review/corresponding-source closure remains NOT_RUN."
+  ]
+}

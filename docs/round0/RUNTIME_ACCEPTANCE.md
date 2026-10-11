@@ -2,11 +2,13 @@
 
 Recorded: 2026-10-11, America/New_York.
 
-**Delivery: FIXED_INSTALL_COMPLETE; NOTES_BASIC_INPUT_PASS; EXTENDED_HOST_UAT_PENDING.** This is not a full Round 0 acceptance pass. Implementation baseline is `3975903`; this guided checkpoint updates documentation only. No Round 1 work, push, public distribution or release occurred. [VERIFICATION.md](VERIFICATION.md) preserves the initial delivery at `6e971c2`; this report supersedes its current runtime-policy status.
+**Delivery: DELIVERED_WITH_VERIFICATION_LIMITS; WAITING_FOR_ROUND_1_AUTHORIZATION.** Round 0 is closed at the user's request. This is not a full cross-host acceptance pass. Implementation baseline is `3975903`; this closeout updates documentation/evidence only. No Round 1 work, push, public distribution or release occurred. [VERIFICATION.md](VERIFICATION.md) preserves the initial delivery at `6e971c2`; this report supersedes its current runtime-policy status.
 
 ## Authorization and scope
 
 The user explicitly permitted librime's normal generated-file/database maintenance only within `~/Library/Application Support/LiangYi/` and `~/Library/Logs/LiangYi/`, while protecting Squirrel and other user data. Manual deletion, existing-bundle replacement, new dependencies and system-wide service restarts remain outside the automated workflow. Checks unavailable to automation are provided in [MANUAL_ACCEPTANCE.md](MANUAL_ACCEPTANCE.md).
+
+The user subsequently authorized Round 0 closeout, superseding the earlier per-case waiting checkpoints for bounded remaining checks. The disclosed environment/visual gaps below remain unverified; delivery does not approve a later round or redefine them as passes.
 
 Independent reviews covered engine paths and the manual test design. Source review and before/after snapshots are not a kernel filesystem sandbox or a system-wide trace. An existing configuration with escaping links or an external `sync_dir` would require a new preflight; the newly generated installation uses LiangYi's own `Rime/sync`.
 
@@ -89,9 +91,11 @@ The first `nihao` composition ended before the separately authorized Space step.
 | Notes basic actual input | PASS (five bounded cases) | CUA synthetic-field observations plus user candidate/closure confirmations; composing Return was user-operated. See the manual ledger. |
 | Notes punctuation / symbols | PASS (bounded field results; physical follow-up user-confirmed) | Digits/31 symbol keys, configured mappings, slash cancellation and recovery; physical equals and punctuation panel/underline confirmed. CUA equals limitation persists; no latency measurement. |
 | Notes email / URL / code-like input | ASCII: 7 PASS; Chinese: 7 observations | No English literal-input requirement was agreed for explicit Chinese mode; the two former fault labels are withdrawn while retaining raw results. Format-step panel confirmation pending. |
-| Remaining Notes / Xcode / Terminal input | NOT_RUN / BLOCKED_TOOL_POLICY | Broader grammar/operators, composition-time punctuation, mixed/Unicode/editing cases, Return branches, caret/focus/switch/reload and Xcode pending; Terminal remains user-operated. |
+| Notes closeout editing / mixed / focus / switch / reload | PASS within field scope; observations distinguished | Composition Backspace/recovery, ASCII caret editing, explicit-mode mixed input, Unicode paste only, same-app no-leak check, ABC/Hans switching and post-reload input. [Closeout cases](evidence/notes-closeout-acceptance.json). |
+| Remaining Notes visual / key branches | NOT_RUN | Broader grammar/operators, composition-time punctuation, other symbol choices, forward Delete/Tab, typed Unicode, no-candidate Return, keypad Enter, panel geometry/closure and cross-app focus remain unverified. |
+| Xcode / Terminal input | BLOCKED_NO_UI_SURFACE / BLOCKED_TOOL_POLICY | Xcode connection timed out, had zero inventory windows and no focused AX element; Terminal remains user-operated with no bypass. |
 | Input-source selection | PASS | Hans independently confirmed enabled/selected; active session responded `nascii`. |
-| Original-source restoration | NOT_RUN | Original source was Apple Simplified Pinyin; the current guided checkpoint keeps Hans active pending further user-confirmed tests. |
+| Original-source restoration | NOT_RUN | Original source was Apple Simplified Pinyin. No system input-menu surface was exposed in the inspected Computer Use inventory; Hans remains active and was not disabled. Manual steps provided. |
 | Concurrent Squirrel coexistence | NOT_RUN | No Squirrel installation/data here; static identity/path isolation and standard-path absence were checked. |
 | macOS 14 / Intel runtime; translation latency | NOT_RUN / NOT_APPLICABLE | No runtime test environment for the former; no translation implemented for the latter. |
 | External GPL distribution readiness | NOT_RUN | Existing corresponding-source/data/dependency gates remain; no distribution. |
@@ -108,17 +112,57 @@ Notes' new-note control was disabled during the initial automated attempt; subse
 
 The candidate panel remains vertical and Chinese-only. The user confirmed a future horizontal layout with one primary/translation pair per column. This was recorded in the plan without implementing a later-round feature. No candidate or translation latency was measured during the guided Notes checks.
 
+## Final closeout
+
+### Objective and changed files
+
+Finish the authorized Round 0 checks that the available environment supports, preserve truthful manual carryovers, and stop. No implementation/schema/dependency changed, so the earlier complete compilable source and fixed build remain the delivered baseline. The closeout touched:
+
+```text
+AGENTS.md                              closeout authority and next-round boundary
+docs/project/PLAN.md                   delivery status; approved scope preserved
+docs/project/STATUS.md                 final results, limits and next gate
+docs/project/DECISIONS.md              observed capability/identity/check status
+docs/round0/FOUNDATION.md               remove superseded install/UAT checkpoint claims
+docs/round0/RUNTIME_ACCEPTANCE.md       final delivery report
+docs/round0/MANUAL_ACCEPTANCE.md        results and actionable manual carryovers
+docs/round0/evidence/
+  closeout-verification.json           static/guard/hash/probe/reload/system evidence
+  notes-closeout-acceptance.json        synthetic field observations and key paths
+```
+
+### Verification results
+
+- **PASS:** installed static identity/resources/arm64 dependency paths/local signature; 12 guard tests rerun. Fixed-build input manifest still matches, and installed executable, Debug library and Info.plist equal the fixed artifact. No rebuild was necessary or performed in this documentation-only closeout.
+- **PASS documentation checks:** both new evidence JSON files parse and satisfy the checked scope/result assertions; 16 Notes case records and 53 relative documentation links checked, with no invalid target. Git whitespace/diff checks passed. These are document checks, not additional runtime input tests.
+- **PASS within field scope:** Notes composition editing and recovery, ASCII caret/Backspace editing, explicit-mode mixed input, empty/pending ABC/Hans switching, and input after installed reload. Same-app new-note test showed no text leak; old note retained one `ni hao`, unchanged by Escape. That old-field result is a host observation, not a claim of uniform raw-string finalization. Unicode passed only through paste.
+- **PASS maintenance and subsequent field input:** confined-path preflight found no escaping links or YAML `sync_dir` override. Installed `--reload` returned 0; the initial log inspection had no acknowledgment. After Notes reactivation, the new log slice recorded 3 tasks, 3 success, 0 failure, and zero warning/error/fatal lines. Space, digit-1, Esc/cancel and fresh input passed afterward. The historical first-deployment warnings remain disclosed above.
+- **PASS metadata only:** refreshed Notes AX probe exposed finite caret bounds and no AXLanguage; secure-field status remains unknown. No document text read or permission prompt. This is not IMK-client or panel-position evidence.
+- **BLOCKED / NOT_RUN:** Xcode Computer Use timed out (`-10005`), inventory showed zero windows, and its metadata probe found no focused element (`-25212`). No editor input was tested. Terminal retains its tool-policy blocker; no new access or bypass attempted. Manual scratch/read fixtures are provided.
+- **NOT_RUN:** closeout candidate-panel closure/underline/geometry, cross-app focus, no-candidate Return, keypad Enter, forward Delete/Tab, typed Unicode, arbitrary symbol/grammar sequences, physical equality-containing code, original-source restoration, real Squirrel coexistence, macOS 14/Intel runtime, and full external distribution closure. These are practical limits of the delivered round.
+- **NOT_APPLICABLE:** translated candidate latency/quality, cloud-service behavior and new automatic direction; these features do not exist in Round 0. Primary candidate UI latency was also not measured.
+
+No crash, wrong-new-field insertion or duplicate committed text was observed in the bounded closeout checks. Process presence and finite field results are not proof against every hang or crash. One mode-query attempt returned no response during metadata checks; after actual Notes field reactivation the query returned `nascii`. The evidence preserves both attempts instead of claiming background-query reliability.
+
+### Final state and manual carryovers
+
+EcholME remains installed, Hans enabled/selected, Hant disabled, process running, last active-session mode `nascii`. The dedicated fixture ends with the committed `ROUND0_CLOSEOUT_DONE` marker. Apple Simplified Pinyin has not been restored; no active source was disabled or IME quit. To end this enabled test state, first manually select that original source, verify it works, then optionally follow section 5 of the manual ledger. All data, logs, synthetic fixtures and accidental-path incident files remain intact.
+
+Xcode manual verification uses a fresh scratch file containing `/* ... */` so test strings are not executable source. Terminal uses `IFS= read -r ECHOLME_TEST` before entering any test text; report the printed synthetic value. For either host, distinguish ASCII literal behavior from Chinese composition/punctuation mappings. Visual panel/edge/display checks and no-candidate/keypad Return checks require a real visible field and the appropriate physical input. See the detailed per-case instructions in [MANUAL_ACCEPTANCE.md](MANUAL_ACCEPTANCE.md).
+
+GPL preparation retains upstream history, notices, modification records, locked dependency/data sources and packaged license files. This is **not external-distribution readiness**: complete corresponding source, recursive code/data/visual-resource review and an exact binary/source delivery set still need the existing release gates. Nothing was pushed or distributed.
+
 ## Reproduction and next gate
 
-Use [MANUAL_ACCEPTANCE.md](MANUAL_ACCEPTANCE.md) to continue only separately confirmed steps. Physical equals and punctuation closure are confirmed; format-step visual confirmation and the broader cases remain pending. R0-UAT-001/002 are withdrawn classifications, not outstanding fixes. Use mode-appropriate criteria and do not infer authorization for a new mode/context policy. Fixed installation is complete. The assistant performed no deletion or existing-target overwrite; optional cleanup of the accidental encoded-path child is a user decision.
+Use [MANUAL_ACCEPTANCE.md](MANUAL_ACCEPTANCE.md) for missing manual checks. Physical equals and punctuation closure are confirmed; the specific format-step panel confirmation remains unverified. R0-UAT-001/002 are withdrawn classifications, not outstanding fixes. Use mode-appropriate criteria and do not infer authorization for a new mode/context policy. Fixed installation is complete. The assistant performed no deletion or existing-target overwrite; optional cleanup of the accidental encoded-path child is a user decision.
 
 Safe automated reproduction commands from the repository root:
 
 ```sh
 python3 -B tools/check_round0.py
-python3 tools/round0.py verify --bundle "$PWD/.artifacts/builds/round0-path-fix/DerivedData/Build/Products/Debug/EcholME.app"
+python3 -B tools/round0.py verify --bundle "$HOME/Library/Input Methods/EcholME.app"
 ```
 
 The standalone engine probe's exact compiler/run command, roots and working directory are recorded in its evidence. Rerun only after stopping EcholME and rechecking links/configuration; do not point it at Squirrel data. A new full build requires a fresh build ID and keeps all earlier outputs.
 
-Current exit: automated checks, fixed installation/activation and basic Notes acceptance are complete; extended Notes, other-host acceptance and original-source restoration remain pending. Stop for the user's next-step confirmation within Round 0. Do not push, start Round 1 or claim full Round 0 acceptance.
+Current exit: **Round 0 delivered with the verification limits above.** Wait for explicit user confirmation before Round 1. Its proposed scope is the unified state/commit model, ADR-017 key contract and approved horizontal two-line candidate layout with fixtures; real translation remains Round 2. Do not push, start a later round or claim full cross-host acceptance.

@@ -12,6 +12,10 @@ project memory. The latest explicit user instruction takes precedence.
   wait for the user's confirmation before Round 1.
 - Keep Git commits local. No push, GitHub repository creation, public release,
   deployment, or notarization is authorized by the Round 0 request.
+- The user authorized closing Round 0 on 2026-10-11. Remaining bounded checks
+  and the final delivery record are in scope; this supersedes earlier per-case
+  waiting checkpoints for this closeout. Stop after delivery. Unavailable checks
+  must remain explicit, and Round 1 still requires a new confirmation.
 - The user authorized remaining Round 0 runtime acceptance on 2026-10-11.
   librime may perform normal generated-file and database maintenance only
   inside `~/Library/Application Support/LiangYi/` and `~/Library/Logs/LiangYi/`.

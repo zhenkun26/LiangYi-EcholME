@@ -19,9 +19,9 @@ The selected artifact hashes, headers, notices, and recursive source references 
 
 ## ADR-012 — Product identity and coexistence
 
-Status: **FIXED_BUILD_PATH_CHECKS_PASS; MANUAL_FIXED_INSTALL_AND_HOST_UAT_PENDING; RUNTIME_COEXISTENCE_NOT_RUN**.
+Status: **FIXED_INSTALL_REGISTER_SELECT_PASS; NOTES_BOUNDED_INPUT_PASS; RUNTIME_COEXISTENCE_NOT_RUN**.
 
-The first runtime invalidated the initial path-confinement claim because `URL.path()` encoded spaces. All C API filesystem strings now explicitly use `path(percentEncoded: false)`; the fixed build deployed into the intended root. See [the incident and runtime results](RUNTIME_ACCEPTANCE.md). The installed initial app remains unfixed and disabled pending manual replacement.
+The first runtime invalidated the initial path-confinement claim because `URL.path()` encoded spaces. All C API filesystem strings now explicitly use `path(percentEncoded: false)`; the fixed build deployed into the intended root. The user removed the initial app, and the fixed artifact was installed at the absent target. Installation, registration, selection and bounded Notes checks passed; actual Squirrel coexistence remains unverified. See [the incident and final runtime results](RUNTIME_ACCEPTANCE.md).
 
 | Surface | EcholME design |
 | --- | --- |
@@ -64,13 +64,13 @@ Round 0 preserves inherited input behavior and documents these boundaries. It do
 
 ## ADR-014 — Context and caret capability
 
-Status: **NOTES_AX_METADATA_PROBED; XCODE_EDITOR_NOT_RUN; TERMINAL_TOOL_BLOCKED; REAL_IMK_MANUAL_ACCEPTANCE_PENDING**.
+Status: **NOTES_AX_METADATA_AND_BOUNDED_INPUT_VERIFIED; XCODE_NO_UI_SURFACE; TERMINAL_TOOL_BLOCKED**.
 
-The engine-maintenance policy conflict is resolved by a narrow user authorization; see ADR-016. Real IMK checks require manual fixed-bundle installation and a safe synthetic field. Standalone AX and engine probes do not establish host-input behavior.
+The engine-maintenance policy conflict is resolved by a narrow user authorization; see ADR-016. Fixed-bundle installation and bounded real Notes field checks are complete. Standalone AX and engine probes do not establish other-host input behavior.
 
 Round 0 investigates capabilities without collecting document contents. Record the OS/app version, whether relevant interfaces are exposed, permission state, success/failure categories, and durations when safely measurable. Do not persist nearby text or request Accessibility permission automatically.
 
-Capability investigation scope (actual outcomes are in VERIFICATION.md):
+Capability investigation scope (initial history is in VERIFICATION.md; final outcomes are in RUNTIME_ACCEPTANCE.md):
 
 - Notes: whether an active IMK client can provide a bounded text/caret interface.
 - Xcode: distinguish ordinary editor behavior from other fields where possible.
@@ -79,6 +79,8 @@ Capability investigation scope (actual outcomes are in VERIFICATION.md):
 Source inspection, a standalone AX capability probe, and a real IMK-host test are different evidence. An AX probe is not a substitute for calling the IMK text client in a real input session. A missing permission or interface is a fallback case, not evidence that text is empty. Do not assume newer language attributes exist on the macOS 14 deployment target.
 
 IMK host methods may involve synchronous IPC. The design does not promise that an arbitrary host call can be interrupted by a hard timeout or safely moved off the required thread. Avoid repeated per-key inspection; later context detection must use bounded snapshots and cached decisions. If Round 0 cannot safely exercise the host, mark the experiment unverified and provide a focused manual acceptance step.
+
+The closeout Notes AX probe advertised finite caret geometry and no AXLanguage; sensitivity remains unknown. Xcode had no Computer Use window or focused AX element, so editor capabilities and input remain unverified. Terminal's prior tool-policy denial was not bypassed. Missing context must remain unknown and use explicit-mode/App-rule fallback in the later design, without blocking primary input; no new ContextDetector was implemented in Round 0. Candidate-panel geometry and multi-display placement still require visual acceptance.
 
 ## ADR-015 — Future cloud-service boundary
 
@@ -92,7 +94,7 @@ Round 0 adds no network service, provider code, model credentials, or translatio
 
 ## ADR-016 — Build, install, and reload policy
 
-Status: **FIXED_BUILD_STARTUP_IDLE_RELOAD_PASS; MANUAL_FIXED_INSTALL_AND_HOST_UAT_PENDING**.
+Status: **FIXED_INSTALL_AND_INSTALLED_RELOAD_PASS; NOTES_POST_RELOAD_INPUT_PASS; OTHER_HOST_UAT_UNVERIFIED**.
 
 - Review scripts and recursive invocations before execution. Inherited Makefile, package, release, and install scripts remain upstream material, not the approved operational entry point.
 - Do not run `clean` targets, deletion-based copy/replace operations, keyboard-cache deletion, system-directory permission changes, or generic system-wide reload commands.
@@ -119,7 +121,7 @@ python3 tools/round0.py install-first --bundle "$PWD/.artifacts/builds/round0-lo
 "$HOME/Library/Input Methods/EcholME.app/Contents/MacOS/EcholME" --register-input-source
 ```
 
-Registration is a deliberate system-state change. The CLI exits before IMK/engine startup for this command. The initial installed app has a measured path defect and must not be enabled. Follow [MANUAL_ACCEPTANCE.md](MANUAL_ACCEPTANCE.md) to install the fixed artifact before enable/select/real-input checks. Inspect the CLI's OSStatus and the separate TIS result; do not infer enablement from registration success.
+Registration is a deliberate system-state change. The CLI exits before IMK/engine startup for this command. The defective initial app must never be enabled; it was replaced by the user-assisted absent-target procedure. The current installed app is the verified fixed artifact. Follow [MANUAL_ACCEPTANCE.md](MANUAL_ACCEPTANCE.md) for reproduction and remaining manual checks. Inspect the CLI's OSStatus and separate TIS result; do not infer enablement from registration success.
 
 Compile the optional standalone probe to an unused output name:
 
@@ -131,7 +133,7 @@ build/round0-diagnostics/capability-probe-local com.apple.Notes
 
 The AX messaging timeout is 0.2 seconds per call, not a total deadline. Automation should use `subprocess.run(..., timeout=10)` to bound the standalone process. Permission/interface failures retain distinct states; attribute advertisement does not prove actual text retrieval. The probe reads neither document text nor clipboard data. When a UI tool denies an application, do not use the probe to bypass that tool boundary.
 
-For debugging the CLI, invoke `--help` or an invalid argument from the built executable and inspect the exit code; these paths do not start IMK. Fixed-build idle reload is verified; installed real-input reload still requires the manual fixed-install and host checklist. Logs are isolated at the path in ADR-012; a dedicated diagnostics panel is later-round work.
+For debugging the CLI, invoke `--help` or an invalid argument from the built executable and inspect the exit code; these paths do not start IMK. Fixed-build idle reload and installed reload followed by bounded Notes field input are verified. Notification delivery alone is not acknowledgment; one mode query failed before field reactivation and then succeeded in the active Notes session. Other-host reload/input remains unverified. Logs are isolated at the path in ADR-012; a dedicated diagnostics panel is later-round work.
 
 ### Runtime blocker: engine deployment removes generated files
 
@@ -141,9 +143,9 @@ Follow-up authorization on 2026-10-11 permits librime's normal generated-file/da
 
 Source review of the pinned librime identifies calls that remove compiled dictionary/prism files: [`dict_compiler.cc`](https://github.com/rime/librime/blob/33e78140250125871856cdc5b42ddc6a5fcd3cd4/src/rime/dict/dict_compiler.cc#L265) calls `table->Remove()`, and its [prism rebuild](https://github.com/rime/librime/blob/33e78140250125871856cdc5b42ddc6a5fcd3cd4/src/rime/dict/dict_compiler.cc#L358) calls `prism_->Remove()`. [`mapped_file.cc`](https://github.com/rime/librime/blob/33e78140250125871856cdc5b42ddc6a5fcd3cd4/src/rime/dict/mapped_file.cc#L122) implements file removal through `file_mapping::remove`.
 
-Consequently, do not execute schema deployment, launch the IME runtime, enable/select it, reload it into a running input session, or perform actual typing acceptance under the current absolute no-deletion instruction. Creating a fresh directory is not a policy exemption for a code path that attempts deletion. Do not rewrite librime or intercept filesystem calls merely to bypass the instruction.
+Under the original absolute no-deletion instruction, schema deployment, runtime launch, enable/select, reload and typing acceptance were blocked. The later explicit confined-maintenance authorization resolves that blocker only within the audited LiangYi roots. Creating a fresh directory alone is not an exemption. Do not rewrite librime or intercept filesystem calls to bypass the remaining restrictions.
 
-Reviewed build operations, copying to an absent first-install target, registration-only CLI handling, and read-only TIS inspection are separate possible steps; each must be audited to ensure it does not fall through to engine startup/deployment. Resolving this blocker requires a specific user decision about engine-managed generated files. That decision would complete remaining Round 0 acceptance, not authorize Round 1.
+Reviewed build operations, copying to an absent target, registration-only CLI handling, and read-only TIS inspection remain separate steps. The user's specific decision authorized confined engine maintenance and subsequent Round 0 acceptance; it did not authorize manual deletion, overwrite, Round 1 or pushing. Remaining environment/visual limits are explicit in the final report.
 
 ### Inherited automation
 

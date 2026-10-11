@@ -1,6 +1,6 @@
 # LiangYi / EcholME — Approved Delivery Plan
 
-Status: **Approved for sequential delivery; only Round 0 is currently authorized.**
+Status: **Approved for sequential delivery; Round 0 delivered with verification limits. Round 1 is not authorized.**
 
 Plan recorded: 2026-10-11, America/New_York.
 
@@ -25,6 +25,7 @@ Additional boundaries:
 - Preserve unrelated user work. Do not invent Git author identity, credentials, test results, supported platforms, or performance measurements.
 - Follow the user's no-deletion rule: no filesystem deletion, trash operation, whole-file deletion, destructive cleanup, or equivalent workaround. Existing install targets must cause a preflight stop. Do not rename or move an existing target merely to evade this boundary.
 - Runtime acceptance exception authorized on 2026-10-11: librime may perform normal generated-file/database maintenance only inside the independent LiangYi data and log directories. Squirrel and other user data remain protected. Continue Round 0 and provide manual steps for checks automation cannot perform; Round 1 and pushing remain unauthorized.
+- Round 0 closeout was authorized on 2026-10-11. The bounded remaining checks and delivery record supersede earlier per-case waiting checkpoints. See [STATUS.md](STATUS.md) for what passed and what remains unverified; closeout does not turn missing checks into passes.
 - Inspect upstream build, install, test, and dependency scripts for deletion and other side effects before running them. Installing already-declared dependencies within the approved scope is distinct from adding a new dependency; ask before introducing dependencies beyond the approved Squirrel/librime baseline. The approved route does not preapprove every upstream optional component, resource, dataset, or new service.
 - Build/install success, automated checks, manual acceptance, and measured runtime behavior are separate claims.
 - Project documents and authored code are primarily English. User-facing reports are Simplified Chinese. The new project's README must be bilingual English and Simplified Chinese.

@@ -1,0 +1,234 @@
+{
+  "schema_version": 1,
+  "recorded": "2026-10-11",
+  "timezone": "America/New_York",
+  "scope": "Round 0 Notes closeout; actual keys except explicitly pasted fixtures",
+  "implementation_baseline": "3975903",
+  "host": "com.apple.Notes",
+  "fixtures": [
+    "ROUND0_CLOSEOUT_NOTES",
+    "ROUND0_CLOSEOUT_FOCUS_A",
+    "ROUND0_CLOSEOUT_FOCUS_B"
+  ],
+  "privacy": {
+    "synthetic_text_only": true,
+    "screenshots_saved": false,
+    "private_text_saved": false,
+    "external_request_made": false
+  },
+  "cases": [
+    {
+      "id": "composition_backspace",
+      "mode": "nascii",
+      "keys": [
+        "n",
+        "i",
+        "h",
+        "a",
+        "o",
+        "BackSpace"
+      ],
+      "observed_tail": "ni ha",
+      "result": "OBSERVED_PENDING_COMPOSITION",
+      "limit": "displayed preedit only; candidate panel not read"
+    },
+    {
+      "id": "composition_backspace_recovery",
+      "mode": "nascii",
+      "keys": [
+        "o",
+        "space"
+      ],
+      "observed_tail": "你好",
+      "result": "PASS_FIELD",
+      "criterion": "correct committed Chinese text once after editing"
+    },
+    {
+      "id": "ascii_committed_edit",
+      "mode": "ascii",
+      "keys": [
+        "a",
+        "b",
+        "c",
+        "Left",
+        "BackSpace",
+        "x"
+      ],
+      "observed_tail": "axc",
+      "result": "PASS_FIELD",
+      "criterion": "caret-relative deletion and insertion preserve other characters"
+    },
+    {
+      "id": "mixed_explicit_modes",
+      "mode": "explicit per-segment",
+      "keys": "nascii: nihao Space; ascii: Space hello123 Space !!",
+      "observed_tail": "你好 hello123 !!",
+      "result": "PASS_FIELD",
+      "limit": "no automatic direction/context claim"
+    },
+    {
+      "id": "unicode_paste",
+      "mode": "ascii",
+      "insertion": "paste",
+      "fixture": "🙂 café Ａ",
+      "observed_tail": "🙂 café Ａ",
+      "result": "PASS_PASTE_ONLY",
+      "limit": "not typed Unicode or Character Viewer input"
+    },
+    {
+      "id": "focus_new_field",
+      "mode": "nascii",
+      "keys": "nihao in A; click New Note",
+      "new_editor_has_value": false,
+      "result": "PASS_FIELD_NO_LEAK",
+      "criterion": "new editor empty; pending text does not enter it",
+      "limit": "same app only; panel closure/marked range not independently observed"
+    },
+    {
+      "id": "focus_old_field",
+      "mode": "nascii",
+      "actions": "paste independent B marker; return to A; Escape",
+      "observed_before_escape": "ROUND0_CLOSEOUT_FOCUS_A\nCASE_PENDING\nni hao",
+      "observed_after_escape": "ROUND0_CLOSEOUT_FOCUS_A\nCASE_PENDING\nni hao",
+      "result": "OBSERVED_HOST_FINALIZATION",
+      "limit": "visible spaced preedit retained once and Escape did not remove it; not a claim of uniform raw-string finalization across hosts"
+    },
+    {
+      "id": "source_switch_pending",
+      "mode": "Hans to system ABC",
+      "keys": [
+        "nihao",
+        "ctrl+space"
+      ],
+      "observed_tail": "nihao",
+      "independent_source": "com.apple.keylayout.ABC",
+      "result": "PASS_FIELD",
+      "criterion": "old field finalized once without duplicate insertion"
+    },
+    {
+      "id": "system_abc_after_switch",
+      "keys": [
+        "space",
+        "a",
+        "b",
+        "c"
+      ],
+      "observed_tail": "nihao abc",
+      "result": "PASS_FIELD"
+    },
+    {
+      "id": "source_switch_recovery",
+      "mode": "ABC to Hans",
+      "keys": [
+        "ctrl+space",
+        "Return",
+        "nihao",
+        "space"
+      ],
+      "independent_source": "io.github.zhenkun26.inputmethod.EcholME.Hans",
+      "mode_query": "nascii",
+      "observed_tail": "你好",
+      "result": "PASS_FIELD"
+    },
+    {
+      "id": "source_switch_empty",
+      "keys": [
+        "ctrl+space",
+        "ctrl+space"
+      ],
+      "source_sequence": [
+        "io.github.zhenkun26.inputmethod.EcholME.Hans",
+        "com.apple.keylayout.ABC",
+        "io.github.zhenkun26.inputmethod.EcholME.Hans"
+      ],
+      "text_changed": false,
+      "result": "PASS_FIELD",
+      "limit": "original Apple Simplified Pinyin restoration not tested; panel not observable"
+    },
+    {
+      "id": "reload_space_commit",
+      "mode": "nascii",
+      "keys": [
+        "nihao",
+        "space"
+      ],
+      "observed_tail": "你好",
+      "result": "PASS_FIELD"
+    },
+    {
+      "id": "reload_digit_commit",
+      "mode": "nascii",
+      "keys": [
+        "zhongguo",
+        "1"
+      ],
+      "observed_tail": "中国",
+      "result": "PASS_FIELD",
+      "limit": "digit-1 resulting text verified; displayed candidate not independently re-read"
+    },
+    {
+      "id": "reload_escape_cancel",
+      "mode": "nascii",
+      "keys": [
+        "nihao",
+        "Escape"
+      ],
+      "observed_tail": "CASE_RELOAD_ESCAPE\n",
+      "appended_input": "",
+      "result": "PASS_FIELD",
+      "limit": "panel closure/underline not independently observable"
+    },
+    {
+      "id": "reload_escape_recovery",
+      "mode": "nascii",
+      "keys": [
+        "nihao",
+        "space"
+      ],
+      "observed_tail": "你好",
+      "result": "PASS_FIELD"
+    },
+    {
+      "id": "final_empty_composition_marker",
+      "keys": [
+        "Return"
+      ],
+      "paste": "ROUND0_CLOSEOUT_DONE",
+      "observed_tail": "你好\nROUND0_CLOSEOUT_DONE",
+      "result": "PASS_FIELD",
+      "limit": "fixture terminator; no broader clipboard test"
+    }
+  ],
+  "reload": {
+    "request_exit_code": 0,
+    "maintenance": {
+      "tasks": 3,
+      "success": 3,
+      "failure": 0
+    },
+    "warning_lines_in_new_log_slice": 0,
+    "error_lines_in_new_log_slice": 0,
+    "note": "Initial log check lacked an acknowledgment; after reactivating Notes the completed maintenance summary became visible. Exit code alone was not used as a pass."
+  },
+  "final_state": {
+    "source": "io.github.zhenkun26.inputmethod.EcholME.Hans",
+    "mode": "nascii",
+    "process_running": true,
+    "original_source_restored": false,
+    "source_disabled": false
+  },
+  "not_run": [
+    "visual closure/underline/geometry of closeout candidate panels",
+    "cross-app focus change",
+    "no-candidate Return",
+    "keypad Enter",
+    "Tab/forward Delete",
+    "typed Unicode",
+    "arbitrary composition-time punctuation / symbol-code selection",
+    "equality-containing code typed by physical key",
+    "Xcode editor input",
+    "Terminal input",
+    "multi-display and scaling"
+  ],
+  "implementation_changed": false
+}

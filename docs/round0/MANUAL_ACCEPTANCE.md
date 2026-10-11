@@ -2,7 +2,7 @@
 
 Recorded: 2026-10-11, America/New_York.
 
-This is both the procedure and the guided acceptance ledger. PASS applies only to the exercised cases below; all other cases remain pending. See [RUNTIME_ACCEPTANCE.md](RUNTIME_ACCEPTANCE.md) for automated results and the path-encoding incident. Round 1 and pushing remain unauthorized. Every next UI test requires the user's step confirmation.
+This is both the procedure and the acceptance ledger. Round 0 is **DELIVERED_WITH_VERIFICATION_LIMITS**. PASS applies only to exercised cases; missing checks remain explicit. See [RUNTIME_ACCEPTANCE.md](RUNTIME_ACCEPTANCE.md) for automated results and the path-encoding incident. The user's Round 0 closeout authorization superseded earlier per-case waiting checkpoints for the closeout below. Round 1 and pushing remain unauthorized; no further automatic UI testing is part of this delivered increment.
 
 ## Guided checkpoint
 
@@ -10,7 +10,7 @@ Environment remains macOS 26.5 / arm64; tested implementation is the fixed `3975
 
 Dedicated synthetic Notes fixtures were used. Letter sequences, Space, digit 1, Escape and Return were actual key events. Empty-composition Return used two pasted, already-committed markers around one actual Return; this does not validate English typing or clipboard behavior generally. No screenshots or private note text were saved to the repository. Candidate-panel accessibility was unreliable, so human confirmations remain part of the evidence rather than an automated panel-reading claim.
 
-Current state: Hans enabled/selected, Hant disabled/unselected, installed EcholME running. Original-source restoration and shutdown are NOT_RUN. The source was not restored automatically at a step boundary.
+Final state: Hans enabled/selected, Hant disabled/unselected, installed EcholME running, last active-session mode `nascii`, no unfinished fixture input. Original-source restoration and shutdown are NOT_RUN. The inspected Computer Use inventory exposed no system input-menu surface; the active mode was therefore not disabled or the IME stopped. Use section 5 manually if ending the enabled test state.
 
 The separately authorized punctuation step used an observed empty note and a new synthetic note. Digits and 31 distinct symbol keys were exercised in Chinese and ASCII modes, with existing mode CLI commands used only between completed compositions. A temporary system ABC control reproduced the automated equals-key anomaly and ASCII quote transforms. Hans and the starting `nascii` mode were restored and independently verified. This control is not a complete source-switch regression test. No input-method source changed; [structured punctuation evidence](evidence/notes-punctuation-acceptance.json) contains only synthetic cases and status-safe observations.
 
@@ -44,7 +44,7 @@ The accidental directory `~/Library/Application%20Support/LiangYi/` was retained
 
 ## 2. Notes and Xcode
 
-Use only synthetic text in a new, dedicated test note or scratch file. Do not overwrite existing notes or project source. Xcode can use a new scratch `.swift` file with test text inside a comment. Notes' new-note control was initially unavailable, but later guided acceptance successfully established dedicated notes. The earlier TextEdit launch timeout remains historical; Xcode has not yet been exercised.
+Use only synthetic text in a new, dedicated test note or scratch file. Do not overwrite existing notes or project source. Xcode can use a new scratch `.swift` file with test text inside a comment. Notes' new-note control was initially unavailable, but later guided acceptance established dedicated notes. At closeout, Xcode Computer Use returned `-10005: timeoutReached`; the inventory showed it running with zero windows and the metadata probe returned `BLOCKED_FOCUSED_ELEMENT_UNAVAILABLE`. All Xcode real-input rows remain NOT_RUN because of this environment blocker. The earlier TextEdit timeout is historical.
 
 Xcode and Terminal inherit `ascii_mode: true`. In an empty composition, briefly press **left Shift** to enter Chinese mode. Its behavior during an existing composition differs. Alternatively, use the inherited Rime switcher (Control+grave or F4). The status icon displays the mode; it is not a clickable mode toggle. Round 0 has no new automatic direction or translation semantics.
 
@@ -59,8 +59,8 @@ Run each row in Notes and Xcode and record the observed outcome separately. Resu
 | Return with empty composition | Insert committed marker A, press Return once, insert committed marker B. | Markers are separated by exactly one newline; no swallowed Return or duplicate text. | PASS: CUA observed `ROUND0_RETURN_A\nROUND0_RETURN_B` in the dedicated fixture after one Return; user confirmed the step complete. | NOT_RUN |
 | Return with no candidate / keypad Enter | Establish a live no-candidate composition; test Return. Test keypad Enter separately if available. | Document raw-input/host behavior and confirm no stuck composition, lost text or duplicate insertion. | NOT_RUN; ordinary composing Return does not cover these branches. | NOT_RUN |
 | Caret geometry | Move to a new line and near a window edge, then compose again. | Panel follows the current insertion point and stays visible. Record multi-display/scale checks separately when available. | NOT_RUN | NOT_RUN |
-| Focus change | Leave `nihao` uncommitted in one synthetic field; click a second synthetic field. | No old input enters the new field; no duplicate insertion; old panel hides. | NOT_RUN | NOT_RUN |
-| Input-source switch | With empty composition, switch to the original source and back. Repeat once with an uncommitted synthetic composition. | Both sources remain usable; no orphaned panel or duplicate text. Record how the old field finalizes. | NOT_RUN; initial activation is not a switching-regression test. | NOT_RUN |
+| Focus change | Leave `nihao` uncommitted in one synthetic field; click a second synthetic field. | No old input enters the new field; no duplicate insertion; old panel hides. | PASS_FIELD_NO_LEAK in two notes within Notes; old note retained one `ni hao`, unchanged by Escape. Panel/marked-range and cross-app checks NOT_RUN. | NOT_RUN |
+| Input-source switch | With empty composition, switch to a system source and back. Repeat with an uncommitted synthetic composition. | Both sources usable; no orphaned panel or duplicate text; record finalization. | PASS_FIELD with system ABC/Hans: pending input became one `nihao`, ABC text and subsequent Chinese commit worked; empty round trip left text unchanged. Panel and original Apple Simplified Pinyin restoration NOT_RUN. | NOT_RUN |
 
 Current deployed `luna_pinyin_simp` uses `express_editor`. Its ordinary Return maps to `CommitRawInput`; Space confirms a selection. This explains retaining raw unselected letters rather than choosing Chinese on Return. See the [pinned librime implementation](https://github.com/rime/librime/blob/33e78140250125871856cdc5b42ddc6a5fcd3cd4/src/rime/gear/editor.cc#L192-L202). Future mode/translation shortcuts remain undecided; this baseline evidence does not settle ADR-017.
 
@@ -106,11 +106,11 @@ The former fault classifications **R0-UAT-001/002 are WITHDRAWN_INVALID_CRITERIO
 
 The plus-alias email passed even though plus is outside the deployed email regex's local-part character set. This single observed path does not establish full alias support. Equality-containing operators, quoted code strings and broader address grammars remain untested.
 
-After the matrix, the starting Chinese mode was restored; fresh `nihao` plus Space produced one `你好`. Independent checks confirmed Hans / `nascii` and the running installed process. Candidate closure/underline for this format-input step still requires user visual confirmation. Xcode and Terminal have not been tested for these payloads. Stop for confirmation; do not begin another case or a later round automatically.
+After the matrix, Chinese mode was restored; fresh `nihao` plus Space produced one `你好`. Independent checks confirmed Hans / `nascii` and the running installed process. Candidate closure/underline for this specific format step remains unverified. Xcode and Terminal have not been tested for these payloads. The later authorized closeout below does not retroactively establish panel closure for this step.
 
 ### Pending special-character and environment coverage
 
-The user explicitly requested this coverage. The bounded Notes punctuation matrix and physical-equals follow-up are complete; the format matrix verifies seven ASCII literal-input cases and records seven Chinese-mode observations. Visual confirmation for the format-input step is pending. All extended coverage in Xcode and Terminal remains NOT_RUN, with Terminal automation blocked by tool policy. Remaining Notes cases below require separate step authorization:
+The bounded Notes punctuation matrix and physical-equals follow-up are complete; the format matrix verifies seven ASCII literal-input cases and records seven Chinese-mode observations. Visual confirmation for the format step is unverified. All extended coverage in Xcode and Terminal remains NOT_RUN under the blockers above. The closeout exercised a limited subset of the following coverage; all other combinations remain unverified:
 
 - Other symbol choices; punctuation during active pinyin composition and arbitrary repeated/interleaved symbol sequences. Record intentional full-width/half-width conversion and configured paging behavior rather than assuming every difference is a bug.
 - Broader email/URL/code input, including case changes, equality-containing operators, quotes and additional grammars; the seven payloads above do not establish blanket coverage. Use mode-appropriate acceptance criteria; do not reinstate the withdrawn Chinese-mode literal-input fault labels without an agreed contract and new supporting evidence.
@@ -123,6 +123,28 @@ Use only synthetic fixtures. Do not enter test strings as executable Terminal co
 The vertical Chinese-only candidate panel is the current baseline. The user approved a future horizontal layout with each primary candidate above its corresponding opposite-language subtitle. Layout implementation belongs to Round 1, and real translated subtitles to Round 2; neither is started here.
 
 Inherited deactivation calls `commitComposition()`, which may commit unfinished **raw pinyin into the old field**. This is the Round 0 baseline, not a failure solely because it is raw pinyin. It must not write that text into the new field or duplicate it. A different focus-loss policy belongs to a later authorized round.
+
+### Authorized closeout results
+
+Only dedicated synthetic fixtures were used; no screenshots or private note contents were persisted. [Structured cases](evidence/notes-closeout-acceptance.json) distinguish typed keys, pasted markers and observations. No input implementation or schema changed.
+
+| Case | Exercised action and observation | Result / boundary |
+| --- | --- | --- |
+| Composition editing | `nihao`, Backspace displayed `ni ha`; `o`, Space produced one `你好`. | PASS_FIELD for recovery. No candidate-panel reading claim. |
+| Committed ASCII editing | `abc`, Left, Backspace, `x` produced `axc`. | PASS_FIELD for caret-relative deletion/insertion; forward Delete and Tab NOT_RUN. |
+| Explicit-mode mixed input | Chinese `nihao`, Space; ASCII ` hello123 !!`. | PASS_FIELD: `你好 hello123 !!`. No automatic direction inference. |
+| Unicode paste | Pasted `🙂 café Ａ`. | PASS_PASTE_ONLY; typed Unicode and Character Viewer NOT_RUN. |
+| Same-host focus change | Pending `nihao` in note A; New Note B remained empty; B received only its own pasted marker. Returned to A: one `ni hao`; Escape did not change it. | PASS_FIELD_NO_LEAK; old-field finalization is OBSERVED_HOST_FINALIZATION. This is not proof of a universal raw-string finalization rule or cleared marked ranges. |
+| Pending source switch | Ctrl+Space selected ABC, independently confirmed. Old input became one `nihao`; ABC appended ` abc`; switching back to Hans enabled a fresh `你好`. | PASS_FIELD; panel state not independently observable. |
+| Empty source switch | Hans → ABC → Hans, independently queried; committed fixture unchanged. | PASS_FIELD. This tests ABC, not restoration to the original Apple Simplified Pinyin source. |
+| Installed reload | With no unfinished composition, `--reload`; initial log check had no acknowledgment, then after Notes reactivation the new slice showed 3 tasks, 3 success, 0 failure. | PASS_MAINTENANCE, with zero new warning/error/fatal lines. Exit 0 alone was not accepted as completion. |
+| Input after reload | Fresh `nihao`, Space → `你好`; `zhongguo`, 1 → `中国`; `nihao`, Escape → no appended text; fresh `nihao`, Space → `你好`. | PASS_FIELD. Candidate text/ranking, panel closure and underline were not independently re-read. |
+
+Notes AX metadata was refreshed: finite caret bounds were available, AXLanguage absent, and secure-field status unknown. The probe did not read text or prompt for permission. This is external AX evidence, not proof of IMK client APIs or multi-display candidate placement.
+
+One `--getascii` query received no response during the metadata/hash checks; after an actual Return/paste reactivated the dedicated Notes field, it returned `nascii`. This records a session-query limitation rather than claiming a reliable acknowledgment in all foreground states. The final committed fixture ended with `ROUND0_CLOSEOUT_DONE`; no unfinished test input remains.
+
+Round 0 is now delivered with these limits. For manual carryover, open a new Xcode scratch file and put test strings inside `/* ... */`; test the rows above without building or executing them. Check the panel next to the insertion point near window edges and on each available display. Establish a visible no-candidate composition before testing its Return branch; do not call ordinary Return a substitute. Test keypad Enter only if physically available. Terminal must use section 3's read fixture. Record each host separately; broader symbol/grammar coverage is not implied by these finite cases.
 
 ## 3. Terminal — user-operated only
 
@@ -150,13 +172,15 @@ With no unfinished composition, request reload:
 "$HOME/Library/Input Methods/EcholME.app/Contents/MacOS/EcholME" --reload
 ```
 
-Exit 0 means notification delivery only. Wait for maintenance to finish, then repeat candidates, commit and Esc in the synthetic field. For the automated fixed-build idle run, both maintenance passes reported `3 success, 0 failure`; real host input after reload still needs this step.
+Exit 0 means notification delivery only. Wait for maintenance to finish, then repeat candidates, commit and Esc in the synthetic field. The closeout installed-app reload completed `3 success, 0 failure`, followed by successful Notes field checks above. Earlier fixed-build idle passes are separate historical evidence. Candidate-panel visual checks and other-host recovery remain unverified.
 
 If Squirrel is already installed, switch between it and EcholME via the input menu. Confirm Squirrel still uses its own settings/dictionary and EcholME uses `Application Support/LiangYi/Rime`. No Squirrel installation/data was present here, so actual two-IME coexistence was not exercised. Do not install Squirrel just to fill this row without a separate decision.
 
 ## 5. Finish and report
 
-1. Restore the original input source using the input menu.
+The active test state was retained at closeout because automated original-source restoration was unavailable. To end that state manually:
+
+1. Select the original **Apple Simplified Pinyin / 简体拼音** from the system input menu. Confirm it works before disabling EcholME. A temporary switch to ABC is not restoration to this original source.
 2. Disable the test modes and quit EcholME only:
 
    ```sh
