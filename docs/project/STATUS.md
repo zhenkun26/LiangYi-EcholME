@@ -5,7 +5,7 @@ Recorded: 2026-10-11, America/New_York.
 ## Current state
 
 - Plan: **PLAN_APPROVED**.
-- Round 0: **ROUND0_AUTHORIZED_PENDING_BASELINE** at the time this initial status record was created. The user has authorized it; commit the planning baseline before importing and modifying Squirrel.
+- Round 0: **IN_PROGRESS**. The planning baseline was committed as `041b643` before the pinned Squirrel source was imported.
 - Authorized implementation scope: **Round 0 only**, after the approved plan is persisted and Git version management is established.
 - Round 1–6: **NOT_AUTHORIZED_TO_START**; each requires user confirmation after the preceding delivery.
 - Push, public release, notarization, and public distribution: **NOT_AUTHORIZED**.
@@ -24,8 +24,9 @@ The implementation owner must update this document as actual Round 0 work occurs
 | --- | --- | --- |
 | Approved plan persisted | PASS | `PLAN.md` records the accepted route, full round sequence, boundaries, and acceptance gates. |
 | Git setup | PASS | Initialized local `main`; repository-local author is `zhenkun26` with the account's GitHub ID-based noreply address. The `upstream` remote points to Squirrel; no publication remote or push is configured. |
-| Planning baseline commit | PENDING | This record and the approved plan form the initial commit, before upstream source is imported into the working tree. |
-| Baseline and dependency verification | NOT_RUN | Research snapshots are candidates, not validated build inputs. |
+| Planning baseline commit | PASS | `041b643` preserves the approved plan before implementation. |
+| Upstream source import | PASS | Imported Squirrel `769ae426f33f500266101a88f694aab0d158e680` with its Git history on `feat/round-0-foundation`; submodules are not executed or recursively initialized. |
+| Dependency/build compatibility | NOT_RUN | Source provenance is established; binary dependencies and actual build compatibility remain to be checked. |
 | License/resource inventory | NOT_RUN | GPL lifecycle requirements are planned; compliance has not been established. |
 | Compilation and warnings | NOT_RUN | No build has run as part of this record. |
 | Application installation | NOT_RUN | No installation has run as part of this record. |
