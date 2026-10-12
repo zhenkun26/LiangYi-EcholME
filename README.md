@@ -1,6 +1,6 @@
 # 两仪 / EcholME
 
-A macOS input method derived from [Squirrel](https://github.com/rime/squirrel), powered by [librime](https://github.com/rime/librime). The intended experience pairs Chinese candidates with English subtitles, and English candidates with Chinese subtitles. **Round 1 adds horizontal two-line candidates and example subtitles in both directions. These are ten deterministic examples per direction, not a real translation dictionary or API.**
+A macOS input method derived from [Squirrel](https://github.com/rime/squirrel), powered by [librime](https://github.com/rime/librime). The intended experience pairs Chinese candidates with English subtitles, and English candidates with Chinese subtitles. **Round 2 shows subtitles from a pinned offline CC-CEDICT index. One displayed sense is the committed translation. It is not a cloud API or a complete professional dictionary.**
 
 Minimum deployment target: macOS 14. Swift is the main frontend language. The English product spelling is **EcholME**. This is an independent derivative, not an official Squirrel release.
 
@@ -9,7 +9,7 @@ Minimum deployment target: macOS 14. Swift is the main frontend language. The En
 ### Project records
 
 - [Approved full plan](docs/project/PLAN.md): reuse, changes, new modules, rounds, risks, acceptance, and GPL distribution work.
-- [Delivery status](docs/project/STATUS.md) and [Round 1 delivery](docs/round1/DELIVERY.md): distinguish implementation, build, installation and actual input.
+- [Delivery status](docs/project/STATUS.md), [Round 2 delivery](docs/round2/DELIVERY.md), and [Round 1 delivery](docs/round1/DELIVERY.md): distinguish implementation, build, installation and actual input.
 - [Round 1 key contract](docs/round1/KEY_CONTRACT.md) and [installation/acceptance steps](docs/round1/MANUAL_ACCEPTANCE.md).
 - [Runtime acceptance](docs/round0/RUNTIME_ACCEPTANCE.md) and [manual installation/input checks](docs/round0/MANUAL_ACCEPTANCE.md): follow these before enabling an earlier development artifact.
 - [Decisions](docs/project/DECISIONS.md) and [Round 0 foundation](docs/round0/FOUNDATION.md): identity, architecture, safe commands, and limitations.
@@ -27,13 +27,13 @@ flowchart LR
     Panel --> IMK
     IMK --> Coordinator[Commit coordinator and guarded host adapter]
     Coordinator --> Host
-    Examples[Deterministic examples] --> State
-    Translation[Future dictionary or isolated API service] -. future rounds .-> State
+    Lexicon[Offline CC-CEDICT index] --> State
+    Translation[Future isolated API service] -. future rounds .-> State
 ```
 
 The Squirrel internal module/class names remain to limit divergence. App identity, input sources, notifications, data and logs are independent. Chinese Space/digits keep engine selection/recognizers; English Space commits a token plus one space, and digits extend the token. Return commits raw composition without newline; empty Return belongs to the host. Esc cancels. **Option+Return** submits a ready example only when it matches the verified full commit scope. Tab/Command finalize raw then pass to the host.
 
-Tap Left Shift alone (within 0.5 seconds) to finalize raw composition once and switch Chinese/English. Right Shift alone retains the Rime schema binding; the baseline commits the Chinese candidate, while frontend English is finalized first. Either Shift used with a typed key, another modifier, the other Shift, or a long hold does not switch. The input menu's Example translations toggle disables examples and restores direct ASCII passthrough; its state is per controller. Unknown words show `—`; pending results show `…`. No automatic context detection or cloud API is implemented. See the full key contract before testing English punctuation, email/URL/code or Chinese recognizers.
+Tap Left Shift alone (within 0.5 seconds) to finalize raw composition once and switch Chinese/English. Right Shift alone retains the Rime schema binding; the baseline commits the Chinese candidate, while frontend English is finalized first. Either Shift used with a typed key, another modifier, the other Shift, or a long hold does not switch. The input menu's Local translations toggle disables subtitles and restores direct ASCII passthrough; its state is per controller. Unknown words show `—`, pending results show `…`, and a dictionary timeout shows `!`. No automatic context detection or cloud API is implemented. See the full key contract before testing English punctuation, email/URL/code or Chinese recognizers.
 
 ### Build and install
 
@@ -64,16 +64,16 @@ To stop using this development build, select ABC or another working input source
 
 The inherited Squirrel license is [GNU GPL version 3](LICENSE.txt). Original authors and notices are retained; [the original README](docs/upstream/README.squirrel.md) preserves upstream acknowledgments. Dependencies and data keep their own grants. Before any external binary distribution, prepare the exact corresponding source, build scripts, notices, and dependency materials described in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md); a link to upstream alone is not a complete release procedure.
 
-No push or release is authorized by the current Round 1 request. Inherited upstream CI/release jobs are guarded against running in a derived repository. Each later round requires user confirmation.
+No push or release is authorized by the current Round 2 request. Inherited upstream CI/release jobs are guarded against running in a derived repository. Each later round requires user confirmation.
 
 ## 简体中文
 
-两仪是基于 [Squirrel（鼠须管）](https://github.com/rime/squirrel) 和 [librime](https://github.com/rime/librime) 的独立 macOS 输入法衍生项目，英文名为 **EcholME**。目标体验为中文候选下显示英文、英文候选下显示中文。**Round 1 增加横向双行候选及双向示例副标题，每个方向只有 10 条确定性示例，尚未接入真实词典或 API。** 最低部署目标为 macOS 14，前端以 Swift 为主；本项目不是 Squirrel 官方发行版。
+两仪是基于 [Squirrel（鼠须管）](https://github.com/rime/squirrel) 和 [librime](https://github.com/rime/librime) 的独立 macOS 输入法衍生项目，英文名为 **EcholME**。目标体验为中文候选下显示英文、英文候选下显示中文。**Round 2 使用固定版本的离线 CC-CEDICT 索引显示副标题。屏幕上的那一条释义就是可提交的译文，它不是云 API，也不是完整的专业词典。** 最低部署目标为 macOS 14，前端以 Swift 为主；本项目不是 Squirrel 官方发行版。
 
 ### 项目记录与架构
 
 - [完整计划](docs/project/PLAN.md)：复用、改造、新增模块、各轮交付、风险、验收及 GPL 分发事项。
-- [交付状态](docs/project/STATUS.md)与[Round 1 交付](docs/round1/DELIVERY.md)：分别报告代码、构建、安装和实际输入。
+- [交付状态](docs/project/STATUS.md)、[Round 2 交付](docs/round2/DELIVERY.md)与[Round 1 交付](docs/round1/DELIVERY.md)：分别报告代码、构建、安装和实际输入。
 - [Round 1 按键约定](docs/round1/KEY_CONTRACT.md)与[安装／验收步骤](docs/round1/MANUAL_ACCEPTANCE.md)。
 - [运行验收](docs/round0/RUNTIME_ACCEPTANCE.md)与[手动安装／输入检查](docs/round0/MANUAL_ACCEPTANCE.md)：启用旧开发包前先按此核对和更新。
 - [技术决策](docs/project/DECISIONS.md)与[本轮基础说明](docs/round0/FOUNDATION.md)：身份、架构、操作命令和限制。
@@ -83,7 +83,7 @@ No push or release is authorized by the current Round 1 request. Inherited upstr
 
 中文空格／数字保留引擎选词及识别规则；英文空格提交词及一个空格，数字继续输入。组合中的回车提交原始字母而不换行，空组合回车交给宿主；Esc 取消。**Option+Return** 仅上屏已显示、已就绪且通过完整范围检查的示例译文。Tab／Command 先提交原文再交给宿主。
 
-在 0.5 秒内单独轻按左 Shift，先提交原始组合一次，再切换中英文。右 Shift 单独轻按保留 Rime 方案绑定：当前基线提交中文候选，前端英文组合则先提交原文。左右 Shift 配合输入、其他修饰键、另一个 Shift 或长按时均不切换模式。“Example translations” 菜单开关关闭示例时恢复英文直通，其状态仅属于当前控制器。未命中显示 `—`，等待中显示 `…`。自动环境识别与云 API 尚未实现；邮箱、网址、代码和中文识别规则应按完整按键约定验收。
+在 0.5 秒内单独轻按左 Shift，先提交原始组合一次，再切换中英文。右 Shift 单独轻按保留 Rime 方案绑定：当前基线提交中文候选，前端英文组合则先提交原文。左右 Shift 配合输入、其他修饰键、另一个 Shift 或长按时均不切换模式。“Local translations” 菜单开关关闭副标题时恢复英文直通，其状态仅属于当前控制器。未命中显示 `—`，等待中显示 `…`，词典超时显示 `!`。自动环境识别与云 API 尚未实现；邮箱、网址、代码和中文识别规则应按完整按键约定验收。
 
 ### 构建与安装
 
@@ -105,4 +105,4 @@ Rime 配置和用户词库位于 `~/Library/Application Support/LiangYi/Rime`，
 
 继承的 Squirrel 许可证为 [GNU GPL 第 3 版](LICENSE.txt)。保留上游作者及声明，[原始 README](docs/upstream/README.squirrel.md)保存完整致谢。依赖和数据分别适用各自许可证。首次对外分发二进制前，必须按[第三方声明](THIRD_PARTY_NOTICES.md)准备对应的完整源码、构建脚本、声明和依赖材料，不能仅以一个上游链接代替发布流程。
 
-本次 Round 1 请求未授权推送或发布。继承的上游 CI/发布任务已限制为仅在上游仓库执行。后续每轮均须用户确认后开始。
+本次 Round 2 请求未授权推送或发布。继承的上游 CI/发布任务已限制为仅在上游仓库执行。后续每轮均须用户确认后开始。

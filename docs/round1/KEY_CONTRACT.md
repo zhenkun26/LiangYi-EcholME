@@ -69,3 +69,16 @@ No-candidate/pending/missing/stale examples do not turn Option+Return into raw
 insertion. Real dictionary quality/coverage and context/cloud policies belong
 to Round 2 and later. Explicit Chinese conversion is not an ASCII-literal
 failure criterion.
+
+## Round 2 addendum (2026-10-12)
+
+The same Option+Return rule now commits a ready local-dictionary subtitle.
+The input-menu control is labeled **Local translations**. Turning it off still
+hides subtitles and restores direct ASCII passthrough; its state remains per
+controller. A dictionary miss displays `—`. A lookup timeout or unavailable
+index displays `!` and is not cached as a miss. Pending remains `…`. The
+one-word English composer is unchanged: Space commits the token plus one
+space, so multiword phrases are counted and stored but are not composed in
+this round. An exact spaced primary can resolve a stored phrase if one is
+presented as a whole candidate. Engine comments remain separate from
+subtitles.

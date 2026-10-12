@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "recorded": "2026-10-12",
+  "machine": {
+    "model": "Apple M4",
+    "memory_bytes": 17179869184,
+    "os": "macOS 26.5",
+    "os_build": "25F71",
+    "xcode": "26.6",
+    "architecture": "arm64"
+  },
+  "scope": "in-process dictionary load and lookup; not installed IMK rendering",
+  "cold_load_ms": 474.776167,
+  "lookup_count": 1300,
+  "lookup_min_ms": 0.000333,
+  "lookup_p50_ms": 0.001042,
+  "lookup_p95_ms": 0.002125,
+  "lookup_max_ms": 0.0475,
+  "english_headwords": 33030,
+  "english_phrases": 59616,
+  "chinese_entries": 115355,
+  "check_count": 136,
+  "visible_panel_latency": "NOT_RUN",
+  "round1_regression": {
+    "core_checks": 60,
+    "host_checks": 22,
+    "tool_guards": 12,
+    "engine_status": "PASS",
+    "shift_routing_checks": 57,
+    "runtime_input": "NOT_RUN"
+  },
+  "artifact": ".artifacts/builds/round2-lexicon-20261012c/DerivedData/Build/Products/Debug/EcholME.app",
+  "version": "0.0.4"
+}

@@ -20,6 +20,8 @@ enum EcholMENotification {
   static let setASCII = Notification.Name("io.github.zhenkun26.inputmethod.EcholME.SetASCII")
   static let reportASCII = Notification.Name("io.github.zhenkun26.inputmethod.EcholME.ReportASCII")
   static let engineWillReset = Notification.Name("io.github.zhenkun26.inputmethod.EcholME.EngineWillReset")
+  static let lexiconReady = Notification.Name("io.github.zhenkun26.inputmethod.EcholME.LexiconReady")
+  static let lexiconFailed = Notification.Name("io.github.zhenkun26.inputmethod.EcholME.LexiconFailed")
 }
 
 @main

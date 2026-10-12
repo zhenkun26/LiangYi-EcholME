@@ -18,6 +18,7 @@ final class SquirrelInputController: IMKInputController {
   private var exampleWork: DispatchWorkItem?
   private var scheduledExampleToken: CompositionToken?
   private var examplesEnabled = true
+  private let translations = TranslationCoordinator()
   private let modeRouter = CompositionModeRouter()
   private var observers: [NSObjectProtocol] = []
   private let rimeAPI: RimeApi_stdbool = rime_get_api_stdbool().pointee
@@ -265,6 +266,14 @@ final class SquirrelInputController: IMKInputController {
       self?.modeRouter.reset()
       self?.hidePalettes()
     })
+    observers.append(NotificationCenter.default.addObserver(forName: EcholMENotification.lexiconReady,
+                                           object: nil, queue: .main) { [weak self] _ in
+      self?.lexiconDidBecomeReady()
+    })
+    observers.append(NotificationCenter.default.addObserver(forName: EcholMENotification.lexiconFailed,
+                                           object: nil, queue: .main) { [weak self] _ in
+      self?.lexiconDidFail()
+    })
   }
 
   override func deactivateServer(_ sender: Any!) {
@@ -311,7 +320,7 @@ final class SquirrelInputController: IMKInputController {
     wiki.target = self
 
     let menu = NSMenu()
-    let examples = NSMenuItem(title: "Example translations", action: #selector(toggleExamples), keyEquivalent: "")
+    let examples = NSMenuItem(title: "Local translations", action: #selector(toggleExamples), keyEquivalent: "")
     examples.target = self
     examples.state = examplesEnabled ? .on : .off
     menu.addItem(examples)
@@ -773,6 +782,26 @@ private extension SquirrelInputController {
     exampleWork?.cancel()
     exampleWork = nil
     scheduledExampleToken = nil
+    translations.cancel()
+  }
+
+  func lexiconDidBecomeReady() {
+    guard let snapshot = composition.snapshot, snapshot.examplesEnabled else { return }
+    let waiting = snapshot.candidates.contains {
+      switch $0.subtitle {
+      case .pending, .failed: return true
+      case .off, .missing, .ready: return false
+      }
+    }
+    guard waiting else { return }
+    scheduledExampleToken = nil
+    scheduleExamples(snapshot)
+  }
+
+  func lexiconDidFail() {
+    guard let snapshot = composition.snapshot, snapshot.examplesEnabled,
+          let value = composition.applySubtitles(.unavailable, for: snapshot.token) else { return }
+    present(value)
   }
 
   func discardCurrentComposition() {
@@ -877,15 +906,21 @@ private extension SquirrelInputController {
           scheduledExampleToken != snapshot.token else { return }
     cancelExamples()
     scheduledExampleToken = snapshot.token
+    let token = snapshot.token
+    let request = translations.begin()
     let work = DispatchWorkItem { [weak self] in
-      guard let self,
-            let value = self.composition.applyExamples(ExampleTranslation.results(for: snapshot), for: snapshot.token) else { return }
-      self.present(value)
+      guard let self else { return }
+      // The snapshot is a copied value. Lookup stays off the key callback and
+      // cannot retain the host client. A retired request is discarded here.
+      guard let delivery = self.translations.lookup(snapshot, lexicon: LocalLexicon.shared, request: request) else { return }
+      DispatchQueue.main.async { [weak self] in
+        guard let self, self.translations.isCurrent(request),
+              let value = self.composition.applySubtitles(delivery, for: token) else { return }
+        self.present(value)
+      }
     }
     exampleWork = work
-    // Deterministic delayed delivery exercises version/focus guards. The lookup
-    // is a tiny bounded fixture; real backend scheduling belongs to Round 2.
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.08, execute: work)
+    DispatchQueue.global(qos: .userInitiated).async(execute: work)
   }
 }
 

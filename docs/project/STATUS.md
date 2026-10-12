@@ -1,21 +1,24 @@
 # LiangYi / EcholME — Delivery Status
 
-Recorded: 2026-10-11, America/New_York.
+Recorded: 2026-10-12, America/New_York.
 
-## Current state — Round 1
+## Current state — Round 2
 
-- Authorization: Round 1 only; the user selected Option+Return and later authorized two P1 fixes, left/right Shift and mixed-composition regression tests, another review and a local commit. Round 2 requires new confirmation. No push, release, replacement installation or new dependency.
-- Delivery: **IMPLEMENTED_AND_BUILT_WITH_RUNTIME_ACCEPTANCE_PENDING**. [Round 1 report](../round1/DELIVERY.md), [key contract](../round1/KEY_CONTRACT.md), and [manual installation/acceptance](../round1/MANUAL_ACCEPTANCE.md).
-- Branch: `feat/round-1-composition`, based on the Round 0 closeout `92fb453`. The final increment hash is available in Git history and the delivery reply; no self-referential hash commit is needed.
-- Implemented: copied/versioned candidate snapshots; English token composition; unified primary/raw/example commit; focus/mode/engine-reset invalidation; guarded Objective-C host calls; horizontal two-line rendering in the existing Squirrel Panel/View. P1 repair: a shared left/right Shift router, raw finalization before left-tap mode changes, verified right-tap schema replay, live engine-prefix ownership and reentrant focus/revision guards.
-- Examples: ten hand-authored entries per direction, delayed 80 ms to exercise refresh. These are not dictionary coverage, real translation quality, cloud support or a measured latency result.
-- Final repaired bundle: `.artifacts/builds/round1-shift-final-03/DerivedData/Build/Products/Debug/EcholME.app`, version **0.0.3**, macOS 14 deployment target, arm64 Debug/ad-hoc signed. The original 0.0.2 artifact/evidence remain historical.
-- Final repaired verification: build/static signature/resource/link checks PASS; 60 shared policy/state/commit/layout checks PASS; 22 host-wrapper checks PASS; 12 mocked tooling guards PASS; 10 cycles / 60 original real librime checks PASS plus 57 Shift/mode checks using the production router, real pinned librime and a synthetic host. Both old engine conditions are established by negative controls. Normal (non-Swift) C probe compilation PASS. Tests use fresh LiangYi validation data/log roots. Production renderer previews remain synthetic, not real IMK screenshots.
-- Follow-up source review: both original P1 findings RESOLVED_IN_SOURCE_AND_REGRESSION; no further P1/P2 found in the reviewed Shift repair and composition handoff paths. Source/artifact/check/installed-critical-file evidence is recorded in the `shift-*.json` files under `docs/round1/evidence/`. Actual IMK host acceptance remains separate.
-- Warning: one inherited AppIntents metadata extraction warning; no compiler/linker warnings. macOS 14/Intel runtime, actual latency and universal crash freedom are unverified.
-- Installed state: still the fixed Round 0 package, version **0.0.1**; critical files equal the retained fixed artifact. New Round 1 installation/Notes/Xcode/Terminal input acceptance is **NOT_RUN**. The initial-install hash manifest predates the Round 0 fix and is not the current installed-bundle comparator.
-- GPL: inherited notices and dated modification record retained; new source/fixtures GPL-3.0-only; no added dependency/data. Complete corresponding-source/dependency/data distribution review remains an external release gate.
-- Next: install and perform Round 1 real input acceptance with the user. Stop before Round 2; keep commits local. Preserve the historical Round 0 outcomes below.
+- Authorization: Round 2 only, authorized on 2026-10-12 after revalidating the Round 1 source hashes and automated checks. Stop before Round 3. No push, release, replacement installation, cloud provider, or new code dependency.
+- Delivery: **IMPLEMENTED_AND_BUILT_WITH_RUNTIME_ACCEPTANCE_PENDING**. [Round 2 report](../round2/DELIVERY.md) and [manual installation/acceptance](../round2/MANUAL_ACCEPTANCE.md).
+- Branch: `feat/round-1-composition`, continued for this increment. The final hash is the delivery commit; no self-referential hash commit is needed.
+- Dictionary: pinned MDBG CC-CEDICT export dated 2026-10-11T08:29:27Z, CC-BY-SA-4.0, 125,262 parsed entries. The derived index has 115,355 simplified keys (9,739 single-character and 105,616 multi-character), 33,030 English headwords, and 59,616 English phrases counted separately. Ranking uses the already vendored rime-essay scores at build time. This is not a reversal of one table into the other.
+- Behavior: Chinese candidates show an English subtitle; English tokens show a Chinese subtitle. Option+Return still commits only a ready subtitle whose preview covers the whole composition. Misses show `—`. Lookup timeout or a missing index shows `!` and does not block primary commit. A timeout is not cached as a miss. The one-word English composer does not submit multiword phrases; an exact spaced primary can still resolve a stored phrase.
+- Final bundle: `.artifacts/builds/round2-lexicon-20261012c/DerivedData/Build/Products/Debug/EcholME.app`, version **0.0.4**, macOS 14 deployment target, arm64 Debug/ad-hoc signed. The bundled index and NOTICE match the source tree.
+- Verification on Apple M4, 16 GiB, macOS 26.5, Xcode 26.6, arm64: lexicon rebuild PASS; 136 dictionary/state/commit checks PASS; Round 1 regression 60 core, 22 host, 12 tool guards, real librime PASS, and 57 Shift checks PASS. In-process cold index load 474.8 ms. Warm lookup over 1,300 calls: minimum 0.0003 ms, P50 0.0010 ms, P95 0.0021 ms, maximum 0.048 ms. This is not the visible-panel 150 ms measurement.
+- Warning: one inherited AppIntents metadata extraction warning; no compiler/linker warnings. macOS 14/Intel runtime and universal crash freedom are unverified.
+- Installed state: still the Round 0 package, version **0.0.1**. Round 1 and Round 2 Notes/Xcode/Terminal input acceptance is **NOT_RUN**. Visible candidate latency is **NOT_RUN**.
+- GPL: program sources remain GPL-3.0-only. The lexicon data remains CC-BY-SA-4.0 and is not relicensed. Complete corresponding-source distribution review remains an external release gate.
+- Next: install 0.0.4 only after the user removes the existing bundle, then perform real input acceptance. Stop before Round 3. Keep commits local.
+
+## Round 1 snapshot (historical)
+
+Round 1 remains **IMPLEMENTED_AND_BUILT_WITH_RUNTIME_ACCEPTANCE_PENDING**. Its repaired bundle is version 0.0.3. Source hashes matched the recorded repair, and a 2026-10-12 rerun passed 60 core, 22 host, 12 tool-guard, engine, and 57 Shift checks. Installed IMK acceptance was **NOT_RUN** and is still **NOT_RUN**. Details stay in [Round 1 delivery](../round1/DELIVERY.md). Those limits are not passes.
 
 ## Round 0 closeout snapshot (historical)
 

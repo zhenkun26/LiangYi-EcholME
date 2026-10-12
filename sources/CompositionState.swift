@@ -19,16 +19,24 @@ struct CandidateIdentity: Hashable, Sendable {
 }
 
 enum ExampleSubtitle: Equatable, Sendable {
-  case off, pending, missing, ready(String)
+  case off, pending, missing, failed, ready(String)
 
   var text: String {
     switch self {
     case .off: return ""
     case .pending: return "…"
     case .missing: return "—"
+    case .failed: return "!"
     case .ready(let text): return text
     }
   }
+}
+
+enum SubtitleDelivery: Equatable, Sendable {
+  // Absent identities are dictionary misses. A failure is a separate case and
+  // must not be cached or displayed as a miss.
+  case resolved([CandidateIdentity: String])
+  case unavailable
 }
 
 struct CandidateDescriptor: Equatable, Sendable {
@@ -131,13 +139,24 @@ final class CompositionSession {
   }
 
   func applyExamples(_ examples: [CandidateIdentity: String], for expected: CompositionToken) -> CandidateSnapshot? {
+    applySubtitles(.resolved(examples), for: expected)
+  }
+
+  func applySubtitles(_ delivery: SubtitleDelivery, for expected: CompositionToken) -> CandidateSnapshot? {
     guard active, var value = snapshot, value.token == expected, value.examplesEnabled else { return nil }
-    for index in value.candidates.indices {
-      let id = value.candidates[index].id
-      if let example = examples[id], !example.isEmpty {
-        value.candidates[index].subtitle = .ready(example)
-      } else {
-        value.candidates[index].subtitle = .missing
+    switch delivery {
+    case .unavailable:
+      for index in value.candidates.indices {
+        value.candidates[index].subtitle = .failed
+      }
+    case .resolved(let examples):
+      for index in value.candidates.indices {
+        let id = value.candidates[index].id
+        if let example = examples[id], !example.isEmpty, !example.contains(where: \.isNewline) {
+          value.candidates[index].subtitle = .ready(example)
+        } else {
+          value.candidates[index].subtitle = .missing
+        }
       }
     }
     snapshot = value

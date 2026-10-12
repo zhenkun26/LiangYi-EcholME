@@ -4,8 +4,8 @@
 import Foundation
 
 enum ExampleTranslation {
-  // Hand-authored deterministic examples, not a dictionary/backend. No request,
-  // model, credential, telemetry, or captured host context is involved.
+  // Hand-authored fixtures for the state-machine tests. Production subtitles
+  // come from LocalLexicon. No request, model, credential, or host context.
   private static let chinese = [
     "你好": "hello", "中国": "China", "世界": "world", "谢谢": "thanks",
     "输入法": "input method", "学习": "study", "候选": "candidate",

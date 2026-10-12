@@ -92,7 +92,7 @@ enum BilingualCandidateRenderer {
                font: .systemFont(ofSize: 12), color: subtitleColor)
     }
     let page = snapshot.page + 1
-    let example = snapshot.examplesEnabled ? "Examples · ⌥↩ translation" : "Examples off"
+    let example = snapshot.examplesEnabled ? "Dictionary · ⌥↩ translation" : "Translations off"
     drawText("\(example) · Page \(page)", in: layout.footer, font: .systemFont(ofSize: 11), color: .secondaryLabelColor)
   }
 

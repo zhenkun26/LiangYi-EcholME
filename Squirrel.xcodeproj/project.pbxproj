@@ -11,6 +11,9 @@
 		E10000000000000000000004 /* ExampleTranslation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000003 /* ExampleTranslation.swift */; };
 		E10000000000000000000006 /* BilingualCandidateLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000005 /* BilingualCandidateLayout.swift */; };
 		E10000000000000000000008 /* SafeIMEClient.m in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000007 /* SafeIMEClient.m */; };
+		E20000000000000000000002 /* LocalLexicon.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20000000000000000000001 /* LocalLexicon.swift */; };
+		E20000000000000000000004 /* echolme-lexicon.idx in Resources */ = {isa = PBXBuildFile; fileRef = E20000000000000000000003 /* echolme-lexicon.idx */; };
+		E20000000000000000000006 /* NOTICE.txt in Resources */ = {isa = PBXBuildFile; fileRef = E20000000000000000000005 /* NOTICE.txt */; };
 		E00000000000000000000002 /* default.custom.yaml in Copy Shared Support Files */ = {isa = PBXBuildFile; fileRef = E00000000000000000000001 /* default.custom.yaml */; };
 		441E637D22B7E96F006DCCDD /* stroke.dict.yaml in Copy Shared Support Files */ = {isa = PBXBuildFile; fileRef = 441E636922B7E90D006DCCDD /* stroke.dict.yaml */; };
 		441E637E22B7E96F006DCCDD /* stroke.schema.yaml in Copy Shared Support Files */ = {isa = PBXBuildFile; fileRef = 441E636B22B7E90D006DCCDD /* stroke.schema.yaml */; };
@@ -170,6 +173,9 @@
 		E10000000000000000000005 /* BilingualCandidateLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = sources/BilingualCandidateLayout.swift; sourceTree = "<group>"; };
 		E10000000000000000000007 /* SafeIMEClient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = sources/SafeIMEClient.m; sourceTree = "<group>"; };
 		E10000000000000000000009 /* SafeIMEClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sources/SafeIMEClient.h; sourceTree = "<group>"; };
+		E20000000000000000000001 /* LocalLexicon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = sources/LocalLexicon.swift; sourceTree = "<group>"; };
+		E20000000000000000000003 /* echolme-lexicon.idx */ = {isa = PBXFileReference; lastKnownFileType = text; path = data/lexicon/echolme-lexicon.idx; sourceTree = "<group>"; };
+		E20000000000000000000005 /* NOTICE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = NOTICE.txt; path = data/lexicon/NOTICE.txt; sourceTree = "<group>"; };
 		E00000000000000000000001 /* default.custom.yaml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = data/default.custom.yaml; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -267,6 +273,7 @@
 				E10000000000000000000001 /* CompositionState.swift */,
 				E10000000000000000000003 /* ExampleTranslation.swift */,
 				E10000000000000000000005 /* BilingualCandidateLayout.swift */,
+				E20000000000000000000001 /* LocalLexicon.swift */,
 				E10000000000000000000007 /* SafeIMEClient.m */,
 				E10000000000000000000009 /* SafeIMEClient.h */,
 				B39771222BECEA150093A49B /* MacOSKeyCodes.swift */,
@@ -330,6 +337,8 @@
 			isa = PBXGroup;
 			children = (
 				B3216E5B2BF438F800E292D2 /* rime.pdf */,
+				E20000000000000000000003 /* echolme-lexicon.idx */,
+				E20000000000000000000005 /* NOTICE.txt */,
 				44986A93184B421700B3278D /* LICENSE.txt */,
 				44986A94184B421700B3278D /* README.md */,
 				B39771322BEEE4540093A49B /* Localizable.xcstrings */,
@@ -501,6 +510,8 @@
 				B39771332BEEE4540093A49B /* Localizable.xcstrings in Resources */,
 				44986A96184B421700B3278D /* README.md in Resources */,
 				B3216E5C2BF438F800E292D2 /* rime.pdf in Resources */,
+				E20000000000000000000004 /* echolme-lexicon.idx in Resources */,
+				E20000000000000000000006 /* NOTICE.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -517,6 +528,7 @@
 				E10000000000000000000002 /* CompositionState.swift in Sources */,
 				E10000000000000000000004 /* ExampleTranslation.swift in Sources */,
 				E10000000000000000000006 /* BilingualCandidateLayout.swift in Sources */,
+				E20000000000000000000002 /* LocalLexicon.swift in Sources */,
 				E10000000000000000000008 /* SafeIMEClient.m in Sources */,
 				B39771252BED899F0093A49B /* SquirrelConfig.swift in Sources */,
 				B397712F2BEECBED0093A49B /* Main.swift in Sources */,
@@ -543,7 +555,7 @@
 				CODE_SIGN_ENTITLEMENTS = resources/Squirrel.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 0.0.3;
+				CURRENT_PROJECT_VERSION = 0.0.4;
 				DEAD_CODE_STRIPPING = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
@@ -591,7 +603,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = resources/Squirrel.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 0.0.3;
+				CURRENT_PROJECT_VERSION = 0.0.4;
 				DEAD_CODE_STRIPPING = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;

@@ -1,0 +1,34 @@
+{
+  "counts": {
+    "chinese_multicharacter": 105616,
+    "chinese_polysemous_keys": 3131,
+    "chinese_simplified_keys": 115355,
+    "chinese_single_character": 9739,
+    "english_headwords": 33030,
+    "english_phrases": 59616,
+    "english_polysemous_headwords": 15563,
+    "parsed_entries": 125262
+  },
+  "format": 1,
+  "frequency_prior_sha256": "3e8512ebaa6657e35961b1f5762060717c647e3bf471d5e3b86e783b4e934ffb",
+  "index_sha256": "0fe2133f351bcd320cb05eb3d50483d9daeed1c7852a6791c96dcbfbac6c07bc",
+  "ruleset": 1,
+  "selection": {
+    "chinese_to_english": "One subtitle: an unqualified English word, else a short phrase, else a truncated gloss. Archaic, slang, dialect, and similar labels lose to a plain sense. Not reused as the English index.",
+    "english_phrases": "Two-to-four-word glosses, stored separately. The same frequency prior applies. The one-word English composer does not look them up.",
+    "english_to_chinese": "Separate headword index. A labeled archaic or slang sense loses. Otherwise the earlier CC-CEDICT gloss wins, and the vendored rime-essay score breaks remaining ties. This is not a reversal of the Chinese subtitle table.",
+    "frequency_prior": "data/plum/essay.txt from the already vendored rime-essay package. Scores are baked into the index and are not read on the key path.",
+    "skipped_glosses": "surname, variant, see, classifier, and abbreviation glosses"
+  },
+  "source": {
+    "date": "2026-10-11T08:29:27Z",
+    "grant": "Creative Commons Attribution-ShareAlike 4.0 International License",
+    "header_entries": 125262,
+    "license": "CC-BY-SA-4.0",
+    "name": "CC-CEDICT",
+    "publisher": "MDBG",
+    "sha256_gzip": "cf0bf5c8ff94316799bc82755dbe0627658d7167244060d8e4ce8d5928a6b9f5",
+    "sha256_uncompressed": "39758f408b1a8c180c8e6b772bde9ae2ffab1794119e65bc0a42f3fc9163e9eb",
+    "url": "https://www.mdbg.net/chinese/export/cedict/cedict_1_0_ts_utf-8_mdbg.txt.gz"
+  }
+}

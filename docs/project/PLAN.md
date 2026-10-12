@@ -1,6 +1,6 @@
 # LiangYi / EcholME — Approved Delivery Plan
 
-Status: **Approved for sequential delivery; Round 0 closed with verification limits. Round 1 implementation authorized; stop before Round 2.**
+Status: **Approved for sequential delivery. Round 0 and Round 1 are delivered with their recorded verification limits. Round 2 was authorized on 2026-10-12; stop before Round 3.**
 
 Plan recorded: 2026-10-11, America/New_York.
 
@@ -10,12 +10,12 @@ This document preserves the plan approved in the project conversation. It is the
 
 ## 1. Authorization and delivery boundaries
 
-The user approved the Squirrel-derived route and requested durable project documentation and Git version management. Initial authorization covered Round 0 only. After its closeout, the user explicitly authorized **Round 1 only**: define the key contract, unify state/commit management, and implement horizontal two-line candidates with example subtitles. Option+Return was selected for translated commit. Stop after Round 1 delivery and wait for confirmation before Round 2. Repeat this boundary between all later rounds.
+The user approved the Squirrel-derived route and requested durable project documentation and Git version management. Initial authorization covered Round 0 only. After its closeout, the user explicitly authorized **Round 1 only**: define the key contract, unify state/commit management, and implement horizontal two-line candidates with example subtitles. Option+Return was selected for translated commit. On 2026-10-12 the user authorized **Round 2 only** after the Round 1 source and automated checks were revalidated. Round 1 installed IMK acceptance remains NOT_RUN and is not treated as a pass. Stop after Round 2 delivery and wait for confirmation before Round 3. Repeat this boundary between all later rounds.
 
 The authorized sequence is:
 
 1. Persist the complete plan and establish appropriate Git version management.
-2. Carry out the currently authorized round only (now Round 1).
+2. Carry out the currently authorized round only (now Round 2).
 3. Report changes, verification results, limitations, and remaining work.
 4. Wait for the user before beginning Round 2.
 

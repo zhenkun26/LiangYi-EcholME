@@ -87,3 +87,18 @@ Core checks also cover both Shift paths and stale focus/cancellation. No new
 dependency/data, captured input, external request or installation is added.
 See the Round 1 delivery/status records for measured results and remaining
 installed-IMK acceptance. Inherited licenses and notices remain preserved.
+
+## 2026-10-12 — Round 2 offline dictionary
+
+Production subtitles now come from a pinned CC-CEDICT index instead of the ten
+hand-authored fixtures. The fixtures remain only for the state-machine tests.
+Chinese candidates receive one English subtitle, and English tokens receive one
+Chinese subtitle. Option+Return still commits that displayed subtitle only when
+it covers the whole composition. A miss and a timeout are different states, and
+a timeout is not cached as a miss. Primary input still commits when translation
+is unavailable.
+
+The dictionary data stays under CC-BY-SA-4.0. GPL notices on project source are
+unchanged. No cloud client, context detector, or new code dependency was added.
+The development bundle version is 0.0.4. Installed IMK acceptance and visible
+panel latency remain unverified. See the Round 2 delivery record.

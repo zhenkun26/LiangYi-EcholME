@@ -27,6 +27,17 @@ final class SquirrelApplicationDelegate: NSObject, NSApplicationDelegate {
     panel = SquirrelPanel(position: .zero)
     refreshStatusItem()
     addObservers()
+    // Dictionary bytes load off the key path. A missing index fails closed to
+    // primary input; it does not block the input method from starting.
+    if let url = Bundle.main.url(forResource: "echolme-lexicon", withExtension: "idx") {
+      LocalLexicon.shared.startLoading(from: url) { loaded in
+        let name = loaded ? EcholMENotification.lexiconReady : EcholMENotification.lexiconFailed
+        NotificationCenter.default.post(name: name, object: nil)
+      }
+    } else {
+      LocalLexicon.shared.failLoading()
+      NotificationCenter.default.post(name: EcholMENotification.lexiconFailed, object: nil)
+    }
   }
 
   func applicationWillTerminate(_ notification: Notification) {

@@ -16,7 +16,7 @@ This is the decision index for the approved [delivery plan](PLAN.md). An accepte
 | ADR-006 | Prefer field type and nearby text for automatic direction, with explicit rules and stable fallback. | ACCEPTED | Freeze direction per composition; learned preferences never override explicit rules. |
 | ADR-007 | Provide local-only, local-first, and API-first translation policies. | ACCEPTED | API-first cannot block primary-text input. Service support requires protocol and live-verification evidence. |
 | ADR-008 | Prepare for GPL-derived distribution throughout development. | ACCEPTED | Preserve upstream rights and provide corresponding-source materials before external binary distribution. Exact grant/SPDX and dependency/data inventory still require verification. |
-| ADR-009 | Deliver sequentially and stop after each authorized round for confirmation. | ACCEPTED | Round 0 is closed; latest authorization covers Round 1 only. Stop before Round 2; keep commits local. |
+| ADR-009 | Deliver sequentially and stop after each authorized round for confirmation. | ACCEPTED | Round 0 and Round 1 are delivered with recorded limits. Round 2 was authorized on 2026-10-12. Stop before Round 3; keep commits local. |
 | ADR-010 | Honor no filesystem deletion and independent product storage. | ACCEPTED | Review scripts, stop on existing install targets, and never alter Squirrel user data or evade replacement restrictions. |
 
 Runtime acceptance authorization update (2026-10-11): the user permits librime's normal generated-file/database maintenance only within `~/Library/Application Support/LiangYi/` and `~/Library/Logs/LiangYi/`. This supersedes the earlier engine-maintenance blocker for audited, confined operations. Manual deletion, Squirrel/other data changes and pushing remain outside scope. Round 1 was outside scope at that historical authorization; its later explicit authorization is recorded above. Historical verification below records the initial delivery; follow-up runtime results are recorded in [RUNTIME_ACCEPTANCE.md](../round0/RUNTIME_ACCEPTANCE.md).
@@ -79,6 +79,16 @@ text into the bound old client; an unexpected different client discards old
 state. Fixtures are ten hand-authored entries per direction, not licensed
 dictionary coverage, model support or measured real translation latency.
 
+### Round 2 decision now resolved
+
+| ID | Decision | Evidence and remaining limit |
+| --- | --- | --- |
+| ADR-019 | Use the pinned MDBG CC-CEDICT export `cedict_1_0_ts_utf-8_mdbg.txt.gz`, dated 2026-10-11T08:29:27Z, under CC-BY-SA-4.0. Build one simplified-to-English subtitle index and a separate English headword/phrase index. Break English ties with the vendored rime-essay scores. Do not treat either index as the reverse of the other. | Index rebuild and 136 runtime checks PASS. Counts, checksums, and the frozen corpus are in `data/lexicon/`. In-process lookup latency is recorded. Installed panel acceptance and the visible 150 ms measurement remain NOT_RUN. |
+
+The Chinese subtitle is one eligible gloss: a plain English word, otherwise a short phrase, otherwise a truncated definition. English headwords prefer the earlier CC-CEDICT sense and then the higher essay score. Phrases of two to four words are stored separately. Labeled surname, variant, abbreviation, archaic, slang, and bound-form senses are demoted or skipped. Regular English plurals and `-ing`/`-ed` forms fall back only when the surface word is absent. The displayed subtitle is exactly what Option+Return can commit, and only when the candidate preview covers the whole composition.
+
+Known policy results, not defects in that contract: English `input` commits `投放` while `输入` displays `import`; `eat` commits `食用`; `time` commits `时候`; `chinese` commits `中国人` while `中文` displays `Chinese`. A miss (`—`) and a timeout (`!`) stay distinct. No cloud provider, context detector, or new code dependency was added.
+
 ### Remaining decisions and platform evidence
 
 | ID | Question | Owner round | Exit requirement |
@@ -91,7 +101,7 @@ dictionary coverage, model support or measured real translation latency.
 | ADR-016 | What safe build/install/reload procedures work under the no-deletion policy? | Round 0 | Inspect side effects, stop on existing targets, and distinguish install/register/select/input states. |
 | ADR-017 | Runtime evidence for the resolved key contract above; phrase entry and full Off mode. | Round 1 acceptance; later feature rounds | Complete installed IMK acceptance; do not treat core tests or Example Off as full product mode acceptance. |
 | ADR-018 | Runtime evidence for the implemented snapshot/display model above. | Round 1 acceptance; Round 5 geometry | Test mouse press/release, focus, subtitle arrival, screen edges and scale on the installed bundle. |
-| ADR-019 | Which licensed dictionary and phrase resources meet offline bidirectional quality targets? | Round 2 | Record provenance, licensing, counts, corpus, and independent directional quality. |
+| ADR-019 | Runtime and quality limits of the selected dictionary above. | Round 2 acceptance; Round 5 latency | Installed IMK subtitle/commit acceptance and visible-panel latency remain NOT_RUN. One displayed sense is not a professional quality rating. |
 | ADR-020 | What is the measured local latency envelope on the supported devices and corpus? | Round 2 baseline; Round 5 acceptance | Measure valid visible translation end-to-end; report cold/warm distributions, maxima, misses, and timeouts without weakening the 150 ms criterion. |
 | ADR-021 | What exact outbound-text, retention, cache, and sensitive-field policies apply? | Round 3–4 | Define visible user controls and default behavior; avoid whole-field outbound text and plaintext diagnostic content by default. |
 | ADR-022 | Which provider protocol variants and endpoint rules are actually supported? | Round 4 | Separate contract tests, live requests, and quality/latency results for each provider. |

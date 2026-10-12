@@ -1,2 +1,4 @@
 # Preserve upstream binary documentation without text whitespace diagnostics.
 *.pdf binary
+data/lexicon/upstream/*.gz binary
+data/lexicon/echolme-lexicon.idx text eol=lf
