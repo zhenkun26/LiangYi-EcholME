@@ -119,7 +119,7 @@ warnings: none. One inherited AppIntents metadata extraction warning remains.
 | In-process cold index load | 474.8 ms, once, off the key path |
 | Warm lookup, 1,300 calls | min 0.0003 ms, P50 0.0010 ms, P95 0.0021 ms, max 0.048 ms |
 | Visible panel latency from input change to a drawn subtitle | NOT_RUN |
-| Installed 0.0.4 input in Notes, Xcode, and Terminal | NOT_RUN |
+| Installed 0.0.4 TextEdit input | PASS for Chinese Space, Option+Return, raw Return, and English hello/echolme. Notes, Xcode, Terminal, and the visible panel remain NOT_RUN. See [manual acceptance](MANUAL_ACCEPTANCE.md). |
 | macOS 14, Intel, running Squirrel coexistence | NOT_RUN |
 | Push, release, notarization | NOT_AUTHORIZED |
 

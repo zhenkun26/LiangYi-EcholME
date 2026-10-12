@@ -1,0 +1,27 @@
+{
+  "recorded": "2026-10-12",
+  "install": "PASS",
+  "version": "0.0.4",
+  "destination_was_absent": true,
+  "installed_files_match_artifact": true,
+  "registration_osstatus": 0,
+  "hans_enabled_selected": true,
+  "hant_enabled": false,
+  "process": "installed EcholME binary running",
+  "previous_input_source_before_successful_select": "com.apple.inputmethod.SCIM.ITABC",
+  "textedit": {
+    "chinese_space": "PASS",
+    "chinese_option_return": "PASS",
+    "chinese_raw_return": "PASS",
+    "english_option_return": "PASS",
+    "english_miss_then_space": "PASS",
+    "synthetic_chinese_result": "LYR2:你好hellonihao",
+    "synthetic_english_result": "LYR2B:你好echolme "
+  },
+  "notes": "NOT_RUN",
+  "xcode": "NOT_RUN",
+  "terminal": "NOT_RUN",
+  "visible_panel": "NOT_RUN",
+  "log_contains_test_composition": false,
+  "startup_warning": "missing optional grammar.yaml"
+}

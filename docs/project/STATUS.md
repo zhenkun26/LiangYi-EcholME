@@ -12,9 +12,9 @@ Recorded: 2026-10-12, America/New_York.
 - Final bundle: `.artifacts/builds/round2-lexicon-20261012c/DerivedData/Build/Products/Debug/EcholME.app`, version **0.0.4**, macOS 14 deployment target, arm64 Debug/ad-hoc signed. The bundled index and NOTICE match the source tree.
 - Verification on Apple M4, 16 GiB, macOS 26.5, Xcode 26.6, arm64: lexicon rebuild PASS; 136 dictionary/state/commit checks PASS; Round 1 regression 60 core, 22 host, 12 tool guards, real librime PASS, and 57 Shift checks PASS. In-process cold index load 474.8 ms. Warm lookup over 1,300 calls: minimum 0.0003 ms, P50 0.0010 ms, P95 0.0021 ms, maximum 0.048 ms. This is not the visible-panel 150 ms measurement.
 - Warning: one inherited AppIntents metadata extraction warning; no compiler/linker warnings. macOS 14/Intel runtime and universal crash freedom are unverified.
-- Installed state: still the Round 0 package, version **0.0.1**. Round 1 and Round 2 Notes/Xcode/Terminal input acceptance is **NOT_RUN**. Visible candidate latency is **NOT_RUN**.
+- Installed state: the user removed the previous bundle. Absent-target install of **0.0.4** passed static verification. Hans is enabled and selected; Hant is disabled. The installed process is running. TextEdit IMK checks passed for Chinese Space/`你好`, Option+Return/`hello`, raw Return/`nihao`, and English `hello`→`你好` plus an `echolme` miss. Notes field focus, Xcode, Terminal, and visible panel latency remain **NOT_RUN**.
 - GPL: program sources remain GPL-3.0-only. The lexicon data remains CC-BY-SA-4.0 and is not relicensed. Complete corresponding-source distribution review remains an external release gate.
-- Next: install 0.0.4 only after the user removes the existing bundle, then perform real input acceptance. Stop before Round 3. Keep commits local.
+- Next: Notes, Xcode, and Terminal still need typed acceptance. Stop before Round 3. Keep commits local. The TextEdit results and install record are in [manual acceptance](../round2/MANUAL_ACCEPTANCE.md).
 
 ## Round 1 snapshot (historical)
 
