@@ -274,7 +274,7 @@ private func notificationHandler(contextObject: UnsafeMutableRawPointer?, sessio
           return stateLabelLong.asString
         }
         if optionName == "ascii_mode" {
-          delegate.updateStatusIcon(asciiMode: state, schemaLabel: shortLabel())
+          delegate.updateStatusIcon(asciiMode: state, schemaLabel: state ? "英文" : "中文")
         }
         if delegate.enableNotifications {
           delegate.showStatusMessage(msgTextLong: longLabel(), msgTextShort: shortLabel())

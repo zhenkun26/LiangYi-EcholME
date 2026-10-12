@@ -92,8 +92,9 @@ enum BilingualCandidateRenderer {
                font: .systemFont(ofSize: 12), color: subtitleColor)
     }
     let page = snapshot.page + 1
-    let example = snapshot.examplesEnabled ? "Dictionary · ⌥↩ translation" : "Translations off"
-    drawText("\(example) · Page \(page)", in: layout.footer, font: .systemFont(ofSize: 11), color: .secondaryLabelColor)
+    let language = snapshot.direction == .chinese ? "中文 · 左⇧切英文" : "英文 · 左⇧切中文"
+    let action = snapshot.examplesEnabled ? "⌥↩ 译文" : "译文关"
+    drawText("\(language) · \(action) · \(page)", in: layout.footer, font: .systemFont(ofSize: 11), color: .secondaryLabelColor)
   }
 
   private static func drawText(_ text: String, in rect: NSRect, font: NSFont, color: NSColor) {

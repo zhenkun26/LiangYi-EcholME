@@ -276,28 +276,34 @@ private struct ShiftGestureTracker {
       held = []
       if device & ShiftModifierEvent.leftDeviceMask != 0 { held.insert(ShiftModifierEvent.leftKey) }
       if device & ShiftModifierEvent.rightDeviceMask != 0 { held.insert(ShiftModifierEvent.rightKey) }
-    } else if held.contains(key) {
-      // A sole Shift cannot be released while the aggregate flag remains set.
-      // Without device bits that event is a duplicate/inconsistent press.
-      if held.count > 1 { held.remove(key) }
-    } else {
+    } else if held.contains(key), held.count > 1 {
+      // The other Shift is still down, and this event has no device bits.
+      held.remove(key)
+    } else if !held.contains(key) {
       held.insert(key)
     }
     let blocked = event.modifiers & ShiftModifierEvent.blockingMask != 0
+    if blocked {
+      armed = nil
+      return .consumed
+    }
+    // A physical Shift key often delivers a second flagsChanged while the same
+    // keys remain down. That update must not cancel the tap already armed.
+    if held == previous { return .consumed }
     if !previous.contains(key), held.contains(key) {
-      if previous.isEmpty, held.count == 1, !blocked {
+      if previous.isEmpty, held.count == 1 {
         armed = key
         started = event.timestamp
       } else {
         armed = nil
       }
     } else if previous.contains(key), !held.contains(key) {
-      let tapped = armed == key && held.isEmpty && !blocked &&
+      let tapped = armed == key && held.isEmpty &&
         event.timestamp >= started && event.timestamp - started <= 0.5
       armed = nil
       if tapped { return key == ShiftModifierEvent.leftKey ? .leftTap : .rightTap }
     } else {
-      armed = nil // Inconsistent/duplicate flags cannot manufacture a tap.
+      armed = nil
     }
     return .consumed
   }

@@ -930,7 +930,10 @@ extension SquirrelInputController: CompositionModeHost {
   var modeASCII: Bool { session != 0 && rimeAPI.find_session(session) && rimeAPI.get_option(session, "ascii_mode") }
   var modeHasEnglishInput: Bool { !composition.englishInput.isEmpty }
   func modeFinalizeRaw() -> Bool { finalizeRawComposition() }
-  func modeSetASCII(_ enabled: Bool) { rimeAPI.set_option(session, "ascii_mode", enabled) }
+  func modeSetASCII(_ enabled: Bool) {
+    rimeAPI.set_option(session, "ascii_mode", enabled)
+    NSApp.squirrelAppDelegate.updateStatusIcon(asciiMode: enabled, schemaLabel: enabled ? "英文" : "中文")
+  }
   func modeRightShiftTap(modifiers: UInt) {
     let base = SquirrelKeycode.osxModifiersToRime(modifiers: NSEvent.ModifierFlags(rawValue: modifiers))
     _ = processKey(UInt32(XK_Shift_R), modifiers: base | kShiftMask.rawValue)
