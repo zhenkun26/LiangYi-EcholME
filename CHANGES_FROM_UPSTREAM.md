@@ -70,3 +70,20 @@ See [Round 1 delivery](docs/round1/DELIVERY.md) for final artifacts, verificatio
 and limits. Installed Round 1 input acceptance is pending; the current installed
 package remains the fixed Round 0. Complete corresponding-source preparation
 remains an external-distribution gate. No Round 2, push or release occurred.
+
+## 2026-10-11 — Round 1 Shift repair
+
+The user authorized fixing two P1 review findings in the existing Round 1
+branch. CompositionState/InputController now own both Shift gesture streams,
+finalize raw input before left-tap mode changes, replay only a confirmed right
+tap through the schema, retain its Caps Lock mask, and prevent a frontend
+English buffer from replacing live engine-owned inline input. Focus, mode and
+engine resets discard pending gestures; reentrant host changes block replay.
+The development bundle version is 0.0.3.
+
+New source-owned Swift regressions exercise the production router with pinned
+librime and a synthetic host under the existing confined C probe lifecycle.
+Core checks also cover both Shift paths and stale focus/cancellation. No new
+dependency/data, captured input, external request or installation is added.
+See the Round 1 delivery/status records for measured results and remaining
+installed-IMK acceptance. Inherited licenses and notices remain preserved.

@@ -16,6 +16,30 @@ private final class FakeHost: CommitHost {
   }
 }
 
+private final class FakeModeHost: CompositionModeHost {
+  let state = CompositionSession()
+  var modeASCII = false
+  var raw = ""
+  var inserts: [String] = []
+  var onInsert: (() -> Void)?
+  var rightTaps = 0
+  var refreshes = 0
+  var modeToken: CompositionToken { state.token }
+  var modeActive: Bool { state.active }
+  var modeHasEnglishInput: Bool { !state.englishInput.isEmpty }
+  func modeFinalizeRaw() -> Bool {
+    let text = state.englishInput.isEmpty ? raw : state.englishInput
+    raw = ""
+    if text.isEmpty { return state.active }
+    return CommitCoordinator().commit(text, expected: state.token, state: state, host: ClosureCommitHost { text in
+      self.inserts.append(text); self.onInsert?(); return true
+    })
+  }
+  func modeSetASCII(_ enabled: Bool) { modeASCII = enabled }
+  func modeRightShiftTap(modifiers: UInt) { rightTaps += 1; modeASCII.toggle() }
+  func modeRefresh() { refreshes += 1 }
+}
+
 @main
 struct Round1Checks {
   static var checks: [String] = []
@@ -54,6 +78,7 @@ struct Round1Checks {
   }
 
   static func run() throws {
+    try shiftRouting()
     try check(policy(49) == .engine, "Chinese Space delegates selection to engine")
     try check(policy(18, text: "1") == .engine, "Chinese digit retains engine labels/recognizers")
     try check(policy(36) == .raw, "composing Return submits raw input")
@@ -172,6 +197,38 @@ struct Round1Checks {
       let enReady = state.applyExamples(ExampleTranslation.results(for: en), for: en.token)!
       try render(enReady, name: "english-examples.png", target: target)
     }
+  }
+
+  static func shiftRouting() throws {
+    let host = FakeModeHost()
+    let router = CompositionModeRouter()
+    host.state.activate(); host.raw = "nihao"
+    func flags(_ key: UInt16, _ modifiers: UInt, _ timestamp: Double) {
+      _ = router.handleModifiers(ShiftModifierEvent(keyCode: key, modifiers: modifiers, timestamp: timestamp), host: host)
+    }
+    flags(56, ShiftModifierEvent.shiftMask, 1); flags(56, 0, 1.1)
+    try check(host.modeASCII && host.inserts == ["nihao"] && host.raw.isEmpty, "left tap finalizes Chinese raw before mode change")
+    _ = host.state.appendEnglish("HELLO")
+    flags(60, ShiftModifierEvent.shiftMask, 2); router.keyDown(); flags(60, 0, 2.1)
+    try check(host.modeASCII && host.state.englishInput == "HELLO" && host.rightTaps == 0, "right Shift typing cannot replay a mode tap")
+    flags(60, ShiftModifierEvent.shiftMask, 3); flags(60, 0, 3.1)
+    try check(!host.modeASCII && host.inserts == ["nihao", "HELLO"] && host.rightTaps == 1, "right tap finalizes frontend English before schema replay")
+    flags(56, ShiftModifierEvent.shiftMask, 4); flags(56, 0, 4.8)
+    try check(!host.modeASCII, "long Shift hold does not become a mode tap")
+    flags(56, ShiftModifierEvent.shiftMask, 5); router.reset(); flags(56, 0, 5.1)
+    try check(!host.modeASCII, "focus reset rejects old Shift release")
+    host.modeASCII = true; _ = host.state.appendEnglish("hello")
+    host.onInsert = { host.state.deactivate(); host.state.activate(); router.reset() }
+    flags(60, ShiftModifierEvent.shiftMask, 6); flags(60, 0, 6.1)
+    try check(host.modeASCII && host.rightTaps == 1 && host.inserts.last == "hello", "reentrant focus change stops mode replay without duplicate commit")
+    host.onInsert = { host.state.invalidate(); router.reset() }
+    _ = host.state.appendEnglish("world")
+    flags(56, ShiftModifierEvent.shiftMask, 7); flags(56, 0, 7.1)
+    try check(host.modeASCII && host.inserts.last == "world", "reentrant cancellation stops mode change after raw reservation")
+    flags(60, ShiftModifierEvent.shiftMask, 8); flags(60, ShiftModifierEvent.shiftMask, 8.01); flags(60, 0, 8.1)
+    try check(host.modeASCII && host.rightTaps == 1, "duplicate remote Shift press cannot manufacture a tap")
+    try check(!CompositionModeRouter.usesEnglishComposer(ascii: true, examples: true, engineInput: "nihao"), "inline ASCII with a live engine prefix cannot start a second buffer")
+    try check(CompositionModeRouter.usesEnglishComposer(ascii: true, examples: true, engineInput: ""), "empty engine permits frontend English composition")
   }
 
   static func render(_ snapshot: CandidateSnapshot, name: String, target: URL) throws {

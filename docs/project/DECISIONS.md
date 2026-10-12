@@ -51,6 +51,25 @@ Round 0 closeout is authorized and delivered with verification limits. A same-ap
 | ADR-017 | Adopt the [key contract](../round1/KEY_CONTRACT.md). Option+Return is user-selected; Return commits raw composition without newline; empty Return belongs to host. Chinese numeric labels retain schema recognizers; English digits extend a token. Tab/Command finalize raw then pass through; Esc cancels. | Shared policy tests PASS. Chinese engine checks PASS. Real installed Notes/Xcode/Terminal key acceptance remains NOT_RUN for Round 1. |
 | ADR-018 | Use immutable snapshots with session UUID, focus generation, composition revision and candidate index. Copy primary text, label, engine comment, explicit whole preview and example state separately. Subtitle arrival preserves identities/highlight/page. | Core/layout tests PASS. The existing Squirrel Panel/View is reused; no new UI dependency. Translated commit requires a ready displayed candidate, matching preview, and engine selection covering the whole preedit. Real panel focus/mouse/multiple-display acceptance remains NOT_RUN. |
 
+Round 1 P1 follow-up (2026-10-11): the user authorized fixes, regressions,
+re-review and a local commit on the same branch. Left Shift alone within 0.5 s
+finalizes raw input once before switching in either direction. Right Shift
+retains schema selection semantics; a frontend English token is finalized
+before replay. Engine-owned inline ASCII stays in Rime, including right-tap
+finalization. Both physical Shift streams are owned by the frontend so an
+intercepted letter cannot look like a bare tap to Rime. Typing, overlapping
+Shifts, another modifier, long holds, duplicate/orphan events and lifecycle
+resets invalidate the gesture. Right replay retains Caps Lock. Focus generation
+and composition revision are checked after host finalization before any mode
+change/replay. See the updated key contract and delivery follow-up.
+
+Evidence: 60 core checks, 22 host-wrapper checks, 12 tool guards, 60 original
+engine checks and 57 production-router/real-librime/synthetic-host checks PASS.
+The shared Swift router is used by the actual InputController and the tests;
+the synthetic host adapter does not validate IMK IPC, marked ranges, the real
+panel or physical keyboard event delivery. These remain NOT_RUN on the repaired
+0.0.3 bundle. No dependency, dictionary, cloud feature or Round 2 work was added.
+
 The commit coordinator reserves and invalidates state before any external marking or
 insertion. The Objective-C host adapter checks selectors, uses NSNotFound for
 replacement, and contains NSException; failed/uncertain inserts are not retried.

@@ -27,8 +27,22 @@ next key. Two ordinary Returns are needed for a composed token followed by a
 host newline; this matches the Chinese raw-Return contract. Option+Return
 does not append a newline or space.
 
-Left Shift tapped alone switches Chinese/English. Shift used with a typed key
-must not toggle mode. A CLI mode change or the example toggle finalizes the
+Left Shift tapped alone within 0.5 seconds finalizes the current raw composition
+once, clears engine state and switches Chinese/English in either direction.
+For example, Chinese `nihao`, Left Shift, English `a`, Return produces `nihaoa`
+through two ordered inserts (`nihao`, `a`), with no implicit space or newline.
+Right Shift alone within the same window retains the schema binding: the
+baseline's `commit_text` confirms the Chinese candidate and enters ASCII mode;
+frontend English is finalized raw before replaying a confirmed right tap.
+`nihao`, Right Shift, `a`, Return therefore produces `你好a` in that baseline.
+Either Shift used with a typed key, another modifier, the other Shift or a
+long hold must not toggle mode. Orphan/duplicate releases and releases from a
+previous focus/mode boundary cannot manufacture a tap. The frontend owns both
+physical Shift gesture streams; Rime receives a right press/release pair only
+after it has been verified as a tap, retaining the current Caps Lock mask.
+An engine-side inline ASCII composition with a live prefix remains entirely
+engine-owned until it finishes; it cannot start a second English buffer.
+A CLI mode change or the example toggle finalizes the
 old raw composition once and invalidates callbacks before changing mode.
 Example Off keeps Chinese input, hides example subtitles, and restores direct
 ASCII passthrough. Auto direction/HUD/configuration are later rounds.

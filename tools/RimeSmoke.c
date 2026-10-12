@@ -19,6 +19,15 @@
 
 enum { kCycles = 10, kEscape = 0xff1b, kCandidateCapacity = 512 };
 
+#ifdef ECHOLME_SHIFT_REGRESSIONS
+// The same confined setup/teardown can host production Swift routing tests.
+// Only a synthetic host is used; no installed IMK process or document access.
+extern int32_t EcholMERunShiftRegressions(uintptr_t session);
+static const char *kProbeScope = "real librime + production Swift Shift router; synthetic host, no IMK client/UI";
+#else
+static const char *kProbeScope = "real librime only; no IMK client/UI";
+#endif
+
 typedef struct {
   int completed_cycles;
   int space_passes;
@@ -33,6 +42,7 @@ typedef struct {
   int preview_passes;
   int translated_clear_passes;
   int partial_scope_passes;
+  int shift_regression_checks;
   const char *error;
 } SmokeResult;
 
@@ -391,12 +401,13 @@ static bool run_round1_cycle(RimeApi *api, RimeSessionId session, SmokeResult *r
 static void emit_result(const SmokeResult *result) {
   printf("{\n"
          "  \"schema_version\": 1,\n"
-         "  \"scope\": \"real librime only; no IMK client/UI\",\n"
+         "  \"scope\": \"%s\",\n"
          "  \"status\": \"%s\",\n"
          "  \"cycles_requested\": %d,\n"
          "  \"cycles_completed\": %d,\n"
          "  \"round1_isolated_roots\": %s,\n"
          "  \"round1_checks\": {\"whole_preview\": %d, \"clear_without_original\": %d, \"partial_scope_rejected\": %d},\n"
+         "  \"shift_regression_checks\": %d,\n"
          "  \"cases\": {\n"
          "    \"nihao_space_exact_commit\": %d,\n"
          "    \"zhongguo_numeric_matches_displayed_first\": %d,\n"
@@ -411,10 +422,10 @@ static void emit_result(const SmokeResult *result) {
          "  \"network_requests\": false,\n"
          "  \"manual_cleanup_performed\": false,\n"
          "  \"error\": ",
-         result->error == NULL ? "PASS" : "FAIL", kCycles,
+         kProbeScope, result->error == NULL ? "PASS" : "FAIL", kCycles,
          result->completed_cycles, result->round1 ? "true" : "false", result->preview_passes,
-         result->translated_clear_passes, result->partial_scope_passes, result->space_passes,
-         result->numeric_passes, result->escape_passes,
+         result->translated_clear_passes, result->partial_scope_passes, result->shift_regression_checks,
+         result->space_passes, result->numeric_passes, result->escape_passes,
          result->roots_preflight ? "true" : "false",
          result->roots_postflight ? "true" : "false",
          result->maintenance_started ? "true" : "false",
@@ -554,6 +565,12 @@ int main(int argc, char **argv) {
     }
     if (result.round1 && !run_round1_cycle(api, session, &result)) break;
   }
+#ifdef ECHOLME_SHIFT_REGRESSIONS
+  if (result.error == NULL && result.round1) {
+    result.shift_regression_checks = EcholMERunShiftRegressions(session);
+    if (result.shift_regression_checks <= 0) fail(&result, "swift_shift_regressions_failed");
+  }
+#endif
 
 finished:
   if (session != 0 && api != NULL && !api->destroy_session(session)) {

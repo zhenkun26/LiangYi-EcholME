@@ -1,7 +1,7 @@
 //
 //  SquirrelInputController.swift
 //  Squirrel
-//  Modified for EcholME on 2026-10-11: isolated identity; Round 1 state/commit and examples.
+//  Modified for EcholME on 2026-10-11: isolated identity; Round 1 state/commit, examples and Shift boundaries.
 //
 //  Created by Leo Liu on 5/7/24.
 //
@@ -18,7 +18,7 @@ final class SquirrelInputController: IMKInputController {
   private var exampleWork: DispatchWorkItem?
   private var scheduledExampleToken: CompositionToken?
   private var examplesEnabled = true
-  private var englishShiftTap = false
+  private let modeRouter = CompositionModeRouter()
   private var observers: [NSObjectProtocol] = []
   private let rimeAPI: RimeApi_stdbool = rime_get_api_stdbool().pointee
   private var preedit: String = ""
@@ -48,6 +48,7 @@ final class SquirrelInputController: IMKInputController {
     if session == 0 || !rimeAPI.find_session(session) {
       cancelExamples()
       composition.deactivate()
+      modeRouter.reset()
       createSession()
       if session == 0 {
         return false
@@ -60,27 +61,19 @@ final class SquirrelInputController: IMKInputController {
       updateAppOptions()
     }
 
-    if event.type == .flagsChanged, !changes.intersection([.command, .control, .option]).isEmpty {
-      englishShiftTap = false
-    }
     if event.type == .keyDown {
-      englishShiftTap = false
+      modeRouter.keyDown()
       if let disposition = handleCompositionKey(event) { return disposition }
-    } else if event.type == .flagsChanged, event.keyCode == 56,
-              rimeAPI.get_option(session, "ascii_mode"), changes.contains(.shift) {
-      if modifiers.contains(.shift) {
-        englishShiftTap = modifiers.intersection([.command, .control, .option]).isEmpty
-      } else if englishShiftTap {
-        englishShiftTap = false
-        finalizeRawComposition()
-        rimeAPI.set_option(session, "ascii_mode", false)
-        rimeUpdate()
+    } else if event.type == .flagsChanged {
+      let keyCode = SquirrelKeycode.modifierKeycodes.contains(event.keyCode) ? event.keyCode :
+        (SquirrelKeycode.inferModifierKeycode(from: changes) ?? event.keyCode)
+      let modifierEvent = ShiftModifierEvent(keyCode: keyCode,
+                                            modifiers: modifiers.rawValue, timestamp: event.timestamp)
+      if modeRouter.handleModifiers(modifierEvent, host: self) {
+        lastModifiers = modifiers
+        return true
       }
-      lastModifiers = modifiers
-      return true
-    } else if event.type == .flagsChanged, changes.contains(.capsLock),
-              !composition.englishInput.isEmpty {
-      finalizeRawComposition()
+      if changes.contains(.capsLock), !composition.englishInput.isEmpty { finalizeRawComposition() }
     }
 
     switch event.type {
@@ -212,6 +205,7 @@ final class SquirrelInputController: IMKInputController {
     finalizeRawComposition()
     cancelExamples()
     composition.activate()
+    modeRouter.reset()
     var keyboardLayout = NSApp.squirrelAppDelegate.config?.getString("keyboard_layout") ?? ""
     if keyboardLayout == "last" || keyboardLayout == "" {
       keyboardLayout = ""
@@ -268,6 +262,7 @@ final class SquirrelInputController: IMKInputController {
       self?.finalizeRawComposition()
       self?.cancelExamples()
       self?.composition.deactivate()
+      self?.modeRouter.reset()
       self?.hidePalettes()
     })
   }
@@ -276,6 +271,7 @@ final class SquirrelInputController: IMKInputController {
     commitComposition(sender)
     cancelExamples()
     composition.deactivate()
+    modeRouter.reset()
     hidePalettes()
     client = nil
   }
@@ -338,6 +334,7 @@ final class SquirrelInputController: IMKInputController {
     cancelExamples()
     composition.invalidate()
     examplesEnabled.toggle()
+    modeRouter.reset()
     rimeUpdate()
   }
 
@@ -463,6 +460,7 @@ private extension SquirrelInputController {
   func destroySession() {
     cancelExamples()
     composition.deactivate()
+    modeRouter.reset()
     if session != 0 {
       _ = rimeAPI.destroy_session(session)
       session = 0
@@ -721,6 +719,7 @@ private extension SquirrelInputController {
     finalizeRawComposition()
     cancelExamples()
     composition.invalidate()
+    modeRouter.reset()
     rimeAPI.set_option(session, "ascii_mode", enableASCII)
     rimeUpdate()
   }
@@ -748,6 +747,7 @@ private extension SquirrelInputController {
       // never finalize its text through the newly supplied client.
       discardCurrentComposition()
       composition.deactivate()
+      modeRouter.reset()
     }
     client = incoming
     if !composition.active { composition.activate() }
@@ -784,24 +784,28 @@ private extension SquirrelInputController {
     hidePalettes()
   }
 
-  func finalizeRawComposition() {
-    guard composition.active else { return }
+  @discardableResult
+  func finalizeRawComposition() -> Bool {
+    guard composition.active else { return false }
     let text = composition.englishInput.isEmpty ? rawEngineInput() : composition.englishInput
     let expected = composition.token
     cancelExamples()
     clearEngine() // Clear before insertion: reentrant deactivation cannot append originals.
-    if !text.isEmpty { _ = commit(string: text, expected: expected) }
+    if !text.isEmpty { return commit(string: text, expected: expected) }
+    return composition.active && composition.token == expected
   }
 
   func handleCompositionKey(_ event: NSEvent) -> Bool? {
     let flags = event.modifierFlags
+    let engineInput = rawEngineInput()
     let action = CompositionKeyPolicy.action(
       keyCode: event.keyCode, text: event.characters,
       command: flags.contains(.command), control: flags.contains(.control),
       option: flags.contains(.option), shift: flags.contains(.shift),
-      hasComposition: !composition.englishInput.isEmpty || !rawEngineInput().isEmpty,
+      hasComposition: !composition.englishInput.isEmpty || !engineInput.isEmpty,
       englishInput: composition.englishInput,
-      englishEnabled: rimeAPI.get_option(session, "ascii_mode") && examplesEnabled)
+      englishEnabled: CompositionModeRouter.usesEnglishComposer(
+        ascii: rimeAPI.get_option(session, "ascii_mode"), examples: examplesEnabled, engineInput: engineInput))
     switch action {
     case .engine:
       if flags.intersection([.command, .control, .option]).isEmpty,
@@ -883,4 +887,19 @@ private extension SquirrelInputController {
     // is a tiny bounded fixture; real backend scheduling belongs to Round 2.
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.08, execute: work)
   }
+}
+
+extension SquirrelInputController: CompositionModeHost {
+  var modeToken: CompositionToken { composition.token }
+  var modeActive: Bool { composition.active }
+  var modeASCII: Bool { session != 0 && rimeAPI.find_session(session) && rimeAPI.get_option(session, "ascii_mode") }
+  var modeHasEnglishInput: Bool { !composition.englishInput.isEmpty }
+  func modeFinalizeRaw() -> Bool { finalizeRawComposition() }
+  func modeSetASCII(_ enabled: Bool) { rimeAPI.set_option(session, "ascii_mode", enabled) }
+  func modeRightShiftTap(modifiers: UInt) {
+    let base = SquirrelKeycode.osxModifiersToRime(modifiers: NSEvent.ModifierFlags(rawValue: modifiers))
+    _ = processKey(UInt32(XK_Shift_R), modifiers: base | kShiftMask.rawValue)
+    _ = processKey(UInt32(XK_Shift_R), modifiers: base | kReleaseMask.rawValue)
+  }
+  func modeRefresh() { rimeUpdate() }
 }

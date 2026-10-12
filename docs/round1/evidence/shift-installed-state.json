@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "installed_bundle": "/Users/zhenkun/Library/Input Methods/EcholME.app",
+  "installed_version": "0.0.1",
+  "critical_files": {
+    "Contents/MacOS/EcholME": "c3e9afe2acc4e5a04648ef8203d1bc844bb55a68f4af09673b2386f9620ffcac",
+    "Contents/MacOS/EcholME.debug.dylib": "3ee90ae05bf257fca63772057c08967d516647789a13ff787f04903c389daa40",
+    "Contents/Info.plist": "28719004b61e77e9366623e29a54872d0516e5a08965fa1e777131878e59973c",
+    "Contents/Frameworks/librime.1.dylib": "0364ba17630816031277033d94d822b0a1ef47994d103c7ae8e7e93d4039c066"
+  },
+  "unchanged_from_before_repair": true,
+  "repair_installed": false,
+  "runtime_input": "NOT_RUN",
+  "scope": "Four installed critical files only; not a system-wide filesystem trace"
+}

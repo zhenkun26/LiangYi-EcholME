@@ -214,3 +214,125 @@ enum CompositionKeyPolicy {
     return .rawThenHost
   }
 }
+
+// Copied macOS modifier events. Device bits distinguish overlapping left/right
+// Shift keys; remote events without those bits use the key code and held state.
+struct ShiftModifierEvent {
+  let keyCode: UInt16
+  let modifiers: UInt
+  let timestamp: TimeInterval
+
+  static let leftKey: UInt16 = 56
+  static let rightKey: UInt16 = 60
+  static let shiftMask: UInt = 1 << 17
+  static let blockingMask: UInt = (1 << 18) | (1 << 19) | (1 << 20) | (1 << 23)
+  // NX_DEVICELSHIFTKEYMASK / NX_DEVICERSHIFTKEYMASK from the macOS event ABI.
+  static let leftDeviceMask: UInt = 0x2
+  static let rightDeviceMask: UInt = 0x4
+}
+
+private enum ShiftGesture {
+  case unrelated, consumed, leftTap, rightTap
+}
+
+private struct ShiftGestureTracker {
+  private var held: Set<UInt16> = []
+  private var armed: UInt16?
+  private var started: TimeInterval = 0
+
+  mutating func reset() { held = []; armed = nil }
+  mutating func keyDown() { armed = nil }
+
+  mutating func receive(_ event: ShiftModifierEvent) -> ShiftGesture {
+    let key = event.keyCode
+    guard key == ShiftModifierEvent.leftKey || key == ShiftModifierEvent.rightKey else {
+      armed = nil // Another modifier interrupts a tap, even if released first.
+      return .unrelated
+    }
+    let previous = held
+    let device = event.modifiers & (ShiftModifierEvent.leftDeviceMask | ShiftModifierEvent.rightDeviceMask)
+    if event.modifiers & ShiftModifierEvent.shiftMask == 0 {
+      held = []
+    } else if device != 0 {
+      held = []
+      if device & ShiftModifierEvent.leftDeviceMask != 0 { held.insert(ShiftModifierEvent.leftKey) }
+      if device & ShiftModifierEvent.rightDeviceMask != 0 { held.insert(ShiftModifierEvent.rightKey) }
+    } else if held.contains(key) {
+      // A sole Shift cannot be released while the aggregate flag remains set.
+      // Without device bits that event is a duplicate/inconsistent press.
+      if held.count > 1 { held.remove(key) }
+    } else {
+      held.insert(key)
+    }
+    let blocked = event.modifiers & ShiftModifierEvent.blockingMask != 0
+    if !previous.contains(key), held.contains(key) {
+      if previous.isEmpty, held.count == 1, !blocked {
+        armed = key
+        started = event.timestamp
+      } else {
+        armed = nil
+      }
+    } else if previous.contains(key), !held.contains(key) {
+      let tapped = armed == key && held.isEmpty && !blocked &&
+        event.timestamp >= started && event.timestamp - started <= 0.5
+      armed = nil
+      if tapped { return key == ShiftModifierEvent.leftKey ? .leftTap : .rightTap }
+    } else {
+      armed = nil // Inconsistent/duplicate flags cannot manufacture a tap.
+    }
+    return .consumed
+  }
+}
+
+protocol CompositionModeHost: AnyObject {
+  var modeToken: CompositionToken { get }
+  var modeActive: Bool { get }
+  var modeASCII: Bool { get }
+  var modeHasEnglishInput: Bool { get }
+  func modeFinalizeRaw() -> Bool
+  func modeSetASCII(_ enabled: Bool)
+  func modeRightShiftTap(modifiers: UInt)
+  func modeRefresh()
+}
+
+// Own both Shift gesture streams: Rime must not receive a press/release pair
+// with the intervening frontend-consumed letter missing. A confirmed right tap
+// is replayed as a pair to retain the schema's binding, not to invent one.
+final class CompositionModeRouter {
+  private var shift = ShiftGestureTracker()
+
+  func reset() { shift.reset() }
+  func keyDown() { shift.keyDown() }
+
+  static func usesEnglishComposer(ascii: Bool, examples: Bool, engineInput: String) -> Bool {
+    // A schema/engine may enter inline ASCII with a live Chinese prefix. That
+    // entire composition remains owned by Rime until it finishes.
+    ascii && examples && engineInput.isEmpty
+  }
+
+  func handleModifiers(_ event: ShiftModifierEvent, host: CompositionModeHost) -> Bool {
+    let gesture = shift.receive(event) // End mutation before any reentrant host call.
+    if case .unrelated = gesture { return false }
+    guard host.modeActive else { return true }
+    switch gesture {
+    case .leftTap, .rightTap:
+      let before = host.modeToken
+      let ascii = host.modeASCII
+      // Left tap always finalizes raw input. Right tap preserves Chinese schema
+      // selection semantics but must finish frontend English before Rime runs.
+      if gesture == .leftTap || host.modeHasEnglishInput {
+        guard host.modeFinalizeRaw() else { return true }
+      }
+      guard host.modeActive, host.modeToken.session == before.session,
+            host.modeToken.generation == before.generation,
+            (host.modeToken.revision == before.revision || host.modeToken.revision == before.revision &+ 1) else { return true }
+      // A raw reservation advances once. Any extra revision means an external
+      // host callback cancelled/replaced input; do not overwrite that decision.
+      if gesture == .leftTap { host.modeSetASCII(!ascii) }
+      else { host.modeRightShiftTap(modifiers: event.modifiers) }
+      if host.modeActive, host.modeToken.generation == before.generation { host.modeRefresh() }
+    case .consumed, .unrelated: break
+    }
+    return true
+  }
+}

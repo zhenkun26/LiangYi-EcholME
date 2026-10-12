@@ -33,7 +33,7 @@ flowchart LR
 
 The Squirrel internal module/class names remain to limit divergence. App identity, input sources, notifications, data and logs are independent. Chinese Space/digits keep engine selection/recognizers; English Space commits a token plus one space, and digits extend the token. Return commits raw composition without newline; empty Return belongs to the host. Esc cancels. **Option+Return** submits a ready example only when it matches the verified full commit scope. Tab/Command finalize raw then pass to the host.
 
-Tap Left Shift alone to switch Chinese/English. The input menu's Example translations toggle disables examples and restores direct ASCII passthrough; its state is per controller. Unknown words show `—`; pending results show `…`. No automatic context detection or cloud API is implemented. See the full key contract before testing English punctuation, email/URL/code or Chinese recognizers.
+Tap Left Shift alone (within 0.5 seconds) to finalize raw composition once and switch Chinese/English. Right Shift alone retains the Rime schema binding; the baseline commits the Chinese candidate, while frontend English is finalized first. Either Shift used with a typed key, another modifier, the other Shift, or a long hold does not switch. The input menu's Example translations toggle disables examples and restores direct ASCII passthrough; its state is per controller. Unknown words show `—`; pending results show `…`. No automatic context detection or cloud API is implemented. See the full key contract before testing English punctuation, email/URL/code or Chinese recognizers.
 
 ### Build and install
 
@@ -83,7 +83,7 @@ No push or release is authorized by the current Round 1 request. Inherited upstr
 
 中文空格／数字保留引擎选词及识别规则；英文空格提交词及一个空格，数字继续输入。组合中的回车提交原始字母而不换行，空组合回车交给宿主；Esc 取消。**Option+Return** 仅上屏已显示、已就绪且通过完整范围检查的示例译文。Tab／Command 先提交原文再交给宿主。
 
-单独轻按左 Shift 切换中英文。“Example translations” 菜单开关关闭示例时恢复英文直通，其状态仅属于当前控制器。未命中显示 `—`，等待中显示 `…`。自动环境识别与云 API 尚未实现；邮箱、网址、代码和中文识别规则应按完整按键约定验收。
+在 0.5 秒内单独轻按左 Shift，先提交原始组合一次，再切换中英文。右 Shift 单独轻按保留 Rime 方案绑定：当前基线提交中文候选，前端英文组合则先提交原文。左右 Shift 配合输入、其他修饰键、另一个 Shift 或长按时均不切换模式。“Example translations” 菜单开关关闭示例时恢复英文直通，其状态仅属于当前控制器。未命中显示 `—`，等待中显示 `…`。自动环境识别与云 API 尚未实现；邮箱、网址、代码和中文识别规则应按完整按键约定验收。
 
 ### 构建与安装
 

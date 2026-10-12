@@ -185,6 +185,13 @@ Each round's user-facing delivery includes: objective, changed file tree, releva
 
 **Main risks:** Swallowed keys, duplicate inserts, writes after focus changes, selection drift during refresh.
 
+Authorized Round 1 follow-up: fix the two P1 Shift/composition review findings,
+cover left/right Shift and Chinese/English handoff with regressions, review the
+repair and commit locally. The repaired Shift contract finalizes raw input
+before a left tap, preserves the right-tap schema binding and keeps live engine
+input out of a second English buffer. See the current status/delivery evidence;
+this is Round 1 repair, not authorization to begin Round 2.
+
 **Acceptance:**
 
 - Both Chinese and English primary input work.

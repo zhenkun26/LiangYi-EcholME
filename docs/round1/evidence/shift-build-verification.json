@@ -1,0 +1,19 @@
+{
+  "result": "PASS",
+  "scope": "static bundle identity, resources, arm64 dependency-path resolution, and local signature; not runtime input acceptance",
+  "bundle": "/Users/zhenkun/GitHub/LiangYi-EcholME/.artifacts/builds/round1-shift-final-03/DerivedData/Build/Products/Debug/EcholME.app",
+  "bundle_identifier": "io.github.zhenkun26.inputmethod.EcholME",
+  "minimum_macos": "14.0",
+  "architectures": "arm64",
+  "signature": "--prepared:/Users/zhenkun/GitHub/LiangYi-EcholME/.artifacts/builds/round1-shift-final-03/DerivedData/Build/Products/Debug/EcholME.app/Contents/MacOS/__preview.dylib\n--prepared:/Users/zhenkun/GitHub/LiangYi-EcholME/.artifacts/builds/round1-shift-final-03/DerivedData/Build/Products/Debug/EcholME.app/Contents/MacOS/rime_dict_manager\n--validated:/Users/zhenkun/GitHub/LiangYi-EcholME/.artifacts/builds/round1-shift-final-03/DerivedData/Build/Products/Debug/EcholME.app/Contents/MacOS/__preview.dylib\n--validated:/Users/zhenkun/GitHub/LiangYi-EcholME/.artifacts/builds/round1-shift-final-03/DerivedData/Build/Products/Debug/EcholME.app/Contents/MacOS/rime_dict_manager\n--prepared:/Users/zhenkun/GitHub/LiangYi-EcholME/.artifacts/builds/round1-shift-final-03/DerivedData/Build/Products/Debug/EcholME.app/Contents/MacOS/rime_deployer\n--validated:/Users/zhenkun/GitHub/LiangYi-EcholME/.artifacts/builds/round1-shift-final-03/DerivedData/Build/Products/Debug/EcholME.app/Contents/MacOS/rime_deployer\n--prepared:/Users/zhenkun/GitHub/LiangYi-EcholME/.artifacts/builds/round1-shift-final-03/DerivedData/Build/Products/Debug/EcholME.app/Contents/MacOS/EcholME.debug.dylib\n--validated:/Users/zhenkun/GitHub/LiangYi-EcholME/.artifacts/builds/round1-shift-final-03/DerivedData/Build/Products/Debug/EcholME.app/Contents/MacOS/EcholME.debug.dylib\n--prepared:/Users/zhenkun/GitHub/LiangYi-EcholME/.artifacts/builds/round1-shift-final-03/DerivedData/Build/Products/Debug/EcholME.app/Contents/Frameworks/librime.1.dylib\n--validated:/Users/zhenkun/GitHub/LiangYi-EcholME/.artifacts/builds/round1-shift-final-03/DerivedData/Build/Products/Debug/EcholME.app/Contents/Frameworks/librime.1.dylib\n/Users/zhenkun/GitHub/LiangYi-EcholME/.artifacts/builds/round1-shift-final-03/DerivedData/Build/Products/Debug/EcholME.app: valid on disk\n/Users/zhenkun/GitHub/LiangYi-EcholME/.artifacts/builds/round1-shift-final-03/DerivedData/Build/Products/Debug/EcholME.app: satisfies its Designated Requirement",
+  "dynamic_loading": "NOT_RUN",
+  "notarized": false,
+  "distribution_ready": false,
+  "runtime_input": "NOT_RUN_BY_STATIC_VERIFIER",
+  "runtime_note": "This command performs static verification only. Current delivery and runtime acceptance limits are recorded separately in docs/project/STATUS.md.",
+  "build_warnings": [
+    "2026-10-11 20:35:15.142 appintentsmetadataprocessor[6150:56256] warning: Metadata extraction skipped. No AppIntents.framework dependency found."
+  ],
+  "build_errors": [],
+  "build_log": "/Users/zhenkun/GitHub/LiangYi-EcholME/.artifacts/builds/round1-shift-final-03/xcodebuild.log"
+}

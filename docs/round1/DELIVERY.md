@@ -6,6 +6,10 @@ Delivery: **IMPLEMENTED_AND_BUILT_WITH_RUNTIME_ACCEPTANCE_PENDING**.
 Only Round 1 is authorized. Stop before Round 2; no push, release or replacement
 of the installed Round 0 bundle was performed.
 
+**Current artifact: repaired 0.0.3**, with the P1 fixes and final verification
+recorded in Section 6 below. Sections 1–5 preserve the original `e5b390d` / 0.0.2
+delivery and its evidence; its artifact is superseded for installation.
+
 ## 1. Objective and boundary
 
 Define the [key contract](KEY_CONTRACT.md), centralize composition/host insertion,
@@ -166,3 +170,87 @@ Complete the [manual acceptance matrix](MANUAL_ACCEPTANCE.md) on this bundle.
 Wait for the user's explicit confirmation before Round 2's licensed offline
 bidirectional dictionary, cache/cancellation/timeouts and quality/latency work.
 No push is authorized.
+
+## 6. Round 1 P1 repair and follow-up review
+
+The user authorized fixing both review findings, adding left/right Shift and
+Chinese/English handoff regressions, another source review, and a local commit.
+The same `feat/round-1-composition` branch is retained. Round 2, push and package
+replacement remain outside scope.
+
+| Review finding | Repair and verification |
+| --- | --- |
+| P1: `nihao`, Left Shift, `a`, Return drops the Chinese prefix | A confirmed left tap finalizes `nihao` through the existing coordinator before changing mode. The sequence produces two ordered inserts, `nihao` and `a`, with no separator, loss or later original. A live engine-side inline ASCII prefix cannot start a second frontend buffer. PASS in shared production routing with the real engine/synthetic host. |
+| P1: Right Shift+letter release can toggle Chinese and erase English | The frontend tracks both Shift streams and cancels taps on every keydown. Rime receives only a verified right-tap pair, preserving its binding and Caps Lock mask. Left/right uppercase sequences retain the token and ASCII mode, then commit once. PASS in shared production routing with the real engine/synthetic host. |
+
+Left/right tap duration is at most 0.5 seconds, matching the pinned engine's
+tap window. Right Shift preserves the baseline `commit_text` behavior for
+Chinese: `nihao`, Right Shift, `a`, Return produces `你好a`. English is finalized
+raw first. Engine-owned inline ASCII is finalized by Rime to avoid a second
+toggle when its temporary mode exits. Long holds, another modifier, both Shift
+keys, duplicate/orphan events and old-focus releases cannot switch mode.
+Focus/source/mode/engine boundaries reset the tracker. Failed insertion or an
+extra generation/revision change during a host call stops the subsequent mode
+change; uncertain inserts are not retried.
+
+Changed modules: `CompositionState.swift`, `SquirrelInputController.swift`, the
+development bundle version in the Xcode project, `Round1Checks.swift`, the C
+probe and check runner. Added `ShiftRegressionBridge.h` and
+`ShiftRegressionChecks.swift`; no new dependency or dataset. The Swift router,
+key policy, state and commit coordinator are production code shared by tests.
+The harness uses copied NSEvent flags, actual key mapping and real pinned
+librime, with a synthetic host in the existing confined probe lifecycle.
+
+Source review rechecked modifier ownership, raw-prefix preservation, right-tap
+binding, Caps Lock, two-key overlap, duplicate remote events, lifecycle reset,
+reentrant focus/cancellation and version/side-effect boundaries. Both original
+P1 findings are **RESOLVED_IN_SOURCE_AND_REGRESSION**; no additional P1/P2 was
+found in these repair paths. This is not installed IMK acceptance.
+
+| Final verification | Result |
+| --- | --- |
+| arm64 Debug build, deployment target 14, static bundle/resources/links/ad-hoc signature | PASS, version 0.0.3. |
+| Compiler/linker warnings | None; one inherited AppIntents metadata extraction tool warning. |
+| Shared core/policy/state/layout tests | 60 PASS. |
+| Objective-C host wrapper | 22 PASS. |
+| Mocked build/install safety guards | 12 PASS. |
+| Original real engine checks | 10 cycles / 60 PASS. |
+| Production Shift router + real librime + synthetic host | 57 PASS, including negative controls, both P1 sequences, both directions, uppercase, Return/Space, Example Off, long holds, overlap, Caps Lock, duplicate/reordered releases, stale examples, host failure, reentrant focus/cancellation and 10 repeated mixed cycles. |
+| Normal C probe without the Swift regression macro | Compilation PASS with warnings as errors. |
+| Source/artifact hashes and installed critical-file preservation | PASS; installed bundle remains 0.0.1. |
+| Repaired bundle installation, Notes/Xcode/Terminal IMK input, actual latency and multi-display panel behavior | NOT_RUN. |
+
+Final artifact:
+
+```text
+.artifacts/builds/round1-shift-final-03/DerivedData/Build/Products/Debug/EcholME.app
+```
+
+Reproduce with fresh IDs (the recorded IDs already exist and are preserved):
+
+```sh
+python3 -B tools/round0.py build --configuration Debug
+python3 -B tools/check_round1.py --engine-bundle \
+  .artifacts/builds/round1-shift-final-03/DerivedData/Build/Products/Debug/EcholME.app
+```
+
+[Final build](evidence/shift-build-verification.json),
+[checks and exact case names](evidence/shift-checks-verification.json),
+[source hashes](evidence/shift-source-sha256.json),
+[artifact hashes](evidence/shift-artifact-sha256.json), and
+[installed critical-file comparison](evidence/shift-installed-state.json)
+identify this repair. The first integration compile needed the existing X11
+include path; it was corrected without adding a dependency. Intermediate
+checks/builds remain under `.artifacts`, and final evidence covers final code.
+
+Installation remains user-guided through the absent-target procedure in
+[MANUAL_ACCEPTANCE.md](MANUAL_ACCEPTANCE.md), which now includes physical
+left/right Shift cases S01–S06. These are NOT_RUN. Synthetic-host success does
+not verify IMK client reentrancy/marked ranges, keyboard event delivery or the
+candidate panel. macOS 14/Intel, custom chord schemas and actual end-to-end
+latency remain unverified. Fixture coverage is still ten entries per direction.
+
+GPL-3.0-only notices on authored source/tests and inherited upstream/dependency
+notices are retained; the dated modification record is updated. Complete
+corresponding-source distribution review remains a release gate. No package
+replacement, new dependency, cloud request, Round 2 work or push occurred.
