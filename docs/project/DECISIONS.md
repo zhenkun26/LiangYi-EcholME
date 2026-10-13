@@ -1,8 +1,20 @@
 # LiangYi / EcholME — Decision Register
 
-Updated: 2026-10-12, America/New_York; initial plan recorded 2026-10-11.
+Updated: 2026-10-13, America/New_York; initial plan recorded 2026-10-11.
 
 This is the decision index for the approved [delivery plan](PLAN.md). An accepted direction is not a claim that its implementation or runtime acceptance has passed. Detailed ADRs may be added during the round that owns the decision.
+
+Latest authorization update (2026-10-13): the user separately approved guided
+installation, registration and activation of 0.0.7, then authorized Round 4
+only after completing all executable Round 3 installed acceptance. They
+explicitly rejected using the `nihao` smoke check alone as that gate. Round 4
+has not started. Historical source-increment restrictions below do not undo
+these approvals. No push, replacement deletion or Round 5 is authorized.
+
+Evidence decision: distinguish physical-keyboard user reports from Computer
+Use events and field snapshots. The latter did not reproduce or independently
+corroborate the current physical Notes results. Do not classify literal CU
+letters as an IME regression solely from TIS selection and `--getascii`.
 
 ## Accepted decisions
 
@@ -16,7 +28,7 @@ This is the decision index for the approved [delivery plan](PLAN.md). An accepte
 | ADR-006 | Prefer field type and nearby text for automatic direction, with explicit rules and stable fallback. | ACCEPTED | Freeze direction per composition; learned preferences never override explicit rules. |
 | ADR-007 | Provide local-only, local-first, and API-first translation policies. | ACCEPTED | API-first cannot block primary-text input. Service support requires protocol and live-verification evidence. |
 | ADR-008 | Prepare for GPL-derived distribution throughout development. | ACCEPTED | Preserve upstream rights and provide corresponding-source materials before external binary distribution. Exact grant/SPDX and dependency/data inventory still require verification. |
-| ADR-009 | Deliver sequentially and stop after each authorized round for confirmation. | ACCEPTED | The user authorized checking Round 2 closeout and advancing Round 3 on 2026-10-12. Round 2 closes with recorded limits; installed IMK/physical acceptance is not promoted to PASS. Stop before Round 4; keep commits local; no installation in this increment. |
+| ADR-009 | Deliver sequentially within explicit stage gates. | ACCEPTED | On 2026-10-13 the user conditionally authorized Round 4 after all executable Round 3 acceptance. Guided installation of 0.0.7 and partial physical checks are recorded separately; remaining cases are not passes. Keep commits local; no automatic replacement or later-round work. |
 | ADR-010 | Honor no filesystem deletion and independent product storage. | ACCEPTED | Review scripts, stop on existing install targets, and never alter Squirrel user data or evade replacement restrictions. |
 
 Runtime acceptance authorization update (2026-10-11): the user permits librime's normal generated-file/database maintenance only within `~/Library/Application Support/LiangYi/` and `~/Library/Logs/LiangYi/`. This supersedes the earlier engine-maintenance blocker for audited, confined operations. Manual deletion, Squirrel/other data changes and pushing remain outside scope. Round 1 was outside scope at that historical authorization; its later explicit authorization is recorded above. Historical verification below records the initial delivery; follow-up runtime results are recorded in [RUNTIME_ACCEPTANCE.md](../round0/RUNTIME_ACCEPTANCE.md).
@@ -28,10 +40,10 @@ The planning baseline was committed as `041b643` and Squirrel source/history was
 | ID | Current decision | Status / remaining evidence |
 | --- | --- | --- |
 | ADR-011 | Squirrel `769ae426f33f500266101a88f694aab0d158e680`; inherited librime `33e78140250125871856cdc5b42ddc6a5fcd3cd4` / v1.17.0 and Sparkle `41847a58cdef7506b257591fcca6f9495df591d4` / 2.6.2 references; `dependencies.lock.json` and `data/schema-manifest.json` identify artifact/data inputs. | BUILD_VERIFIED on macOS 26.5/arm64; Sparkle excluded. Artifact/data/notice checks pass; complete distribution closure remains pending. |
-| ADR-012 | Product identity root `io.github.zhenkun26.inputmethod.EcholME`; user install `~/Library/Input Methods/EcholME.app`; data `~/Library/Application Support/LiangYi/Rime/`; logs `~/Library/Logs/LiangYi/`; runtime updater disabled. | FIXED_INSTALL_REGISTER_SELECT_PASS at the historical Round 0 acceptance; both bundled mode defaults false. At that acceptance Hans was enabled/selected and Hant disabled. The later 0.0.4 installation was removed in `323d902`; no installed bundle is the current recorded state. Real Squirrel coexistence remains unverified. |
+| ADR-012 | Product identity root `io.github.zhenkun26.inputmethod.EcholME`; user install `~/Library/Input Methods/EcholME.app`; data `~/Library/Application Support/LiangYi/Rime/`; logs `~/Library/Logs/LiangYi/`; runtime updater disabled. | 0.0.7 installed/registered/activated through guided checkpoints; all 86 delivered file hashes match. Hans enabled/selected, Hant disabled. The earlier 0.0.4 removal exception (`323d902`) is consumed. Both bundled mode defaults remain false. Real Squirrel coexistence remains unverified. |
 | ADR-013 | IMK adapter owns host access; session state owns lifecycle; engine adapter owns librime; presentation tracks displayed identity; one commit coordinator writes to the host; translation consumes copied values. | IMPLEMENTED_IN_ROUND_1 with fixture translations. Automated state/host/layout/engine checks are separate from pending installed IMK acceptance. |
 | ADR-014 | Use privacy-preserving capability probes and separate source, AX, and real IMK evidence. | Notes metadata/basic/punctuation and closeout field checks passed within scope; physical equals/punctuation closure user-confirmed. Format: 7 ASCII passes; 7 Chinese observations; false fault labels withdrawn. Closeout editing/mixed/switch/reload passed; Unicode paste-only and same-app focus observation. Panel/Return branches remain unverified. Xcode BLOCKED_NO_UI_SURFACE; Terminal BLOCKED_TOOL_POLICY. |
-| ADR-015 | Isolate long cloud work in a service process; XPC is a proposed mechanism requiring lifecycle, signing, peer-authentication, and failure validation. | DESIGN_PROPOSED; no service implementation or validated platform result. Round 4 remains unauthorized. |
+| ADR-015 | Isolate long cloud work in a service process; XPC is a proposed mechanism requiring lifecycle, signing, peer-authentication, and failure validation. | DESIGN_PROPOSED; no service implementation or validated platform result. Round 4 is conditionally authorized after the Round 3 acceptance gate and has not started. |
 | ADR-016 | Review recursive tooling; absent-target user installation only; stop at existing target; no cleanup/deletion or system-wide reload; separate registration from selection and input. | ROUND_0_DELIVERED_WITH_LIMITS; confined maintenance authorized. Fixed startup/idle reload/30 engine checks historical PASS. Installed closeout reload: 3 success, 0 failure, followed by Notes input PASS. Static verification and 12 guards rerun; no input-source implementation changed. Other hosts/restoration remain unverified. No assistant deletion or push. |
 
 Round 0 observed Return behavior is baseline evidence, not a final decision for future English/translation modes: the current `express_editor` submits raw unselected input on Return; an empty composition allows host handling. The user confirmed raw letters committed with the candidate window and underline cleared; a separate Notes fixture confirmed one Return creates one newline. ADR-017 still owns the complete later-round key contract.
@@ -103,14 +115,15 @@ moved the exact old app to Trash. No permanent erasure or other deletion was
 performed. LiangYi data/log file inventories and content hashes matched before
 and after. This one-time exception is complete, not standing deletion authority.
 The removal record is `323d902`. Version 0.0.6 remains retained and uninstalled;
-the subsequent Round 3 source work does not authorize installation. A separate
-installation checkpoint must identify the chosen artifact. Keep commits local.
+the original Round 3 source work did not authorize installation. Subsequent
+guided checkpoints separately confirmed the delivered 0.0.7 installation.
+Future repair replacement needs its own confirmed sequence. Keep commits local.
 
 ### Round 2 decision now resolved
 
 | ID | Decision | Evidence and remaining limit |
 | --- | --- | --- |
-| ADR-019 | Use the pinned MDBG CC-CEDICT export `cedict_1_0_ts_utf-8_mdbg.txt.gz`, dated 2026-10-11T08:29:27Z, under CC-BY-SA-4.0. Build one simplified-to-English subtitle index and a separate English headword/phrase index. Break English ties with the vendored rime-essay scores. Do not treat either index as the reverse of the other. | Index rebuild and 136 runtime checks PASS. Counts, checksums, and the frozen corpus are in `data/lexicon/`. In-process lookup latency is recorded. Installed panel acceptance and the visible 150 ms measurement remain NOT_RUN. |
+| ADR-019 | Use the pinned MDBG CC-CEDICT export `cedict_1_0_ts_utf-8_mdbg.txt.gz`, dated 2026-10-11T08:29:27Z, under CC-BY-SA-4.0. Build one simplified-to-English subtitle index and a separate English headword/phrase index. Break English ties with the vendored rime-essay scores. Do not treat either index as the reverse of the other. | Index rebuild and 136 runtime checks PASS. Counts, checksums, and the frozen corpus are in `data/lexicon/`. In-process lookup latency is recorded. The 0.0.7 Notes panel and commit cases have bounded user-reported passes; other hosts/geometry and visible 150 ms measurement remain unverified. |
 
 The Chinese subtitle is one eligible gloss: a plain English word, otherwise a short phrase, otherwise a truncated definition. English headwords prefer the earlier CC-CEDICT sense and then the higher essay score. Phrases of two to four words are stored separately. Labeled surname, variant, abbreviation, archaic, slang, and bound-form senses are demoted or skipped. Regular English plurals and `-ing`/`-ed` forms fall back only when the surface word is absent. The displayed subtitle is exactly what Option+Return can commit, and only when the candidate preview covers the whole composition.
 
@@ -119,9 +132,11 @@ Known policy results, not defects in that contract: English `input` commits `投
 ### Round 3 — Context, mode, and local retention contract
 
 **ADR-025 — Accepted and implemented in the Round 3 source increment; installed
-acceptance remains NOT_RUN.** The user's request to check Round 2 closeout and
-advance Round 3 authorizes this source work and local commits. It does not
-authorize installation, Round 4, cloud providers, or pushing. Current build,
+acceptance is partial.** The original source authorization was followed by
+guided 0.0.7 installation and user-reported physical passes. On 2026-10-13 the
+user conditionally authorized Round 4 after all executable Round 3 acceptance;
+that gate remains open. Keep source repair, installed results, and unavailable
+checks separate. No push or automatic replacement. Current build,
 automated results, and remaining manual checks belong in the
 [Round 3 delivery record](../round3/DELIVERY.md).
 
@@ -185,6 +200,27 @@ or a visible-panel latency below 150 ms. Those remain explicit acceptance
 carryovers; complete corresponding-source distribution review remains a
 separate release gate.
 
+### Round 3 repair — transient security state (2026-10-13)
+
+**ADR-026 — Implemented and built in 0.0.8; repaired installed acceptance
+NOT_RUN.** A live global Secure Event Input flag is independent from persistent
+AX secure-field evidence. Its release or a delayed skipped capture requires a
+bounded metadata-only review. While waiting, ordinary keys pass through and
+translations stay disabled; no nearby text is sampled. Request UUID and
+session/focus/composition gates reject cancelled or obsolete completions.
+Metadata-only reads validate focus, global protection and the deadline before
+delivery. A stale field result retires the request, retains protection, and
+blocks automatic retries until field/input-source reactivation resets context.
+Known AX secure evidence cannot be replaced by unknown/skipped/failed metadata.
+Off schedules no review and preserves unresolved safety for resumption.
+
+Denied, unsupported and timed-out metadata ends the bounded wait using the
+existing fallback contract; this is not proof of a safe field. No new prompt,
+dependency, text retention or per-key AX polling is added. Source/queue tests
+and bounded review pass; real InputController/IMK recovery, field identity and
+OS event delivery require installed acceptance. Current 0.0.7 user physical
+passes remain separate from this repair. See [repair evidence](../round3/evidence/secure-input-recovery-008.json).
+
 ### Remaining decisions and platform evidence
 
 | ID | Question | Owner round | Exit requirement |
@@ -197,7 +233,7 @@ separate release gate.
 | ADR-016 | What safe build/install/reload procedures work under the no-deletion policy? | Round 0 | Inspect side effects, stop on existing targets, and distinguish install/register/select/input states. |
 | ADR-017 | Runtime evidence for the resolved key contract above; phrase entry and Round 3 product Off mode. | Round 1/3 acceptance; later phrase work | Complete installed IMK acceptance; do not treat core tests or the historical Example Off control as product Off acceptance. See ADR-025 for the source contract. |
 | ADR-018 | Runtime evidence for the implemented snapshot/display model above. | Round 1 acceptance; Round 5 geometry | Test mouse press/release, focus, subtitle arrival, screen edges and scale on the installed bundle. |
-| ADR-019 | Runtime and quality limits of the selected dictionary above. | Round 2 acceptance; Round 5 latency | Installed IMK subtitle/commit acceptance and visible-panel latency remain NOT_RUN. One displayed sense is not a professional quality rating. |
+| ADR-019 | Runtime and quality limits of the selected dictionary above. | Round 2 acceptance; Round 5 latency | The 0.0.7 Notes subtitle/commit cases have bounded user-reported passes; broader installed coverage and visible-panel latency remain unverified. One displayed sense is not a professional quality rating. |
 | ADR-020 | What is the measured local latency envelope on the supported devices and corpus? | Round 2 baseline; Round 5 acceptance | Measure valid visible translation end-to-end; report cold/warm distributions, maxima, misses, and timeouts without weakening the 150 ms criterion. |
 | ADR-021 | What exact outbound-text, retention, cache, and sensitive-field policies apply? | Round 3–4 | ADR-025 resolves local context/retention/sensitive-field scope. Installed acceptance remains pending; Round 4 must separately define outbound provider policy without whole-field forwarding or plaintext diagnostic capture. |
 | ADR-022 | Which provider protocol variants and endpoint rules are actually supported? | Round 4 | Separate contract tests, live requests, and quality/latency results for each provider. |

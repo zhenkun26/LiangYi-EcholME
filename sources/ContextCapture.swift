@@ -25,8 +25,15 @@ enum ContextSnapshotReader {
       ContextEvidence(field: field, language: nil, confidence: 0,
                       availability: availability, reason: availability.rawValue)
     }
+    func secureInputSkipped() -> ContextEvidence {
+      // A global OS flag does not establish the focused field's AX type. Do
+      // not cache it as a secure field: delivery may follow the flag's release.
+      // The controller resolves safety against the live flag on every event.
+      ContextEvidence(field: .unknown, language: nil, confidence: 0,
+                      availability: .disabled, reason: "secure_event_input")
+    }
     if access.secureInput {
-      return ContextDetector.detect(text: "", field: .secure)
+      return secureInputSkipped()
     }
     guard access.trusted else { return missing(.denied) }
     guard !access.expired, let field = access.focusedField() else {
@@ -35,16 +42,26 @@ enum ContextSnapshotReader {
     // Never ask secure/unknown elements for text, even when manual mode is set.
     if field == .secure { return ContextDetector.detect(text: "", field: .secure) }
     guard field != .unknown else { return missing(.unsupported) }
-    guard includeText else { return missing(.disabled, field: field) }
+    guard includeText else {
+      // A recovery review can release passthrough, so metadata needs the same
+      // final safety/focus/deadline boundary as a text-bearing snapshot.
+      if access.secureInput { return secureInputSkipped() }
+      guard !access.expired else { return missing(.timedOut) }
+      let sameFocus = access.focusUnchanged()
+      if access.secureInput { return secureInputSkipped() }
+      guard !access.expired else { return missing(.timedOut) }
+      guard sameFocus else { return missing(.stale) }
+      return missing(.disabled, field: field)
+    }
     guard !access.expired, let caret = access.caretLocation(), caret >= 0, caret < Int.max - maximumUTF16 else {
       return missing(access.expired ? .timedOut : .unsupported, field: field)
     }
     let length = min(caret, maximumUTF16)
     var text = ""
     if length > 0 {
-      if access.secureInput { return ContextDetector.detect(text: "", field: .secure) }
+      if access.secureInput { return secureInputSkipped() }
       guard !access.expired, access.focusUnchanged() else { return missing(access.expired ? .timedOut : .stale) }
-      if access.secureInput { return ContextDetector.detect(text: "", field: .secure) }
+      if access.secureInput { return secureInputSkipped() }
       guard !access.expired, let value = access.textBeforeCaret(location: caret - length, length: length),
             value.utf16.count <= length else {
         return missing(access.expired ? .timedOut : .unsupported, field: field)
@@ -52,9 +69,9 @@ enum ContextSnapshotReader {
       text = value
     }
     guard !access.expired else { return missing(.timedOut) }
-    if access.secureInput { return ContextDetector.detect(text: "", field: .secure) }
+    if access.secureInput { return secureInputSkipped() }
     guard access.focusUnchanged() else { return missing(.stale) }
-    if access.secureInput { return ContextDetector.detect(text: "", field: .secure) }
+    if access.secureInput { return secureInputSkipped() }
     guard !access.expired else { return missing(.timedOut) }
     return ContextDetector.detect(text: text, field: field)
   }

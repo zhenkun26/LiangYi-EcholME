@@ -18,6 +18,8 @@ struct Round3Checks {
     do {
       try detectorChecks()
       try resolverChecks()
+      try secureEventInputRecoveryChecks()
+      try secureMetadataReviewChecks()
       try settingsAndRequestChecks()
       try check(ContextSamplingPolicy.refreshAfterSettings(mode: .auto, contextEnabled: true,
                  hadComposition: false, evidence: .unavailable), "idle Auto selection requests missing context")
@@ -230,6 +232,191 @@ struct Round3Checks {
               "ordinary language resolution keeps bilingual composition available")
   }
 
+  private static func secureEventInputRecoveryChecks() throws {
+    let ordinary = ContextDetector.detect(text: "这是中文测试", field: .text)
+    let axSecure = ContextDetector.detect(text: "", field: .secure)
+    let metadata = ContextEvidence(field: .text, language: nil, confidence: 0,
+                                   availability: .disabled, reason: "disabled")
+    var secureEventInput = false
+    var review = SecureContextReview()
+    func resolve(_ settings: ContextSettings, evidence: ContextEvidence? = nil,
+                 manual: InputDirection? = nil, composing: InputDirection? = nil) -> ModeResolution {
+      review.observeGlobalInput(secureEventInput)
+      return ModeResolver.resolve(bundleID: "org.example.editor", evidence: evidence ?? ordinary,
+                                  manual: manual, settings: settings, composingDirection: composing,
+                                  secureEventInput: secureEventInput, secureMetadataPending: review.required)
+    }
+
+    // Reuse the same evidence and settings across the OS flag transitions.
+    // Recovery cannot rely on focus changes, a new capture, or a mode toggle.
+    for mode in [PrimaryInputMode.auto, .chinese, .english, .off] {
+      var settings = ContextSettings()
+      settings.mode = mode
+      review.reset()
+      secureEventInput = false
+      let before = resolve(settings)
+      secureEventInput = true
+      let protected = resolve(settings, manual: .chinese, composing: .chinese)
+      try check(protected.direction == .english && protected.passthrough && !protected.translationsAllowed,
+                "live secure input overrides \(mode.rawValue) and pending manual Chinese composition")
+      try check(protected.reason == "secure_event_input",
+                "live secure input keeps its own reason in \(mode.rawValue)")
+      secureEventInput = false
+      let waiting = resolve(settings)
+      try check(waiting.passthrough && !waiting.translationsAllowed,
+                "\(mode.rawValue) remains passthrough after release until field metadata is reviewed")
+      if mode == .off {
+        try check(waiting == before && review.beginIfNeeded(secureEventInput: false, mode: .off,
+                                                           knownSecureField: false) == nil,
+                  "Off preserves literal input without initiating a metadata review")
+      } else {
+        guard let identifier = review.beginIfNeeded(secureEventInput: false, mode: mode, knownSecureField: false) else {
+          throw CheckError.failed("released \(mode.rawValue) could not start metadata review")
+        }
+        try check(review.complete(identifier, evidence: metadata, secureEventInput: false),
+                  "\(mode.rawValue) accepts its matching metadata-only review")
+        let recovered = resolve(settings, evidence: metadata)
+        try check(recovered.direction == before.direction && !recovered.passthrough && recovered.translationsAllowed,
+                  "\(mode.rawValue) recovers after false true false and a metadata-only review")
+      }
+    }
+
+    var settings = ContextSettings()
+    settings.mode = .chinese
+    review.reset()
+    secureEventInput = false
+    let protectedAX = resolve(settings, evidence: axSecure, manual: .chinese, composing: .chinese)
+    try check(protectedAX.passthrough && !protectedAX.translationsAllowed && protectedAX.reason == "secure_field",
+              "AX secure field remains protected when the global flag is false")
+    secureEventInput = true
+    try check(resolve(settings, evidence: axSecure) == protectedAX,
+              "AX secure evidence retains its identity while global secure input is enabled")
+    secureEventInput = false
+    try check(resolve(settings, evidence: axSecure) == protectedAX,
+              "global secure input release never clears AX secure evidence")
+
+    review.reset()
+    settings.mode = .english
+    let frozen = resolve(settings, composing: .chinese)
+    try check(frozen.direction == .chinese && frozen.reason == "composition_frozen",
+              "ordinary pending Chinese composition remains frozen before a secure transition")
+    secureEventInput = true
+    let interrupted = resolve(settings, composing: .chinese)
+    try check(interrupted.passthrough && !interrupted.translationsAllowed,
+              "secure input interrupts composition freeze for the guarded discard boundary")
+    secureEventInput = false
+    try check(resolve(settings).reason == "secure_metadata_pending",
+              "discarded composition is not resumed before metadata review")
+    guard let identifier = review.beginIfNeeded(secureEventInput: false, mode: .english, knownSecureField: false) else {
+      throw CheckError.failed("discarded composition could not start metadata review")
+    }
+    try check(review.complete(identifier, evidence: metadata, secureEventInput: false),
+              "discarded composition accepts a matching metadata-only review")
+    let recovered = resolve(settings, evidence: metadata)
+    try check(recovered.direction == .english && !recovered.passthrough && recovered.translationsAllowed,
+              "after discarded composition secure release restores the explicit language")
+
+    settings.mode = .off
+    let off = resolve(settings, composing: .english)
+    try check(off.passthrough && !off.translationsAllowed && off.reason == "mode_off",
+              "Off remains passthrough after secure release even with pending input")
+  }
+
+  private static func secureMetadataReviewChecks() throws {
+    let skipped = ContextEvidence(field: .unknown, language: nil, confidence: 0,
+                                  availability: .disabled, reason: "secure_event_input")
+    let normal = ContextEvidence(field: .text, language: nil, confidence: 0,
+                                 availability: .disabled, reason: "disabled")
+    var review = SecureContextReview()
+    review.observeCapture(skipped)
+    try check(review.required, "a skipped global secure capture requires a metadata-only review")
+    try check(review.beginIfNeeded(secureEventInput: true, mode: .auto, knownSecureField: false) == nil,
+              "metadata review never starts while global secure input remains enabled")
+    try check(review.beginIfNeeded(secureEventInput: false, mode: .off, knownSecureField: false) == nil && review.required,
+              "Off defers metadata review without forgetting the unresolved field")
+    try check(review.beginIfNeeded(secureEventInput: false, mode: .auto, knownSecureField: true) == nil,
+              "known AX secure fields stay protected without redundant metadata requests")
+    guard let first = review.beginIfNeeded(secureEventInput: false, mode: .auto, knownSecureField: false) else {
+      throw CheckError.failed("first secure metadata review was not scheduled")
+    }
+    try check(review.beginIfNeeded(secureEventInput: false, mode: .auto, knownSecureField: false) == nil,
+              "pending review does not schedule another request on every key")
+    review.cancel(first)
+    try check(review.required && !review.complete(first, evidence: normal, secureEventInput: false),
+              "cancelled metadata completion cannot clear pending protection")
+    guard let second = review.beginIfNeeded(secureEventInput: false, mode: .english, knownSecureField: false) else {
+      throw CheckError.failed("replacement secure metadata review was not scheduled")
+    }
+    review.cancel(first)
+    try check(review.accepts(second), "late cancellation cannot cancel the replacement metadata review")
+    review.observeGlobalInput(true)
+    try check(!review.complete(second, evidence: normal, secureEventInput: false) && review.required,
+              "a renewed global secure interval invalidates in-flight metadata evidence")
+    review.reset()
+    try check(!review.required && !review.complete(second, evidence: normal, secureEventInput: false),
+              "focus reset clears the old review and rejects its late completion")
+    for availability in [ContextAvailability.denied, .unsupported, .timedOut] {
+      review.observeCapture(skipped)
+      guard let identifier = review.beginIfNeeded(secureEventInput: false, mode: .auto, knownSecureField: false) else {
+        throw CheckError.failed("fallback metadata review was not scheduled")
+      }
+      let unavailable = ContextEvidence(field: .unknown, language: nil, confidence: 0,
+                                       availability: availability, reason: availability.rawValue)
+      try check(review.complete(identifier, evidence: unavailable, secureEventInput: false) && !review.required,
+                "\(availability.rawValue) metadata ends the bounded wait using existing fallback")
+      let result = ModeResolver.resolve(bundleID: "org.example.editor", evidence: unavailable,
+                                        manual: nil, settings: ContextSettings(), secureMetadataPending: review.required)
+      try check(result.reason == "global_default" && result.confidence == 0.2,
+                "\(availability.rawValue) review is fallback rather than confirmed safe field evidence")
+    }
+    review.observeCapture(skipped)
+    guard let identifier = review.beginIfNeeded(secureEventInput: false, mode: .auto, knownSecureField: false) else {
+      throw CheckError.failed("AX secure metadata review was not scheduled")
+    }
+    let axSecure = ContextDetector.detect(text: "", field: .secure)
+    try check(review.complete(identifier, evidence: axSecure, secureEventInput: false),
+              "matching AX secure metadata finishes the review while retaining field protection")
+    let retained = axSecure.acceptingCapture(skipped)
+    try check(retained == axSecure, "a later skipped global capture cannot replace known AX secure evidence")
+    let protected = ModeResolver.resolve(bundleID: "org.example.editor", evidence: retained,
+                                        manual: .chinese, settings: ContextSettings(), secureMetadataPending: review.required)
+    try check(protected.passthrough && protected.reason == "secure_field" && !protected.translationsAllowed,
+              "review completion never releases a field identified as AX secure")
+
+    review.observeCapture(skipped)
+    guard let staleIdentifier = review.beginIfNeeded(secureEventInput: false, mode: .auto, knownSecureField: false) else {
+      throw CheckError.failed("stale metadata fixture was not scheduled")
+    }
+    let stale = ContextEvidence(field: .unknown, language: nil, confidence: 0,
+                                availability: .stale, reason: "stale")
+    try check(review.complete(staleIdentifier, evidence: stale, secureEventInput: false) && review.required,
+              "stale metadata retires the request while preserving passthrough protection")
+    try check(!review.accepts(staleIdentifier) && !review.complete(staleIdentifier, evidence: normal, secureEventInput: false),
+              "a retired stale request cannot later release protection")
+    let waiting = ModeResolver.resolve(bundleID: "org.example.editor", evidence: stale,
+                                      manual: .chinese, settings: ContextSettings(), secureMetadataPending: review.required)
+    try check(waiting.passthrough && !waiting.translationsAllowed && waiting.reason == "secure_metadata_pending",
+              "stale field metadata is not treated as safe or as ordinary fallback")
+    for mode in [PrimaryInputMode.auto, .chinese, .english, .off, .auto] {
+      review.cancel()
+      try check(review.beginIfNeeded(secureEventInput: false, mode: mode, knownSecureField: false) == nil,
+                "stale metadata blocks automatic retry in \(mode.rawValue) until focus reset")
+    }
+    review.observeGlobalInput(true)
+    review.observeGlobalInput(false)
+    review.observeCapture(skipped)
+    try check(review.beginIfNeeded(secureEventInput: false, mode: .auto, knownSecureField: false) == nil,
+              "renewed global flags and skipped callbacks cannot create a stale retry loop")
+    try check(axSecure.acceptingCapture(stale) == axSecure,
+              "stale unknown metadata never replaces a known AX secure field")
+    review.reset()
+    try check(!review.required && !review.complete(staleIdentifier, evidence: normal, secureEventInput: false),
+              "focus reset clears stale protection and still rejects the old callback")
+    review.observeCapture(skipped)
+    try check(review.beginIfNeeded(secureEventInput: false, mode: .auto, knownSecureField: false) != nil,
+              "a new focus can begin its own secure metadata review after reset")
+  }
+
   private static func settingsAndRequestChecks() throws {
     let defaults = ContextSettings()
     try check(defaults.mode == .auto && defaults.contextEnabled && !defaults.learningEnabled,
@@ -270,6 +457,8 @@ struct Round3Checks {
     let captureToken = composition.token
     let language = ContextDetector.detect(text: "synthetic language sample", field: .text)
     let secure = ContextDetector.detect(text: "", field: .secure)
+    let skipped = ContextEvidence(field: .unknown, language: nil, confidence: 0,
+                                  availability: .disabled, reason: "secure_event_input")
     try check(gate.accepts(third, expected: captureToken, current: composition.token, evidence: language),
               "unchanged idle capture accepts matching composition identity")
     composition.replace(direction: .chinese, rawInput: "nihao", preedit: "ni hao",
@@ -278,6 +467,8 @@ struct Round3Checks {
               "capture racing our own preedit cannot determine the next primary language")
     try check(gate.accepts(third, expected: captureToken, current: composition.token, evidence: secure),
               "same focus secure evidence can interrupt a changed composition")
+    try check(gate.accepts(third, expected: captureToken, current: composition.token, evidence: skipped),
+              "same focus skipped secure capture can require metadata review across a composition revision")
     let precommitToken = composition.token
     try check(composition.reserveCommit(expected: precommitToken),
               "synthetic commit reserves and invalidates the active composition")
@@ -292,12 +483,18 @@ struct Round3Checks {
     composition.activate()
     try check(!gate.accepts(third, expected: previousFocus, current: composition.token, evidence: secure),
               "secure classification cannot cross a focus generation")
+    try check(!gate.accepts(third, expected: previousFocus, current: composition.token, evidence: skipped),
+              "skipped secure capture cannot require a review in another focus generation")
     let otherComposition = CompositionSession()
     otherComposition.activate()
     try check(!gate.accepts(third, expected: composition.token, current: otherComposition.token, evidence: secure),
               "secure classification cannot cross controller sessions")
+    try check(!gate.accepts(third, expected: composition.token, current: otherComposition.token, evidence: skipped),
+              "skipped secure capture cannot cross controller sessions")
     gate.invalidate()
     try check(!gate.accepts(third, expected: composition.token, current: composition.token, evidence: secure),
               "invalidated capture rejects secure evidence even for identical tokens")
+    try check(!gate.accepts(third, expected: composition.token, current: composition.token, evidence: skipped),
+              "invalidated capture rejects skipped safety evidence")
   }
 }

@@ -6,6 +6,18 @@ Baseline: Squirrel [`769ae426f33f500266101a88f694aab0d158e680`](https://github.c
 
 This is a modification record for the derived project. It does not replace upstream copyright notices, [LICENSE.txt](LICENSE.txt), or the upstream [CHANGELOG.md](CHANGELOG.md). Changes belong to their recorded Git authors; imported work retains its original attribution.
 
+## 2026-10-13 — Round 3 temporary secure-input recovery
+
+Version 0.0.8 separates the live Secure Event Input flag from AX secure-field
+evidence. Release schedules a bounded metadata-only review; waiting input stays
+literal with translations disabled. Request/focus identity rejects stale work,
+and known secure fields retain protection. Off pauses capture. Synthetic policy,
+capture and async regressions cover release, renewed protection, cancellation,
+unavailable metadata and focus races. No dependency, cloud feature or runtime
+permission prompt is added. The delivered 0.0.7 installation remains separate
+from this repair; real IMK recovery requires acceptance on the repaired bundle.
+See [Round 3 delivery](docs/round3/DELIVERY.md) for evidence and remaining limits.
+
 ## 2026-10-12 — Round 3 context, rules and mode controls
 
 Add a bounded AX adapter, local Chinese/Latin-script classifier, deterministic

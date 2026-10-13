@@ -67,6 +67,28 @@ private final class CallbackTrace {
   }
 }
 
+private final class SyntheticSecureFlag {
+  private let lock = NSLock()
+  private var enabled = true
+  var value: Bool {
+    get { lock.lock(); defer { lock.unlock() }; return enabled }
+    set { lock.lock(); enabled = newValue; lock.unlock() }
+  }
+}
+
+private final class SecureSkippedAccess: ContextAccess {
+  let flag: SyntheticSecureFlag
+  private(set) var hostReads = 0
+  init(flag: SyntheticSecureFlag) { self.flag = flag }
+  var trusted: Bool { true }
+  var secureInput: Bool { flag.value }
+  var expired: Bool { false }
+  func focusedField() -> ContextFieldKind? { hostReads += 1; return .text }
+  func caretLocation() -> Int? { hostReads += 1; return 5 }
+  func textBeforeCaret(location: Int, length: Int) -> String? { hostReads += 1; return "hello" }
+  func focusUnchanged() -> Bool { hostReads += 1; return true }
+}
+
 @main
 struct ContextAsyncChecks {
   private static var checks: [String] = []
@@ -114,6 +136,7 @@ struct ContextAsyncChecks {
       try watchdogDropsLateCompletion()
       try expiredPendingDoesNotRead()
       try cancellationSuppressesRunningAndPending()
+      try secureInputReleaseBeforeDelivery()
       let report: [String: Any] = ["status": "PASS", "check_count": checks.count, "checks": checks]
       let data = try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys])
       print(String(decoding: data, as: UTF8.self))
@@ -286,5 +309,66 @@ struct ContextAsyncChecks {
               "cross thread cancellation preserves main callbacks and serial provider ownership")
     try check(provider.snapshot.waitFailures == 0,
               "cancelled provider was explicitly released within its bounded wait")
+  }
+
+  private static func secureInputReleaseBeforeDelivery() throws {
+    let captured = DispatchSemaphore(value: 0)
+    let release = DispatchSemaphore(value: 0)
+    let provider = ProviderTrace()
+    let callbacks = CallbackTrace()
+    let flag = SyntheticSecureFlag()
+    let access = SecureSkippedAccess(flag: flag)
+    let capture = ContextCapture(read: { processID, includeText in
+      provider.begin(processID, includeText: includeText)
+      let evidence = ContextSnapshotReader.read(access, includeText: includeText)
+      if processID == 501 { captured.signal() }
+      let released = processID != 501 || release.wait(timeout: .now() + 1) == .success
+      defer { provider.end(waitSucceeded: released) }
+      return evidence
+    })
+    request(capture, 501, includeText: true, results: callbacks)
+    try pump(until: { captured.wait(timeout: .now()) == .success },
+             name: "secure capture did not finish before its synthetic delivery pause")
+    flag.value = false
+    release.signal()
+    try pump(until: { callbacks.results(501).count == 1 },
+             name: "secure capture did not deliver after global flag release")
+    guard let evidence = callbacks.results(501).first else {
+      throw CheckError.failed("secure capture callback was absent")
+    }
+    try check(evidence.field == .unknown && evidence.availability == .disabled &&
+              evidence.language == nil && evidence.reason == "secure_event_input",
+              "delayed global secure capture does not claim a persistent AX secure field")
+    try check(access.hostReads == 0,
+              "global secure capture performs no host reads before delayed delivery")
+    var review = SecureContextReview()
+    review.observeCapture(evidence)
+    let waiting = ModeResolver.resolve(bundleID: "test.synthetic.editor", evidence: evidence,
+                                       manual: .chinese, settings: ContextSettings(),
+                                       secureEventInput: flag.value, secureMetadataPending: review.required)
+    try check(waiting.passthrough && !waiting.translationsAllowed && waiting.reason == "secure_metadata_pending",
+              "delayed skipped evidence waits for metadata even after the live flag is released")
+    guard let identifier = review.beginIfNeeded(secureEventInput: flag.value, mode: .chinese, knownSecureField: false) else {
+      throw CheckError.failed("delayed secure capture did not schedule metadata review")
+    }
+    request(capture, 502, includeText: false, results: callbacks)
+    try pump(until: { callbacks.results(502).count == 1 }, name: "metadata-only review did not finish")
+    guard let metadata = callbacks.results(502).first else {
+      throw CheckError.failed("metadata review callback was absent")
+    }
+    try check(metadata.field == .text && metadata.language == nil && access.hostReads == 2,
+              "recovery review reads field and focus metadata without reading nearby text")
+    try check(review.complete(identifier, evidence: metadata, secureEventInput: flag.value),
+              "matching asynchronous metadata result releases the pending review")
+    let resolution = ModeResolver.resolve(bundleID: "test.synthetic.editor", evidence: metadata,
+                                          manual: .chinese, settings: ContextSettings(),
+                                          secureEventInput: flag.value, secureMetadataPending: review.required)
+    try check(resolution.direction == .chinese && !resolution.passthrough && resolution.translationsAllowed,
+              "successful metadata review restores input after the skipped global capture")
+    try check(callbacks.allOnMainThread && provider.snapshot.waitFailures == 0,
+              "secure release fixture uses main queue delivery and an explicitly released worker")
+    try settle(0.25)
+    try check(callbacks.results(501).count == 1 && callbacks.results(502).count == 1,
+              "skipped capture and its review remain single delivery after watchdog deadlines")
   }
 }

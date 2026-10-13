@@ -1,0 +1,135 @@
+{
+  "recorded_date": "2026-10-13",
+  "timezone": "America/New_York",
+  "version": "0.0.7",
+  "source_delivery_commit": "3cbe538",
+  "installed_bundle": "/Users/zhenkun/Library/Input Methods/EcholME.app",
+  "artifact_manifest": "docs/round3/evidence/verification.json",
+  "status": "PARTIAL_INSTALLED_ACCEPTANCE",
+  "round4_gate": "OPEN_PENDING_EXECUTABLE_ROUND3_ACCEPTANCE",
+  "observations": [
+    {
+      "id": "install",
+      "status": "PASS",
+      "evidence_kind": "static_checks_and_guided_UI",
+      "detail": "Absent-target first install; version/signature/resources verified; all 86 delivered file hashes matched."
+    },
+    {
+      "id": "register_activate",
+      "status": "PASS",
+      "evidence_kind": "CLI_TIS_UI",
+      "detail": "Registration returned OSStatus 0; System Settings added the source; Hans enabled/selected, Hant disabled; installed process later responded nascii. Initial absence of process/reply preceded successful activation."
+    },
+    {
+      "id": "chinese_panel",
+      "status": "PASS",
+      "evidence_kind": "user_physical_report",
+      "detail": "Horizontal two-line candidates contained 你好 and an English subtitle. Exact gloss and visible latency were not independently measured."
+    },
+    {
+      "id": "chinese_commit",
+      "status": "PASS",
+      "evidence_kind": "user_physical_report",
+      "detail": "nihao + Space committed one 你好; Return committed raw nihao without newline; Esc cancelled and fresh input recovered; numeric choice committed 中国. Candidate panel/underline closure confirmed."
+    },
+    {
+      "id": "english_commit",
+      "status": "PASS",
+      "evidence_kind": "user_physical_report",
+      "detail": "Explicit English hello: Return committed raw; Space added one space; ready Option+Return committed displayed 你好 only. Panel/underline closure confirmed."
+    },
+    {
+      "id": "shift",
+      "status": "PASS",
+      "evidence_kind": "user_physical_report",
+      "detail": "Both sides, three empty round trips, composing Chinese left/right handoff, English-to-Chinese handoff, Shift+A, long hold and overlapping Shifts all met the stated contract."
+    },
+    {
+      "id": "modes_off",
+      "status": "PASS",
+      "evidence_kind": "user_physical_report",
+      "detail": "Same mode preserved composition; different explicit mode committed raw once; Off committed pending raw once then allowed literal hello=== and newline. Off Tab/shortcuts remain untested."
+    },
+    {
+      "id": "automated_letters",
+      "status": "BLOCKED",
+      "reason": "AUTOMATION_PATH_DIFFERENCE",
+      "detail": "CU letter calls produced plain nihao and Notes correction despite Hans/nascii. Later single-note AX snapshots did not corroborate physical edits. No alternate event injection used; no defect cause inferred."
+    },
+    {
+      "id": "accessibility",
+      "status": "PASS",
+      "evidence_kind": "System_Settings_UI_observation",
+      "detail": "EcholME.app Accessibility toggle observed off. No toggle or prompt triggered. This is a permission-state observation, not an Auto fallback test."
+    },
+    {
+      "id": "settings_open",
+      "status": "PASS",
+      "evidence_kind": "user_report",
+      "detail": "User opened EcholME — Input Context. No settings edits or validation results reported."
+    },
+    {
+      "id": "settings_automation",
+      "status": "BLOCKED",
+      "reason": "CU_APP_TIMEOUT",
+      "detail": "CU targeting the exact installed bundle repeatedly timed out; privacy-preserving probe could not access its focused element (-25212). This does not establish settings failure."
+    },
+    {
+      "id": "live_nearby_text",
+      "status": "BLOCKED",
+      "reason": "IME_ACCESSIBILITY_OFF",
+      "detail": "No permission change made. Synthetic classifier/capture tests cannot establish real bounded AX capability."
+    }
+  ],
+  "remaining": [
+    {
+      "id": "R3-06-partial",
+      "status": "NOT_RUN",
+      "detail": "Off Tab and host shortcuts."
+    },
+    {
+      "id": "R3-08",
+      "status": "NOT_RUN",
+      "detail": "Actual Auto/focus race and no cross-field insertion."
+    },
+    {
+      "id": "R3-09",
+      "status": "NOT_RUN",
+      "detail": "Auto no-permission/default fallback and field-specific behavior."
+    },
+    {
+      "id": "R3-10",
+      "status": "NOT_RUN",
+      "detail": "Installed rules, validation, optional learning and reset."
+    },
+    {
+      "id": "R3-11",
+      "status": "NOT_RUN",
+      "detail": "Synthetic secure field and temporary Secure Event Input recovery through installed IMK."
+    },
+    {
+      "id": "R3-12",
+      "status": "NOT_RUN",
+      "detail": "Email, URL, code and repeated equals in explicit English on 0.0.7."
+    },
+    {
+      "id": "R3-13-partial",
+      "status": "NOT_RUN",
+      "detail": "About/licenses interaction and visible HUD geometry/timing."
+    },
+    {
+      "id": "R3-14",
+      "status": "BLOCKED",
+      "detail": "Terminal automation previously denied; Xcode UI unavailable. Applicable physical/manual cases remain untested."
+    }
+  ],
+  "boundaries": {
+    "physical_results_automatically_corroborated": false,
+    "live_context_text_exported": false,
+    "permission_changed": false,
+    "installed_bundle_replaced": false,
+    "round4_started": false,
+    "pushed": false
+  },
+  "followup": "Source-reviewed transient Secure Event Input recovery and metadata-only focus race require a separate 0.0.8 repair. Source/test results do not validate repaired installed behavior."
+}

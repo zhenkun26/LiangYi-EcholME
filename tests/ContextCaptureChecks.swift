@@ -8,10 +8,13 @@ private final class SyntheticContextAccess: ContextAccess {
   var secureInitially = false
   var secureAfterTextRead = false
   var secureAfterCaretRead = false
+  var secureAfterFieldRead = false
   var secureOnFocusCheck: Int?
+  var secureSequence: [Bool] = []
   var expiredInitially = false
   var expireAfterFieldRead = false
   var expireAfterTextRead = false
+  var expireAfterFocusCheck = false
   var field: ContextFieldKind? = .text
   var caret: Int? = 5
   var reply: String? = "hello"
@@ -21,13 +24,16 @@ private final class SyntheticContextAccess: ContextAccess {
   private(set) var textReads: [(location: Int, length: Int)] = []
   private(set) var focusChecks = 0
   var secureInput: Bool {
-    secureInitially || (secureAfterTextRead && !textReads.isEmpty)
+    if !secureSequence.isEmpty { return secureSequence.removeFirst() }
+    return secureInitially || (secureAfterTextRead && !textReads.isEmpty)
       || (secureAfterCaretRead && caretReads > 0)
+      || (secureAfterFieldRead && fieldReads > 0)
       || (secureOnFocusCheck.map { focusChecks >= $0 } ?? false)
   }
   var expired: Bool {
     expiredInitially || (expireAfterFieldRead && fieldReads > 0)
       || (expireAfterTextRead && !textReads.isEmpty)
+      || (expireAfterFocusCheck && focusChecks > 0)
   }
   func focusedField() -> ContextFieldKind? { fieldReads += 1; return field }
   func caretLocation() -> Int? { caretReads += 1; return caret }
@@ -83,12 +89,51 @@ struct ContextCaptureChecks {
   }
 
   private static func captureChecks() {
+    func wasSkippedForSecureInput(_ evidence: ContextEvidence) -> Bool {
+      evidence.field == .unknown && evidence.language == nil && evidence.confidence == 0 &&
+        evidence.availability == .disabled && evidence.reason == "secure_event_input"
+    }
     let secure = SyntheticContextAccess()
     secure.secureInitially = true
     secure.trusted = false
-    check(ContextSnapshotReader.read(secure).field == .secure, "secure input outranks denied AX access")
+    let secureSkipped = ContextSnapshotReader.read(secure)
+    check(wasSkippedForSecureInput(secureSkipped),
+          "secure input outranks denied AX access without inventing AX secure field evidence")
     check(secure.fieldReads == 0 && secure.caretReads == 0 && secure.textReads.isEmpty,
           "secure event input performs no host reads")
+    var review = SecureContextReview()
+    review.observeCapture(secureSkipped)
+    let protected = ModeResolver.resolve(bundleID: "test.synthetic.editor", evidence: secureSkipped,
+                                        manual: .chinese, settings: ContextSettings(), secureEventInput: secure.secureInput,
+                                        secureMetadataPending: review.required)
+    check(protected.passthrough && !protected.translationsAllowed,
+          "skipped capture still honors the currently active global secure flag")
+    secure.secureInitially = false
+    let waiting = ModeResolver.resolve(bundleID: "test.synthetic.editor", evidence: secureSkipped,
+                                      manual: .chinese, settings: ContextSettings(), secureEventInput: secure.secureInput,
+                                      secureMetadataPending: review.required)
+    check(waiting.passthrough && !waiting.translationsAllowed && waiting.reason == "secure_metadata_pending",
+          "global secure release waits for field metadata after skipped capture")
+    if let identifier = review.beginIfNeeded(secureEventInput: false, mode: .chinese, knownSecureField: false) {
+      let metadata = ContextSnapshotReader.read(secure, includeText: false)
+      check(review.complete(identifier, evidence: metadata, secureEventInput: false),
+            "denied metadata-only review finishes the bounded safety wait")
+      let fallback = ModeResolver.resolve(bundleID: "test.synthetic.editor", evidence: metadata,
+                                         manual: .chinese, settings: ContextSettings(), secureMetadataPending: review.required)
+      check(metadata.availability == .denied && !fallback.passthrough && fallback.reason == "manual_focus",
+            "denied metadata uses the explicit fallback without claiming a verified safe field")
+    } else {
+      check(false, "released global secure input schedules metadata review")
+    }
+
+    let securePulse = SyntheticContextAccess()
+    securePulse.secureSequence = [false, true, false]
+    let pulseEvidence = ContextSnapshotReader.read(securePulse)
+    check(wasSkippedForSecureInput(pulseEvidence) && !securePulse.secureInput,
+          "a global secure pulse during capture remains an unavailable result after release")
+    check(securePulse.fieldReads == 1 && securePulse.caretReads == 1 && securePulse.textReads.isEmpty &&
+          securePulse.focusChecks == 0,
+          "capture stops at the first observed secure pulse before any text query")
 
     let denied = SyntheticContextAccess()
     denied.trusted = false
@@ -99,13 +144,47 @@ struct ContextCaptureChecks {
     secureField.field = .secure
     check(ContextSnapshotReader.read(secureField).field == .secure, "secure field metadata prevents text analysis")
     check(secureField.caretReads == 0 && secureField.textReads.isEmpty, "secure field does not request caret or text")
+    let protectedField = ModeResolver.resolve(bundleID: "test.synthetic.editor",
+                                             evidence: ContextSnapshotReader.read(secureField),
+                                             manual: .chinese, settings: ContextSettings(), secureEventInput: false)
+    check(protectedField.passthrough && protectedField.reason == "secure_field" && !protectedField.translationsAllowed,
+          "actual AX secure metadata continues protecting the field without the global flag")
 
     let metadataOnly = SyntheticContextAccess()
     let metadata = ContextSnapshotReader.read(metadataOnly, includeText: false)
     check(metadata.field == .text && metadata.availability == .disabled && metadata.language == nil,
           "context-disabled capture returns field metadata without language analysis")
-    check(metadataOnly.fieldReads == 1 && metadataOnly.caretReads == 0 && metadataOnly.textReads.isEmpty,
-          "context-disabled capture does not request caret or nearby text")
+    check(metadataOnly.fieldReads == 1 && metadataOnly.focusChecks == 1 &&
+          metadataOnly.caretReads == 0 && metadataOnly.textReads.isEmpty,
+          "metadata-only capture validates focus without requesting caret or nearby text")
+    let staleMetadata = SyntheticContextAccess()
+    staleMetadata.sameFocus = false
+    let staleMetadataEvidence = ContextSnapshotReader.read(staleMetadata, includeText: false)
+    check(staleMetadataEvidence.availability == .stale && staleMetadataEvidence.field == .unknown &&
+          staleMetadataEvidence.language == nil,
+          "metadata-only capture rejects a field change before final delivery")
+    check(staleMetadata.focusChecks == 1 && staleMetadata.caretReads == 0 && staleMetadata.textReads.isEmpty,
+          "stale metadata validation never reads document text")
+    let expiredMetadata = SyntheticContextAccess()
+    expiredMetadata.expireAfterFieldRead = true
+    check(ContextSnapshotReader.read(expiredMetadata, includeText: false).availability == .timedOut &&
+          expiredMetadata.focusChecks == 0,
+          "metadata-only capture honors expiration immediately after field lookup")
+    let expiredFinalMetadata = SyntheticContextAccess()
+    expiredFinalMetadata.expireAfterFocusCheck = true
+    check(ContextSnapshotReader.read(expiredFinalMetadata, includeText: false).availability == .timedOut &&
+          expiredFinalMetadata.focusChecks == 1,
+          "metadata-only capture honors expiration caused by its final focus check")
+    let secureFieldMetadata = SyntheticContextAccess()
+    secureFieldMetadata.secureAfterFieldRead = true
+    check(wasSkippedForSecureInput(ContextSnapshotReader.read(secureFieldMetadata, includeText: false)) &&
+          secureFieldMetadata.focusChecks == 0 && secureFieldMetadata.textReads.isEmpty,
+          "metadata-only capture stops when global security starts during field lookup")
+    let secureFinalMetadata = SyntheticContextAccess()
+    secureFinalMetadata.secureOnFocusCheck = 1
+    check(wasSkippedForSecureInput(ContextSnapshotReader.read(secureFinalMetadata, includeText: false)) &&
+          secureFinalMetadata.focusChecks == 1 && secureFinalMetadata.caretReads == 0,
+          "metadata-only capture rejects global security enabled by its final focus check")
     let metadataSecure = SyntheticContextAccess()
     metadataSecure.field = .secure
     check(ContextSnapshotReader.read(metadataSecure, includeText: false).field == .secure,
@@ -191,27 +270,29 @@ struct ContextCaptureChecks {
     let secureDuringRead = SyntheticContextAccess()
     secureDuringRead.secureAfterTextRead = true
     let newlySecure = ContextSnapshotReader.read(secureDuringRead)
-    check(newlySecure.field == .secure && newlySecure.language == nil,
-          "secure input enabled during a read returns safety evidence instead of ordinary fallback")
+    check(wasSkippedForSecureInput(newlySecure),
+          "secure input enabled during a read discards language evidence without retaining a false field type")
+    check(secureDuringRead.textReads.count == 1 && secureDuringRead.focusChecks == 1,
+          "secure input observed after the text reply prevents further host access")
 
     let secureDuringCaret = SyntheticContextAccess()
     secureDuringCaret.secureAfterCaretRead = true
-    check(ContextSnapshotReader.read(secureDuringCaret).field == .secure,
-          "secure input enabled by caret lookup returns safety evidence")
+    check(wasSkippedForSecureInput(ContextSnapshotReader.read(secureDuringCaret)),
+          "secure input enabled by caret lookup records a transient capture suppression")
     check(secureDuringCaret.textReads.isEmpty, "secure input enabled by caret lookup prevents text query")
 
     let secureDuringPreReadFocus = SyntheticContextAccess()
     secureDuringPreReadFocus.secureOnFocusCheck = 1
-    check(ContextSnapshotReader.read(secureDuringPreReadFocus).field == .secure,
-          "secure input enabled during pre-read focus check returns safety evidence")
+    check(wasSkippedForSecureInput(ContextSnapshotReader.read(secureDuringPreReadFocus)),
+          "secure input enabled during pre-read focus check records a transient capture suppression")
     check(secureDuringPreReadFocus.textReads.isEmpty,
           "secure input enabled during pre-read focus check prevents text query")
 
     let secureDuringFinalFocus = SyntheticContextAccess()
     secureDuringFinalFocus.secureOnFocusCheck = 2
     let secureFinalEvidence = ContextSnapshotReader.read(secureDuringFinalFocus)
-    check(secureFinalEvidence.field == .secure && secureFinalEvidence.language == nil,
-          "secure input enabled during final focus check discards language evidence")
+    check(wasSkippedForSecureInput(secureFinalEvidence),
+          "secure input enabled during final focus check discards language evidence without an AX secure claim")
 
     let empty = SyntheticContextAccess()
     empty.caret = 0

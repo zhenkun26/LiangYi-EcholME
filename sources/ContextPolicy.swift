@@ -26,6 +26,67 @@ struct ContextEvidence: Equatable, Sendable {
   static let unavailable = ContextEvidence(
     field: .unknown, language: nil, confidence: 0,
     availability: .unsupported, reason: "context_unavailable")
+
+  var requiresSecureMetadataReview: Bool {
+    field == .unknown && availability == .disabled && reason == "secure_event_input"
+  }
+
+  func acceptingCapture(_ incoming: ContextEvidence) -> ContextEvidence {
+    // Skipped, stale or failed AX metadata cannot disprove a known secure field.
+    field == .secure && incoming.field == .unknown ? self : incoming
+  }
+}
+
+// The global OS flag may hide the field's actual AX type. Its release permits
+// one metadata-only review, not an immediate assertion that the field is safe.
+// Request identity prevents a cancelled/late review from clearing protection.
+struct SecureContextReview {
+  private(set) var required = false
+  private var requestID: UUID?
+  private var retryBlockedUntilReset = false
+
+  mutating func observeGlobalInput(_ enabled: Bool) {
+    if enabled { required = true; requestID = nil }
+  }
+
+  mutating func observeCapture(_ evidence: ContextEvidence) {
+    if evidence.requiresSecureMetadataReview { required = true; requestID = nil }
+  }
+
+  mutating func beginIfNeeded(secureEventInput: Bool, mode: PrimaryInputMode,
+                            knownSecureField: Bool) -> UUID? {
+    guard required, !retryBlockedUntilReset, !secureEventInput, mode != .off,
+          !knownSecureField, requestID == nil else { return nil }
+    let identifier = UUID()
+    requestID = identifier
+    return identifier
+  }
+
+  func accepts(_ identifier: UUID) -> Bool { requestID == identifier }
+
+  @discardableResult
+  mutating func complete(_ identifier: UUID, evidence: ContextEvidence, secureEventInput: Bool) -> Bool {
+    guard accepts(identifier) else { return false }
+    requestID = nil
+    if evidence.availability == .stale {
+      // The queried field changed: keep protection and retire this request.
+      // Only focus/source reactivation can restart sampling. Repeated keys,
+      // callbacks and settings changes must not turn failure into AX polling.
+      required = true
+      retryBlockedUntilReset = true
+      return true
+    }
+    // Denied/unsupported/timed-out metadata uses the existing fallback policy;
+    // completion does not mean the field has been verified non-sensitive.
+    required = secureEventInput || evidence.requiresSecureMetadataReview
+    return true
+  }
+
+  mutating func cancel(_ identifier: UUID? = nil) {
+    if identifier == nil || requestID == identifier { requestID = nil }
+  }
+
+  mutating func reset() { self = SecureContextReview() }
 }
 
 enum ContextDetector {
@@ -142,14 +203,24 @@ enum ContextSamplingPolicy {
 enum ModeResolver {
   static func resolve(bundleID: String, evidence: ContextEvidence,
                       manual: InputDirection?, settings: ContextSettings,
-                      composingDirection: InputDirection? = nil) -> ModeResolution {
-    if evidence.field == .secure {
+                      composingDirection: InputDirection? = nil,
+                      secureEventInput: Bool = false,
+                      secureMetadataPending: Bool = false) -> ModeResolution {
+    // The global OS flag is a live input, not persistent field evidence. Its
+    // release must restore ordinary resolution without clearing AX protection.
+    if evidence.field == .secure || secureEventInput {
       return ModeResolution(direction: .english, translationsAllowed: false,
-                            passthrough: true, reason: "secure_field", confidence: 1)
+                            passthrough: true,
+                            reason: evidence.field == .secure ? "secure_field" : "secure_event_input",
+                            confidence: 1)
     }
     if settings.mode == .off {
       return ModeResolution(direction: .english, translationsAllowed: false,
                             passthrough: true, reason: "mode_off", confidence: 1)
+    }
+    if secureMetadataPending {
+      return ModeResolution(direction: .english, translationsAllowed: false,
+                            passthrough: true, reason: "secure_metadata_pending", confidence: 1)
     }
 
     let requested = requestedDirection(bundleID: bundleID, evidence: evidence,
@@ -221,8 +292,8 @@ final class ContextRequestGate {
     guard accepts(request), expected.session == current.session,
           expected.generation == current.generation else { return false }
     // A snapshot racing our own marked text or a later commit is no longer
-    // direction evidence. Secure-field protection is allowed to interrupt a
-    // changed composition, but never to cross request or focus boundaries.
-    return expected == current || evidence.field == .secure
+    // direction evidence. Secure-field protection or a metadata-only safety
+    // review may interrupt a changed composition, never a request/focus boundary.
+    return expected == current || evidence.field == .secure || evidence.requiresSecureMetadataReview
   }
 }

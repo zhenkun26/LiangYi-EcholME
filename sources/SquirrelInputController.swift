@@ -27,6 +27,7 @@ final class SquirrelInputController: IMKInputController {
   private let contextOwner = UUID()
   private var contextStarted = false
   private var contextEvidence = ContextEvidence.unavailable
+  private var secureContextReview = SecureContextReview()
   private var manualDirection: InputDirection?
   private var modeResolution: ModeResolution?
   private var translationsAllowed: Bool { examplesEnabled && (modeResolution?.translationsAllowed ?? true) }
@@ -75,10 +76,8 @@ final class SquirrelInputController: IMKInputController {
     }
 
     if !contextStarted { beginContext() }
-    // This local OS flag is cheap; no AX/host text access runs in handle().
-    if IsSecureEventInputEnabled() {
-      contextEvidence = ContextDetector.detect(text: "", field: .secure)
-    }
+    // Resolution samples the cheap live OS flag without caching it as AX field
+    // evidence. No AX/host text access runs in handle().
     applyContextResolution()
     if modeResolution?.passthrough == true {
       lastModifiers = modifiers
@@ -840,34 +839,68 @@ private extension SquirrelInputController {
     contextGate.invalidate()
     contextStarted = false
     contextEvidence = .unavailable
+    secureContextReview.reset()
     manualDirection = nil
     modeResolution = nil
     ModeHUD.shared.hide(owner: contextOwner)
   }
 
-  func beginContext() {
+  func beginContext(secureReview: UUID? = nil) {
     guard composition.active, client != nil, session != 0 else { return }
+    if let secureReview {
+      guard secureContextReview.accepts(secureReview), ContextPreferences.shared.settings.mode != .off,
+            NSWorkspace.shared.frontmostApplication?.bundleIdentifier == currentApp else {
+        secureContextReview.cancel(secureReview)
+        return
+      }
+    } else {
+      secureContextReview.cancel()
+    }
     contextStarted = true
     if let client, let bundle = EcholMEClientBundleIdentifier(client) { currentApp = bundle }
     let request = contextGate.begin()
     contextRequest?.cancel()
     applyContextResolution()
     let settings = ContextPreferences.shared.settings
+    if let secureReview {
+      guard secureContextReview.accepts(secureReview) else { return }
+    } else if secureContextReview.required {
+      return // Resolution schedules the single metadata-only review after release.
+    }
     guard settings.mode != .off,
           !hasActiveComposition || settings.mode != .auto || manualDirection != nil || !settings.contextEnabled,
-          let app = NSWorkspace.shared.frontmostApplication, app.bundleIdentifier == currentApp else { return }
+          let app = NSWorkspace.shared.frontmostApplication, app.bundleIdentifier == currentApp else {
+      if let secureReview { secureContextReview.cancel(secureReview) }
+      return
+    }
     let processID = app.processIdentifier
     let expectedComposition = composition.token
-    let includeText = settings.contextEnabled && settings.mode == .auto && manualDirection == nil && !hasActiveComposition
+    let includeText = secureReview == nil && settings.contextEnabled && settings.mode == .auto &&
+      manualDirection == nil && !hasActiveComposition
     contextRequest = ContextCapture.shared.request(processID: processID, includeText: includeText) { [weak self] evidence in
-      guard let self, self.contextGate.accepts(request), self.composition.active,
-            NSWorkspace.shared.frontmostApplication?.processIdentifier == processID else { return }
+      guard let self else { return }
+      guard self.contextGate.accepts(request), self.composition.active,
+            NSWorkspace.shared.frontmostApplication?.processIdentifier == processID else {
+        if let secureReview { self.secureContextReview.cancel(secureReview) }
+        return
+      }
       // A queued AX read may race the first key and see our own marked pinyin.
       // Never let that stale language hint influence the next composition.
       // Safety evidence still blocks the same focus generation immediately.
       guard self.contextGate.accepts(request, expected: expectedComposition,
-                                     current: self.composition.token, evidence: evidence) else { return }
-      self.contextEvidence = evidence
+                                     current: self.composition.token, evidence: evidence) else {
+        if let secureReview { self.secureContextReview.cancel(secureReview) }
+        return
+      }
+      if let secureReview {
+        guard self.secureContextReview.complete(secureReview, evidence: evidence,
+                                               secureEventInput: IsSecureEventInputEnabled()) else { return }
+      } else {
+        self.secureContextReview.observeCapture(evidence)
+      }
+      // Skipping AX because of the global flag cannot erase an already known
+      // secure field. Only normal focus reset retires that field's evidence.
+      self.contextEvidence = self.contextEvidence.acceptingCapture(evidence)
       self.applyContextResolution()
     }
   }
@@ -880,9 +913,12 @@ private extension SquirrelInputController {
     contextGate.invalidate()
     contextRequest?.cancel()
     contextRequest = nil
-    if contextEvidence.field == .secure || IsSecureEventInputEnabled() {
-      contextEvidence = ContextDetector.detect(text: "", field: .secure)
-      applyContextResolution()
+    secureContextReview.cancel()
+    let secureEventInput = IsSecureEventInputEnabled()
+    if contextEvidence.field == .secure || secureEventInput {
+      // Preserve this observed safety decision through the discard boundary,
+      // even if the OS releases its flag before resolution finishes.
+      applyContextResolution(secureEventInput: secureEventInput)
       return
     }
     let desired = ModeResolver.resolve(bundleID: currentApp, evidence: contextEvidence,
@@ -905,13 +941,17 @@ private extension SquirrelInputController {
     }
   }
 
-  func applyContextResolution() {
+  func applyContextResolution(secureEventInput: Bool? = nil) {
     guard composition.active, session != 0, rimeAPI.find_session(session) else { return }
+    let secureEventInput = secureEventInput ?? IsSecureEventInputEnabled()
+    secureContextReview.observeGlobalInput(secureEventInput)
     let composing: InputDirection? = hasActiveComposition ?
       (composition.englishInput.isEmpty ? .chinese : .english) : nil
     let resolution = ModeResolver.resolve(bundleID: currentApp, evidence: contextEvidence,
                                          manual: manualDirection, settings: ContextPreferences.shared.settings,
-                                         composingDirection: composing)
+                                         composingDirection: composing,
+                                         secureEventInput: secureEventInput,
+                                         secureMetadataPending: secureContextReview.required)
     let changed = resolution != modeResolution
     modeResolution = resolution
     if resolution.passthrough {
@@ -927,6 +967,17 @@ private extension SquirrelInputController {
     // while the engine still owns text.
     if !hasActiveComposition, modeASCII != ascii { modeSetASCII(ascii) }
     if changed { showModeHUD() }
+    if NSWorkspace.shared.frontmostApplication?.bundleIdentifier == currentApp,
+       let review = secureContextReview.beginIfNeeded(secureEventInput: secureEventInput,
+                                                     mode: ContextPreferences.shared.settings.mode,
+                                                     knownSecureField: contextEvidence.field == .secure) {
+      // Queue after the guarded discard; never recurse into capture from key
+      // handling or send repeated requests on every passthrough keystroke.
+      DispatchQueue.main.async { [weak self] in
+        guard let self, self.composition.active, self.secureContextReview.accepts(review) else { return }
+        self.beginContext(secureReview: review)
+      }
+    }
   }
 
   func rememberManualDirection() {

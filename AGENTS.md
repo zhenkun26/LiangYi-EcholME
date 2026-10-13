@@ -8,21 +8,32 @@ project memory. The latest explicit user instruction takes precedence.
 
 - The approved direction is a Squirrel-derived macOS input method named
   **LiangYi / 两仪**, with the English product name **EcholME**.
+- Latest authorization (2026-10-13): complete all executable Round 3 installed
+  acceptance before advancing to Round 4. The user explicitly clarified that
+  the `nihao` smoke check alone is not the Round 4 gate. Record tool limitations
+  and user physical-keyboard results separately. Round 4 is conditionally
+  authorized; it has not started. No push or later-round authorization follows.
+- Guided checkpoints subsequently installed, registered, enabled and selected
+  the exact delivered 0.0.7 bundle. The installed path is no longer absent.
+  Never rerun `install-first` over it or replace it automatically. Current
+  acceptance evidence belongs in `docs/round3/MANUAL_ACCEPTANCE.md`.
 - **Round 3** is authorized by the user's 2026-10-12 request to check Round 2
   closeout and advance Round 3: bounded local context detection, rule priority,
-  manual modes, HUD, basic settings, and About/Open Source Licenses. Stop after
-  delivery; Round 4 needs new confirmation. Round 2 closes with its recorded
-  verification limits. Pending Round 1/2 installed IMK and physical Shift
-  acceptance remains NOT_RUN and is not a pass.
+  manual modes, HUD, basic settings, and About/Open Source Licenses. The original
+  source-delivery checkpoint is complete; the later conditional authorization
+  above controls advancement. Round 2 retains its recorded verification limits.
+  The 0.0.7 physical checks now have partial user-reported passes, with remaining
+  cases tracked individually rather than promoted to a full installed pass.
 - Keep Git commits local. No push, GitHub repository creation, public release,
-  installation, deployment, or notarization is authorized by this increment.
+  deployment, or notarization is authorized. A repair build does not authorize
+  automatic replacement of the installed bundle.
 - On 2026-10-12 the user explicitly authorized the assistant to remove the
   installed 0.0.4 `~/Library/Input Methods/EcholME.app` because it relaunched
   and blocked Finder removal. This one-time exception is **COMPLETED**: the
   source was removed from the enabled list, the process quit, and that app
   moved to Trash. Data/log roots were preserved. This is not reusable deletion
-  authority. The retained 0.0.6 was never installed; current 0.0.7 installation
-  awaits the next user confirmation and must use the current delivery record.
+  authority. The retained 0.0.6 was never installed; 0.0.7 was subsequently
+  installed through separately confirmed guided checkpoints.
 - The user authorized closing Round 0 on 2026-10-11. Remaining bounded checks
   and the final delivery record are in scope; this supersedes earlier per-case
   waiting checkpoints for that closeout. Round 0 is closed with verification

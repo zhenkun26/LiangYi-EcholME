@@ -1,5 +1,73 @@
 # Round 3 — Context, rules and mode control
 
+Updated: 2026-10-13, America/New_York. Repair artifact: **0.0.8**;
+currently installed: **0.0.7**. Round 3 installed acceptance remains partial.
+Round 4 is conditionally authorized after all executable Round 3 acceptance
+and has not started. Commits stay local; no automatic replacement or push.
+
+## Current repair and acceptance record
+
+The global Secure Event Input flag previously became persistent AX secure-field
+evidence, so release could leave the controller in passthrough until
+reactivation. The repair separates the live OS flag from field evidence and
+schedules a bounded metadata-only review after release. Input stays literal
+and translation remains disabled while waiting. A second review finding was
+fixed: metadata-only reads must validate final focus/global/deadline state.
+Stale focus results keep protection and block retries until field/input-source
+reactivation, avoiding a per-key query loop. Known AX secure fields stay
+protected. Denied/unsupported/timeout uses existing fallback; it is not a safe
+field certification. Off schedules no capture.
+
+Changed production modules: `ContextPolicy.swift`, `ContextCapture.swift` and
+`SquirrelInputController.swift`; regressions are in the three existing Round 3
+test files. Both project configurations are version 0.0.8. Bilingual README,
+upstream modification record, decisions and acceptance ledgers are updated.
+No new dependency, cloud integration or permission prompt was added.
+
+| Verification on repaired source | Result and scope |
+| --- | --- |
+| Policy / capture-settings / async | **PASS**: 166 / 100 / 42 checks. Includes release, reentry, cancellation, Off, unavailable metadata and stale focus. |
+| Existing regressions | **PASS**: 79 core, 22 host, 12 guards, 60 real-engine, 72 Shift/router, 136 dictionary checks. Synthetic hosts; no installed IMK claims. |
+| Offscreen settings layout | **PASS**: 18 controls, 8 labels. No live button interaction. |
+| Build / resources / links / strict ad-hoc signature | **PASS**: arm64 Debug, macOS 14 target. No compiler/linker warnings; one inherited AppIntents metadata extraction warning. |
+| Source and artifact correspondence | **PASS**: 40 tested inputs, 42 engine/resource files and 86 repair-bundle file hashes recorded; bundled README matches. |
+| Independent source re-review | **PASS, bounded**: recovery/focus findings resolved; no new confirmed P1/P2. Tests do not exercise full InputController/IMK scheduling. |
+| Repaired installed acceptance | **NOT_RUN**: 0.0.8 has not been installed. Current 0.0.7 still matches all 86 original delivered hashes. |
+
+Exact retained outputs:
+
+```text
+.artifacts/builds/round3-secure-recovery-008-20261013a/DerivedData/Build/Products/Debug/EcholME.app
+.artifacts/tests/round3-secure-recovery-20261013a/
+.artifacts/tests/round3-secure-recovery-20261013a-r2/
+.artifacts/tests/round3-secure-recovery-20261013a-r2-r1/
+```
+
+[Repair evidence](evidence/secure-input-recovery-008.json) preserves exact test
+reports, hashes and build warnings. [Installed observations](evidence/installed-acceptance-007.json)
+and [manual acceptance](MANUAL_ACCEPTANCE.md) distinguish the user's physical
+0.0.7 passes from CU limits. Notes Chinese/English commits, both Shift sides and
+menu/Off cases passed as reported by the user. Computer Use typed letters did
+not exercise the same path; later AX snapshots did not corroborate the edits.
+The IME Accessibility switch is off in System Settings. The user opened Input
+Context, but CU repeatedly timed out inspecting that app. No permission or
+rule change was made, and no settings-interaction pass is claimed.
+
+Remaining gate: installed 0.0.8 recovery, Auto fallback/live context, rule and
+learning UI, sensitive-field behavior, Off Tab/shortcuts, format input,
+About/licenses, HUD geometry/timing and applicable cross-host checks. Real
+nearby-text sampling is blocked by the current permission state; Terminal CU
+was denied and Xcode UI unavailable. These limits are not passes. Complete
+executable cases and record unavailable ones before advancing to Round 4.
+No installation replacement, deletion, push, public release or Round 4 work
+occurred in this repair increment.
+
+## Original 0.0.7 delivery snapshot (historical)
+
+The sections below preserve the source-delivery state before the subsequently
+authorized installation and physical checks above. Their NOT_RUN results are
+historical, not a replacement for the current per-case ledger.
+
 Date: 2026-10-12, America/New_York. Version: **0.0.7**.
 Status: **IMPLEMENTED_AND_BUILT_WITH_INSTALLED_ACCEPTANCE_PENDING**.
 Branch: `codex/round-3-context`.

@@ -1,8 +1,69 @@
 # LiangYi / EcholME — Delivery Status
 
-Recorded: 2026-10-12, America/New_York.
+Recorded: 2026-10-13, America/New_York.
 
-## Current state — Round 3
+## Current installed acceptance — 0.0.7
+
+- Authorization: finish all executable Round 3 acceptance before entering
+  Round 4, as explicitly clarified by the user on 2026-10-13. Round 4 is
+  conditionally authorized but **NOT_STARTED**. No push is authorized.
+- Installation, registration and activation: **PASS** in separately confirmed
+  checkpoints. The installed bundle matches all 86 delivered file hashes;
+  version is 0.0.7. System Settings contains the input method, Hans is enabled
+  and selected, Hant is disabled, and the installed process responded `nascii`.
+  The initially absent process/no mode reply is retained as an activation
+  observation, not silently rewritten as an immediate launch pass.
+- Physical Notes checks: **PASS, user-reported** for horizontal two-line
+  candidates with an English subtitle, `nihao` + Space producing one `你好`,
+  raw Return, Esc/recovery, numeric `中国`, and English `hello` Return/Space/
+  ready translated Option+Return. The user confirmed panel/underline closure.
+- Computer Use letter events produced plain `nihao` plus Notes autocorrection
+  despite Hans/nascii metadata. This is an unresolved automation-path
+  difference, not a confirmed input-method defect or a substitute for physical
+  evidence. The selected single-note AX snapshot did not corroborate the
+  subsequent physical text; do not claim an independent field-text pass.
+- Physical left/right Shift (empty, composing, hold, chord and overlap), both
+  language handoffs, same/different explicit modes, and Off raw/literal input
+  also **PASS, user-reported**. Context/settings, sensitive-field recovery,
+  Off Tab/shortcuts, HUD geometry and cross-host checks remain pending.
+  System Settings inspection confirmed the IME Accessibility switch is off;
+  real nearby-text detection is **BLOCKED_PERMISSION**. The user opened the
+  Input Context window, but Computer Use timed out selecting that app and the
+  metadata probe could not access its focused element. Settings edits are
+  unverified; no permission or rule was changed by the assistant.
+  Source review found a transient Secure Event Input recovery issue and a
+  metadata-only focus race; both are repaired in the separate 0.0.8 source
+  build below. The installed 0.0.7 bundle has not been changed. See the
+  [live acceptance ledger](../round3/MANUAL_ACCEPTANCE.md) and
+  [structured observations](../round3/evidence/installed-acceptance-007.json).
+
+## Round 3 repair — 0.0.8 (2026-10-13)
+
+- Status: **SOURCE_REPAIR_BUILT_INSTALLED_ACCEPTANCE_PENDING**. A transient
+  global Secure Event Input flag no longer becomes permanent AX secure-field
+  evidence. Release triggers a bounded metadata-only review, with literal
+  passthrough and translations disabled while waiting. Known AX secure fields
+  stay protected. Stale focus results retain protection until field/source
+  reactivation; no per-key retry loop. Missing/denied/timed-out metadata uses
+  the existing fallback and does not establish that a field is non-sensitive.
+- **PASS**: 166 policy, 100 capture/settings, 42 async, 79 core, 22 host-wrapper,
+  12 tool-guard, 60 real-engine, 72 Shift/router and 136 dictionary checks;
+  offscreen settings layout checks. **PASS**: arm64 Debug xcodebuild, macOS 14
+  target, static resources/linkage and strict local signature. No compiler or
+  linker warnings; one inherited AppIntents metadata warning.
+- Independent source re-review: original recovery/focus findings resolved;
+  no further confirmed P1/P2 in the bounded review. The reader/queue/policy
+  tests do not execute full InputController/IMK recovery or real OS delivery.
+- All 40 tested source inputs match; 42 engine/resource inputs match the
+  exercised engine, and all 86 new bundle hashes are recorded. Installed
+  0.0.7 still matches its original 86 hashes. No replacement, permission
+  change, new dependency, manual deletion, push or Round 4 work.
+- Artifact: `.artifacts/builds/round3-secure-recovery-008-20261013a/DerivedData/Build/Products/Debug/EcholME.app`.
+  [Repair evidence](../round3/evidence/secure-input-recovery-008.json) and
+  [delivery details](../round3/DELIVERY.md). Repaired installed acceptance is
+  **NOT_RUN**. The complete executable Round 3 gate remains open.
+
+## Round 3 source delivery snapshot (historical, 2026-10-12)
 
 - Authorization: the user requested Round 2 closeout review and Round 3 implementation on 2026-10-12. Stop before Round 4. Keep commits local; no installation, registration, push, release or cloud calls in this increment.
 - Scope: bounded local field/text evidence, deterministic direction priority, focus-scoped manual override, Auto/Chinese/English/Off controls, short mode HUD, basic app-rule settings and About/licenses.

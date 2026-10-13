@@ -1,6 +1,6 @@
 # LiangYi / EcholME — Approved Delivery Plan
 
-Status: **Approved for sequential delivery. Round 2 closes with recorded verification limits; Round 3 was authorized on 2026-10-12. Stop before Round 4.**
+Status: **Round 3 installed acceptance in progress. Round 4 conditionally authorized on 2026-10-13 after all executable Round 3 acceptance; not started.**
 
 Plan recorded: 2026-10-11, America/New_York.
 
@@ -10,19 +10,29 @@ This document preserves the plan approved in the project conversation. It is the
 
 ## 1. Authorization and delivery boundaries
 
-The user approved the Squirrel-derived route and requested durable project documentation and Git version management. Initial authorization covered Round 0 only. After its closeout, the user explicitly authorized **Round 1 only**: define the key contract, unify state/commit management, and implement horizontal two-line candidates with example subtitles. Option+Return was selected for translated commit. On 2026-10-12 the user authorized **Round 2 only** after the Round 1 source and automated checks were revalidated. The subsequent request to check Round 2 closeout and advance Round 3 authorizes **Round 3 only**: context detection, rules, manual modes, HUD, basic settings, and the license entry point. Pending Round 1/2 installed IMK and physical-key acceptance remains NOT_RUN; advancing source implementation does not turn it into a pass. Stop after Round 3 delivery and wait for confirmation before Round 4. Repeat this boundary between all later rounds.
+Latest update (2026-10-13): the user authorized completing all executable
+Round 3 installed acceptance and then advancing to Round 4. They explicitly
+chose the complete executable matrix rather than the `nihao` smoke check alone.
+Physical-keyboard reports, Computer Use limitations, and unavailable checks
+must remain distinguishable; unexecuted cases are not passes. Separately
+confirmed guided checkpoints installed, registered and activated the delivered
+0.0.7 package. The earlier source-increment limits below are historical.
+No push, public distribution, automatic replacement or Round 5 is authorized.
+
+The user approved the Squirrel-derived route and requested durable project documentation and Git version management. Initial authorization covered Round 0 only. After its closeout, the user explicitly authorized **Round 1 only**: define the key contract, unify state/commit management, and implement horizontal two-line candidates with example subtitles. Option+Return was selected for translated commit. On 2026-10-12 the user authorized **Round 2 only** after the Round 1 source and automated checks were revalidated. The subsequent request to check Round 2 closeout and advance Round 3 authorized context detection, rules, manual modes, HUD, basic settings, and the license entry point. Those source deliveries did not establish installed input acceptance. Current partial physical passes and remaining cases are recorded separately; the latest conditional Round 4 gate above supersedes the original stop-after-source checkpoint.
 
 The authorized sequence is:
 
 1. Persist the complete plan and establish appropriate Git version management.
 2. Carry out the currently authorized round only (now Round 3).
 3. Report changes, verification results, limitations, and remaining work.
-4. Wait for the user before beginning Round 4.
+4. Complete all executable Round 3 acceptance before beginning the conditionally
+   authorized Round 4; keep the remaining limitations explicit.
 
 Additional boundaries:
 
 - Do not push commits, create a public release, notarize, deploy, or distribute publicly without explicit authorization for that action and destination. Approval to implement is not approval to publish.
-- This Round 3 source increment does not install a bundle. The old 0.0.4 app was removed under a completed one-time user exception (`323d902`); 0.0.6 remains a retained, uninstalled artifact. A later installation checkpoint must identify the selected build and confirm the destination is absent.
+- The original Round 3 source increment did not install a bundle. The old 0.0.4 app was removed under a completed one-time user exception (`323d902`); 0.0.6 remains retained and uninstalled. Subsequent guided checkpoints installed 0.0.7. Repair builds must remain separate from that installation until another explicitly confirmed replacement sequence.
 - Preserve unrelated user work. Do not invent Git author identity, credentials, test results, supported platforms, or performance measurements.
 - Follow the user's no-deletion rule: no filesystem deletion, trash operation, whole-file deletion, destructive cleanup, or equivalent workaround. Existing install targets must cause a preflight stop. Do not rename or move an existing target merely to evade this boundary.
 - Runtime acceptance exception authorized on 2026-10-11: librime may perform normal generated-file/database maintenance only inside the independent LiangYi data and log directories. Squirrel and other user data remain protected. The original exception accompanied Round 0; later Round 1 authorization does not broaden its writable roots or permit manual deletion or pushing.

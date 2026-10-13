@@ -37,7 +37,7 @@ Tap Left Shift alone (within 0.5 seconds) to finalize raw composition once and s
 
 Starting with 0.0.6, the input-source menu also offers **中文主输入 / Chinese** and **英文主输入 / English**, with a checkmark on the current language. Selecting a different language finalizes pending raw text once; reselecting the current language leaves it pending. The menu-bar status and candidate footer identify the primary language. To type `hello` as English, select English before typing: Return submits `hello`, Space submits `hello` plus a space, and Option+Return submits its ready Chinese subtitle. These controls require the repaired bundle to be installed; see the [current acceptance guide](docs/round3/MANUAL_ACCEPTANCE.md).
 
-### Automatic direction and manual control (0.0.7)
+### Automatic direction and manual control (0.0.8)
 
 Choose **Auto** for field-first detection, **Chinese** or **English** for a persistent explicit language, or **Off** to finish pending raw text and pass subsequent keys directly to the host. Shift overrides the current focus; selecting Auto or activating a new field ends that temporary override. Manual language changes retain the guarded Round 1 commit behavior. Automatic results never change a live composition.
 
@@ -46,6 +46,8 @@ Auto resolves safety → manual choice → saved app rule → field/nearby text 
 **Language & App Rules…** edits modes, fallback and exact bundle-ID rules. Learning is off by default and stores only an app ID, direction and a capped count. Settings use the EcholME UserDefaults domain and a versioned JSON value, bounded to 128 app IDs and 64 KiB. Rules replace legacy `app_options/ascii_mode`; other Rime options remain supported. **About EcholME / Open Source Licenses…** opens the bundled notices.
 
 Auto reads at most 128 UTF-16 units before an empty caret through bounded background AX range queries at activation, or on an idle Auto selection when evidence is missing. No full-field value, selection, title or document URL attribute is read; no permission prompt occurs. With no AX access, normal input and rule/default fallback still work. Explicit modes use safety metadata only; Off schedules no context capture. Known secure fields and Secure Event Input bypass composition and translations. Unknown or nonstandard host security metadata cannot be independently guaranteed. Context text is transient, is not logged/persisted, and never leaves the process. A late result after typing/focus changes is discarded rather than learning from the IME own preedit. Later edits to the surroundings generally require field/input-source reactivation to resample. The short mode HUD is implemented; installed geometry and physical keyboard acceptance remain pending.
+
+In 0.0.8, releasing temporary Secure Event Input triggers a bounded, metadata-only field recheck. Input remains literal and translation stays disabled while that check is pending. An outdated focus result retains protection until a new field/input-source activation; a known AX secure field stays protected. Missing permission or unsupported/timed-out metadata uses the existing fallback policy and is not proof that the field is non-sensitive. No context text is read for this recovery check.
 
 `python3 -B tools/check_round3.py` runs synthetic context and preference checks plus prior offline regressions; it does not install, read real documents or grant permissions. The [Round 3 report](docs/round3/DELIVERY.md) records current validation and limitations.
 
@@ -101,7 +103,7 @@ No push or release is authorized by the current Round 3 request. Inherited upstr
 
 从 0.0.6 起，输入源菜单还提供 **中文主输入 / Chinese** 和 **英文主输入 / English**，以勾选标明当前语言。选择另一种语言会先提交待输入的原始文字一次；重复选择当前语言保留待输入文字。菜单栏状态和候选窗底部均标明主语言。要原样输入 `hello`，先选择英文：回车提交 `hello`，空格提交 `hello` 及一个空格，Option+Return 提交已就绪的中文译文。这些入口需安装修复包后才能使用，见[当前验收指南](docs/round3/MANUAL_ACCEPTANCE.md)。
 
-### 自动方向与手动控制（0.0.7）
+### 自动方向与手动控制（0.0.8）
 
 选择 **Auto** 按输入框优先判断；**Chinese / English** 固定主语言；**Off** 先提交待输入的原始文字，再让按键直接交给宿主。Shift 的手动覆盖在当前焦点有效，选择 Auto 或激活新输入框后结束。手动切换沿用 Round 1 的上屏保护，自动结果不会改变正在输入的组合。
 
@@ -110,6 +112,8 @@ No push or release is authorized by the current Round 3 request. Inherited upstr
 **Language & App Rules…** 可编辑模式、默认值和精确 Bundle ID 规则。学习默认关闭，仅记录应用 ID、方向和有上限的次数。设置存于 EcholME 的 UserDefaults 域，使用版本化 JSON，限制为 128 个应用 ID、64 KiB。新规则统一接管旧 `app_options/ascii_mode`，其余 Rime 选项仍保留。**About EcholME / Open Source Licenses…** 提供包内声明入口。
 
 Auto 在激活时，或空组合下选择 Auto 且缺少证据时，通过后台 AX 范围接口临时读取空光标前最多 128 个 UTF-16 单元；不读取整框内容、选中文字、标题或网址属性，不主动申请权限。没有辅助功能权限时，正常输入及规则／默认值回退仍可用。显式语言只检查安全元数据；Off 不发起上下文读取。已知安全字段及 Secure Event Input 会绕过组合和翻译；宿主未提供或自定义的安全标记无法独立保证识别。附近文字不写日志、不持久化、不发送到进程外。输入或焦点变化后迟到的结果会被丢弃，避免自身拼音影响后续方向；后续修改附近文字后，通常需重新进入输入框／输入源取样。短暂模式 HUD 已实现，安装后的定位与物理键盘表现仍待验收。
+
+0.0.8 在临时 Secure Event Input 解除后，会进行有时限的字段元数据复查。等待期间按键原样直通，翻译保持关闭；若结果来自已经变化的焦点，则继续保护，直到重新激活输入框或输入源。已知 AX 安全字段仍保持保护。无权限、不支持或超时会使用既有回退策略，不代表已确认字段不敏感。恢复复查不读取上下文文字。
 
 `python3 -B tools/check_round3.py` 运行合成上下文、偏好存储和之前的离线回归，不安装、不读取真实文档、不授予权限。当前验证和限制见 [Round 3 报告](docs/round3/DELIVERY.md)。
 

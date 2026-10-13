@@ -1,9 +1,42 @@
 # Round 3 — Guided installation and actual input acceptance
 
-Status: **NOT_RUN**. No 0.0.7 package is installed by this increment. The old
-0.0.4 was already removed under the completed one-time exception in `323d902`.
-0.0.6 is a retained historical artifact. Do not install it before immediately
-replacing it with this round's artifact. Confirm the intended version first.
+Status: **IN_PROGRESS**, updated 2026-10-13, America/New_York. The delivered
+0.0.7 is now installed, registered and activated through separately confirmed
+checkpoints. Its 86 file hashes match `evidence/verification.json`; 0.0.6 was
+never installed. The old removal exception in `323d902` is consumed.
+
+The latest user instruction authorizes all executable Round 3 acceptance, then
+Round 4. The user clarified that this means the full executable matrix, not
+only `nihao`. Round 4 has not started. No push or automatic bundle replacement.
+
+## Live checkpoint ledger
+
+| Check | Status | Evidence and limit |
+| --- | --- | --- |
+| Absent-target 0.0.7 installation | PASS | Reviewed `install-first`; installed version/signature/resources/link paths pass; all 86 file hashes match delivery. No deletion or replacement. |
+| Registration and System Settings addition | PASS | Register OSStatus 0 plus visible 两仪 entry; independent TIS check confirms Hans enabled/selectable and Hant disabled. Original globe-key emoji behavior restored after Settings changed it automatically. |
+| Notes activation | PASS, bounded | Dedicated `EcholME 0.0.7 — Round 3 验收` note; Hans selected; installed executable path/PID and version checked; `--getascii` responded `nascii`. Initial selection had no process/reply; later activation succeeded. HUD timing is NOT_RUN. |
+| Chinese `nihao` panel/subtitle | PASS, user physical report | User observed horizontal two-line candidates, `你好`, and its English subtitle. Exact gloss spelling and visible latency not independently measured. |
+| Chinese Space commit | PASS, user physical report | One `你好`; candidate window and underline disappeared. |
+| Chinese Return / Esc recovery / numeric choice | PASS, user physical report | Raw `nihao` without extra newline; Esc cancellation followed by successful `你好`; displayed numeric choice committed `中国`; closure confirmed. |
+| English `hello` Return / Space / Option+Return | PASS, user physical report | Explicit English selected; raw word, word plus one space, and ready displayed `你好` respectively; no appended `hello` with translation; closure confirmed. |
+| Physical left/right Shift, empty and composing | PASS, user physical report | Each side switched empty Chinese/English three round trips. Chinese `nihao` + left Shift + `a` + Return gave `nihaoa`; right Shift gave `你好a`; no failure, loss or duplication reported. |
+| Shift handoff/chord/hold/overlap | PASS, user physical report | English `hello` + left Shift + Chinese `nihao` + Space gave `hello你好`; Shift+A preserved English and upper case; approximately one-second hold and overlapping left/right Shift did not toggle. |
+| Same/different explicit mode while composing | PASS, user physical report | Re-selecting Chinese or English preserved that composition; switching language committed raw `nihao` or `hello` once. No independent menu/deactivation timing trace. |
+| Product Off | PASS, user physical report | Pending raw input committed once; later `hello===` and Return behaved as ordinary literal text/newline without candidates; Chinese restored. Tab/shortcut behavior still NOT_RUN. |
+| Automated letter-input control | BLOCKED_AUTOMATION_PATH | CU `pressKey` letters yielded plain `nihao` and Notes correction despite Hans/nascii. Physical behavior differed. No alternate event-injection path used. Later single-note AX reads did not corroborate the physical edits, so no automatic text-result pass is claimed. |
+| IME Accessibility permission | PASS, observation only | Computer Use inspected System Settings > Privacy & Security > Accessibility: EcholME.app toggle was off. No toggle or prompt was triggered. This is distinct from Codex/probe permission and does not establish fallback behavior in Auto. |
+| Open Input Context settings | PASS, user report; BLOCKED for automated inspection | User opened EcholME — Input Context. Computer Use selecting the installed app by its exact path repeatedly timed out; the metadata-only probe could not retrieve the focused element. Opening is confirmed by the user, but settings edits and validation are NOT_RUN. |
+| Real nearby-text detection | BLOCKED_PERMISSION | IME Accessibility permission is off. Synthetic classifier tests do not verify live host range access. No permission change was made. |
+| Remaining matrix | NOT_RUN unless updated below | Rule editing/learning, Auto fallback, sensitive-field recovery, HUD geometry/timing, Off Tab/shortcuts and cross-host coverage remain separate. |
+
+Source review identified a transient Secure Event Input recovery issue and a
+metadata-only focus race. A separate 0.0.8 repair now passes automated checks
+and builds; see [delivery](DELIVERY.md) and [repair evidence](evidence/secure-input-recovery-008.json).
+This does not explain the CU letter-path observation. Installed 0.0.7 remains
+unchanged, and repaired installed acceptance is NOT_RUN. Never install over
+that existing target. The structured live record is
+[installed-acceptance-007.json](evidence/installed-acceptance-007.json).
 
 Use one checkpoint at a time and wait for the user's confirmation. Computer
 Use does not override the no-deletion policy. Terminal automation was previously
@@ -28,7 +61,7 @@ Never use real passwords, private notes, secrets or personal messages as fixture
    and the menu/HUD. Record app/version, source, intended mode and exact synthetic
    result. Do not export unrelated Notes titles/content. Stop for confirmation.
 
-## Input checkpoints (each NOT_RUN)
+## Input checkpoint specification (results are in the ledger above)
 
 | ID | Action | Expected result / evidence |
 | --- | --- | --- |
@@ -43,6 +76,7 @@ Never use real passwords, private notes, secrets or personal messages as fixture
 | R3-09 | Test no AX permission, blank/short/mixed samples, search field and synthetic code literal. | Normal input continues. Blank/ambiguous text follows published rules/defaults. Search metadata stays neutral. Code hint cannot override an explicit Chinese choice. No permission prompt. |
 | R3-10 | In settings save an exact app rule, remove it, enable learning intentionally, make repeated choices, then clear learning. Test invalid ID. | Rules survive reopening; explicit manual choice outranks rule; rules outrank learned fallback. Invalid input preserves saved values. Learning is off initially and reset preserves explicit rules. |
 | R3-11 | Use a dedicated synthetic secure field or Secure Event Input. Never type real credentials. | No candidate/translation or ordinary context-text reading; explicit modes cannot bypass known safety. OS may bypass the IME entirely: record NOT_APPLICABLE for that route, not an IME safety pass. |
+| R3-11b, 0.0.8 only | In an explicitly authorized synthetic fixture, enable then release temporary Secure Event Input. Exercise Auto/explicit modes, Off, and a field change during recovery. | Global protection does not persist as AX secure evidence. Pending metadata keeps literal input and no translation; a stable supported field recovers, denied/unsupported/timeout follows fallback. Stale metadata stays protected until field/source reactivation. Known secure fields remain protected. No automatic live fixture or OS security change was performed. |
 | R3-12 | Recheck email/URL/code and repeated equals in explicit English; observe explicit Chinese separately. | Judge literal preservation only against the explicit English contract. Pinyin/punctuation behavior in explicit Chinese is not automatically a defect. |
 | R3-13 | Open settings/About/licenses; inspect HUD near screen edges on each display and while typing. | Readable controls/notices; HUD nonactivating, fades near 0.8 seconds, no stuck panel/focus theft. Missing caret geometry may use pointer fallback. |
 | R3-14 | Repeat applicable cases in Xcode and Terminal using authorized surfaces/manual keyboard. | Record host-specific outcomes and capability failures. No assertion of universal host support or latency without measurement. |
@@ -56,5 +90,6 @@ dictionary lookup. A first launch can rebuild Rime data inside LiangYi roots;
 ordinary confined engine maintenance is authorized. No cleanup of user data,
 Squirrel data, failed artifacts or logs is authorized by this guide.
 
-Stop after this round's acceptance/report. Round 4 and pushing need new explicit
-authorization; no automatic continuation is configured.
+Complete the executable matrix and record unavailable checks before advancing
+to the conditionally authorized Round 4. Pushing and Round 5 are not authorized;
+no scheduled continuation is configured.
