@@ -79,6 +79,21 @@ text into the bound old client; an unexpected different client discards old
 state. Fixtures are ten hand-authored entries per direction, not licensed
 dictionary coverage, model support or measured real translation latency.
 
+### Primary-language switching follow-up (2026-10-12)
+
+The user reported intermittent failure of a left Shift tap on installed 0.0.4
+and authorized taking over the repair and Computer Use checks. This is bounded
+input-mode maintenance, not authorization for context detection, cloud work,
+or a push. The earlier `992d5ea` fix was not installed.
+
+Keep the existing 0.5-second left/right contract. Version 0.0.6 extends gesture
+handling to key-code-zero events using device/held-side evidence and recovers
+from releases omitted before a typed key. Add explicit Chinese/English menu
+selection as a visible alternative, using raw finalization and the existing
+focus/revision checks. Reselecting the active language is idempotent. Mode
+queries only report active controllers. Hardware event delivery and menu
+callbacks require installed acceptance; synthetic tests cannot establish them.
+
 ### Round 2 decision now resolved
 
 | ID | Decision | Evidence and remaining limit |

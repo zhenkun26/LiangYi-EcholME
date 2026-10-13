@@ -32,6 +32,15 @@ once, clears engine state and switches Chinese/English in either direction.
 A repeated flagsChanged event while that Shift key remains down does not cancel
 the tap. The menu bar shows 中文 or 英文, and the candidate footer names the
 current primary language.
+The 0.0.6 repair also retains a known Shift side when a flags event has key code
+zero, cancels ambiguous two-Shift changes, and reconciles held state from the
+next typed key after an omitted release. If neither a key code nor a device
+side is available at the initial press, the inherited left-side default applies.
+The input-source menu exposes **中文主输入 / Chinese** and **英文主输入 / English**.
+An explicit change finalizes raw input once with the same focus/revision guard
+as a left tap. Selecting the current language preserves the pending composition.
+The CLI follows that same guarded selection path; it does not automatically
+activate an unfocused controller. Installed UI acceptance remains separate.
 For example, Chinese `nihao`, Left Shift, English `a`, Return produces `nihaoa`
 through two ordered inserts (`nihao`, `a`), with no implicit space or newline.
 Right Shift alone within the same window retains the schema binding: the

@@ -3,8 +3,9 @@
 Recorded: 2026-10-12, America/New_York.
 
 Delivery: **IMPLEMENTED_AND_BUILT_WITH_RUNTIME_ACCEPTANCE_PENDING**.
-Round 2 is authorized. Stop before Round 3. No push, release, or replacement
-of the installed 0.0.1 bundle was performed.
+Round 2 is authorized. Stop before Round 3. Sections 1–5 retain the 0.0.4
+delivery baseline; Section 6 records the current 0.0.6 switching repair.
+No push or release is authorized.
 
 ## 1. Objective
 
@@ -123,7 +124,9 @@ warnings: none. One inherited AppIntents metadata extraction warning remains.
 | macOS 14, Intel, running Squirrel coexistence | NOT_RUN |
 | Push, release, notarization | NOT_AUTHORIZED |
 
-The installed app is still version **0.0.1**. The installer was not run.
+At the original code delivery the installed app was **0.0.1**. The later
+user-assisted installation moved it to **0.0.4**, as recorded in manual
+acceptance. Version 0.0.6 has not yet replaced that installed copy.
 
 ## 5. Limits and next gate
 
@@ -136,5 +139,57 @@ English phrase composition, context detection, cloud providers, and the full
 Off mode remain later rounds. Traditional-Chinese candidates are not a separate
 index. Irregular inflections such as `went`/`go` are not stemmed.
 
-Install and accept the 0.0.4 bundle with the user before calling input behavior
-passed. Stop before Round 3.
+The original next gate was installation and acceptance of 0.0.4. The current
+repair and replacement gate are in Section 6. Stop before Round 3.
+
+## 6. Primary-language switching repair — 0.0.6
+
+The user reports that a left Shift tap sometimes fails on installed 0.0.4.
+The 0.0.5 repeated-flags patch (`992d5ea`) was present in source but not
+installed. A new regression demonstrated a remaining failure when a repeated
+modifier event has key code zero. The controller previously inferred from
+aggregate changes, discarding that repeat and misidentifying anonymous right
+releases. This is a reproduced source defect, not proof of the exact physical
+event sequence from the user's report.
+
+Version 0.0.6 keeps raw modifier events until the gesture tracker can use
+device bits and held-side history. Typed keys reconcile an omitted release
+without generating a tap. Ambiguous overlaps are consumed without toggling.
+Existing short-tap, long-hold, capitalization, raw/candidate commit, and
+focus/revision protections remain covered. Explicit input-source menu items
+select Chinese or English using guarded raw finalization. Reselecting the
+current language leaves pending text intact. Activation shows the same
+Chinese/English labels, and inactive controllers no longer answer mode queries.
+
+Changed modules: `CompositionState.swift`, `SquirrelInputController.swift`,
+the two Shift/core test suites, Xcode version, and the bilingual guide/status
+records. No new code dependency or dictionary data was introduced. Existing
+GPL and data licenses remain preserved; external corresponding-source review
+remains a release gate.
+
+Verification: **75 core checks, 22 host-wrapper checks, 12 tool guards,
+69 production-router/real-librime checks, 60 original engine checks, and
+136 dictionary checks PASS**. The red regression and complete reports remain
+in `.artifacts/tests/shift-handoff-red-20261012` and
+`.artifacts/tests/shift-handoff-006-checks-20261012{,-r1}`. They test the shared
+production routing with synthetic hosts; they do not instantiate an installed
+IMK controller. Build/static identity/resource/link/signature results and
+matching tested-source hashes are in [the follow-up evidence](evidence/primary-language-repair.json).
+
+Final artifact:
+
+```text
+.artifacts/builds/shift-handoff-006-final-20261012/DerivedData/Build/Products/Debug/EcholME.app
+```
+
+Computer Use created the dedicated Notes fixture `EcholME Shift acceptance
+2026-10-12`. Its standalone `Shift_L` request was rejected because the tool
+requires a non-modifier key; this did not establish an app failure or pass.
+No alternate event injection was used. Physical Shift validation, new menu
+clicks, repaired installation, and `hello`/Chinese handoffs are **NOT_RUN**.
+No screenshot of unrelated notes is retained.
+
+The installed **0.0.4** app remains unchanged. Replacement is
+**BLOCKED_EXISTING_TARGET** under the no-deletion policy. Complete the manual
+installation checkpoints and physical-key cases before calling the reported
+issue resolved in actual use. No push or later round is included.

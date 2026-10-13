@@ -209,7 +209,7 @@ struct Round1Checks {
     flags(56, ShiftModifierEvent.shiftMask, 1); flags(56, 0, 1.1)
     try check(host.modeASCII && host.inserts == ["nihao"] && host.raw.isEmpty, "left tap finalizes Chinese raw before mode change")
     _ = host.state.appendEnglish("HELLO")
-    flags(60, ShiftModifierEvent.shiftMask, 2); router.keyDown(); flags(60, 0, 2.1)
+    flags(60, ShiftModifierEvent.shiftMask, 2); router.keyDown(modifiers: ShiftModifierEvent.shiftMask); flags(60, 0, 2.1)
     try check(host.modeASCII && host.state.englishInput == "HELLO" && host.rightTaps == 0, "right Shift typing cannot replay a mode tap")
     flags(60, ShiftModifierEvent.shiftMask, 3); flags(60, 0, 3.1)
     try check(!host.modeASCII && host.inserts == ["nihao", "HELLO"] && host.rightTaps == 1, "right tap finalizes frontend English before schema replay")
@@ -234,6 +234,47 @@ struct Round1Checks {
     flags(56, ShiftModifierEvent.shiftMask, 9.08)
     flags(56, 0, 9.16)
     try check(host.modeASCII, "left Shift tap survives repeated flags and a dropped device bit")
+    host.onInsert = nil
+    flags(56, ShiftModifierEvent.shiftMask, 10)
+    flags(0, ShiftModifierEvent.shiftMask, 10.02)
+    flags(0, 0, 10.1)
+    try check(!host.modeASCII, "anonymous repeated Shift flags preserve the pending left tap")
+    let rightTaps = host.rightTaps
+    flags(60, ShiftModifierEvent.shiftMask, 11); flags(0, 0, 11.1)
+    try check(host.modeASCII && host.rightTaps == rightTaps + 1, "anonymous release retains the known right Shift binding")
+    flags(0, ShiftModifierEvent.shiftMask | ShiftModifierEvent.rightDeviceMask, 12)
+    flags(0, ShiftModifierEvent.shiftMask | ShiftModifierEvent.rightDeviceMask, 12.02)
+    flags(0, 0, 12.1)
+    try check(!host.modeASCII && host.rightTaps == rightTaps + 2, "device flags identify an entirely anonymous right tap")
+    flags(56, ShiftModifierEvent.shiftMask, 13)
+    router.keyDown(modifiers: 0) // Missing release, then an ordinary typed key.
+    flags(56, ShiftModifierEvent.shiftMask, 13.2); flags(56, 0, 13.3)
+    try check(host.modeASCII, "unshifted key recovers a missing release before the next tap")
+    flags(0, ShiftModifierEvent.shiftMask, 14)
+    flags(0, ShiftModifierEvent.shiftMask | (1 << 19), 14.01)
+    flags(0, ShiftModifierEvent.shiftMask, 14.02); flags(0, 0, 14.1)
+    try check(host.modeASCII, "anonymous Option chord cannot become a Shift tap")
+    flags(0, ShiftModifierEvent.shiftMask | 0x6, 15); flags(0, 0, 15.1)
+    try check(host.modeASCII, "anonymous simultaneous Shift changes cannot invent a tap")
+    flags(56, ShiftModifierEvent.shiftMask, 15.2); flags(56, 0, 15.3)
+    try check(!host.modeASCII, "a fresh tap recovers after ambiguous aggregate releases")
+    try check(router.setASCII(true, host: host), "explicit selection restores English after overlap")
+    let current = host.state.token
+    _ = host.state.appendEnglish("hello")
+    let composing = host.state.token
+    let insertionCount = host.inserts.count
+    try check(router.setASCII(true, host: host) && host.state.token == composing && host.inserts.count == insertionCount,
+              "selecting the current language preserves pending input")
+    try check(router.setASCII(false, host: host) && host.inserts.last == "hello" && host.state.englishInput.isEmpty,
+              "explicit language selection finalizes raw exactly once")
+    try check(host.state.token != current, "explicit mode handoff retires prior composition")
+    host.raw = "nihao"
+    host.onInsert = { host.state.deactivate(); host.state.activate() }
+    try check(!router.setASCII(true, host: host) && !host.modeASCII && host.inserts.last == "nihao",
+              "explicit mode selection cannot change a reentrantly replaced focus")
+    host.onInsert = nil
+    host.state.deactivate()
+    try check(!router.setASCII(true, host: host), "inactive menu or CLI cannot switch a stale controller")
     try check(!CompositionModeRouter.usesEnglishComposer(ascii: true, examples: true, engineInput: "nihao"), "inline ASCII with a live engine prefix cannot start a second buffer")
     try check(CompositionModeRouter.usesEnglishComposer(ascii: true, examples: true, engineInput: ""), "empty engine permits frontend English composition")
   }

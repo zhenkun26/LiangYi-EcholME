@@ -102,3 +102,18 @@ The dictionary data stays under CC-BY-SA-4.0. GPL notices on project source are
 unchanged. No cloud client, context detector, or new code dependency was added.
 The development bundle version is 0.0.4. Installed IMK acceptance and visible
 panel latency remain unverified. See the Round 2 delivery record.
+
+## 2026-10-12 — Primary-language switching repair
+
+On top of the repeated-flags fix in `992d5ea` (0.0.5), version 0.0.6 preserves
+known left/right Shift identity for anonymous modifier events and recovers
+held state after a release omitted before a typed key. Ambiguous overlapping
+events cannot manufacture mode changes. Input-source menu entries explicitly
+select Chinese or English through guarded raw finalization; choosing the same
+language leaves pending text intact. Activation uses the same language labels
+as mode changes, and inactive controllers do not answer mode queries.
+
+Production-router/engine tests cover these changes. The installed 0.0.4 app
+remains untouched, and repaired physical-keyboard/menu acceptance is NOT_RUN.
+No dependency, dictionary update, cloud call, context detector, or public
+distribution was added. Existing GPL and data notices remain unchanged.

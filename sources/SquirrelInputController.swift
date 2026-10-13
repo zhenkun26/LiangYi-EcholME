@@ -63,12 +63,12 @@ final class SquirrelInputController: IMKInputController {
     }
 
     if event.type == .keyDown {
-      modeRouter.keyDown()
+      modeRouter.keyDown(modifiers: modifiers.rawValue)
       if let disposition = handleCompositionKey(event) { return disposition }
     } else if event.type == .flagsChanged {
-      let keyCode = SquirrelKeycode.modifierKeycodes.contains(event.keyCode) ? event.keyCode :
-        (SquirrelKeycode.inferModifierKeycode(from: changes) ?? event.keyCode)
-      let modifierEvent = ShiftModifierEvent(keyCode: keyCode,
+      // Preserve missing key codes for the Shift tracker: aggregate-only
+      // inference here would discard repeated events and mislabel right releases.
+      let modifierEvent = ShiftModifierEvent(keyCode: event.keyCode,
                                             modifiers: modifiers.rawValue, timestamp: event.timestamp)
       if modeRouter.handleModifiers(modifierEvent, host: self) {
         lastModifiers = modifiers
@@ -232,8 +232,7 @@ final class SquirrelInputController: IMKInputController {
     preedit = ""
     if session != 0 {
       let state = rimeAPI.get_option(session, "ascii_mode")
-      let label = rimeAPI.get_state_label_abbreviated(session, "ascii_mode", state, true).asString
-      NSApp.squirrelAppDelegate.updateStatusIcon(asciiMode: state, schemaLabel: label)
+      NSApp.squirrelAppDelegate.updateStatusIcon(asciiMode: state, schemaLabel: state ? "英文" : "中文")
     }
   }
 
@@ -320,6 +319,16 @@ final class SquirrelInputController: IMKInputController {
     wiki.target = self
 
     let menu = NSMenu()
+    for (title, action, enabled) in [
+      ("中文主输入 / Chinese", #selector(selectChinese), !modeASCII),
+      ("英文主输入 / English", #selector(selectEnglish), modeASCII)
+    ] {
+      let item = NSMenuItem(title: title, action: action, keyEquivalent: "")
+      item.target = self
+      item.state = enabled ? .on : .off
+      menu.addItem(item)
+    }
+    menu.addItem(.separator())
     let examples = NSMenuItem(title: "Local translations", action: #selector(toggleExamples), keyEquivalent: "")
     examples.target = self
     examples.state = examplesEnabled ? .on : .off
@@ -336,6 +345,14 @@ final class SquirrelInputController: IMKInputController {
 
   @objc func deploy() {
     NSApp.squirrelAppDelegate.deploy()
+  }
+
+  @objc func selectChinese() { selectPrimaryLanguage(ascii: false) }
+  @objc func selectEnglish() { selectPrimaryLanguage(ascii: true) }
+
+  private func selectPrimaryLanguage(ascii: Bool) {
+    guard session != 0 && rimeAPI.find_session(session) else { return }
+    modeRouter.setASCII(ascii, host: self)
   }
 
   @objc func toggleExamples() {
@@ -722,19 +739,11 @@ private extension SquirrelInputController {
 
   private func handleASCIIModeToggle(_ notification: Notification) {
     guard let enableASCII = notification.object as? Bool else { return }
-    guard composition.active else { return }
-    guard session != 0 && rimeAPI.find_session(session) else { return }
-
-    finalizeRawComposition()
-    cancelExamples()
-    composition.invalidate()
-    modeRouter.reset()
-    rimeAPI.set_option(session, "ascii_mode", enableASCII)
-    rimeUpdate()
+    selectPrimaryLanguage(ascii: enableASCII)
   }
 
   private func reportASCIIMode(_: Notification) {
-    guard client != nil else { return }
+    guard client != nil, composition.active else { return }
     guard session != 0 && rimeAPI.find_session(session) else { return }
 
     let isASCIIMode = rimeAPI.get_option(session, "ascii_mode")

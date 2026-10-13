@@ -244,6 +244,7 @@ struct ShiftModifierEvent {
   static let leftKey: UInt16 = 56
   static let rightKey: UInt16 = 60
   static let shiftMask: UInt = 1 << 17
+  static let capsLockMask: UInt = 1 << 16
   static let blockingMask: UInt = (1 << 18) | (1 << 19) | (1 << 20) | (1 << 23)
   // NX_DEVICELSHIFTKEYMASK / NX_DEVICERSHIFTKEYMASK from the macOS event ABI.
   static let leftDeviceMask: UInt = 0x2
@@ -258,14 +259,56 @@ private struct ShiftGestureTracker {
   private var held: Set<UInt16> = []
   private var armed: UInt16?
   private var started: TimeInterval = 0
+  private var previousModifiers: UInt = 0
 
-  mutating func reset() { held = []; armed = nil }
-  mutating func keyDown() { armed = nil }
+  mutating func reset() { held = []; armed = nil; previousModifiers = 0 }
+  mutating func keyDown(modifiers: UInt) {
+    armed = nil
+    // A release can be omitted before the next keyDown. Reconcile physical
+    // state without inventing a tap, so the next real tap is not swallowed.
+    reconcileHeld(modifiers: modifiers)
+    previousModifiers = modifiers
+  }
+
+  private mutating func reconcileHeld(modifiers: UInt) {
+    if modifiers & ShiftModifierEvent.shiftMask == 0 {
+      held = []
+    } else if modifiers & (ShiftModifierEvent.leftDeviceMask | ShiftModifierEvent.rightDeviceMask) != 0 {
+      held = []
+      if modifiers & ShiftModifierEvent.leftDeviceMask != 0 { held.insert(ShiftModifierEvent.leftKey) }
+      if modifiers & ShiftModifierEvent.rightDeviceMask != 0 { held.insert(ShiftModifierEvent.rightKey) }
+    }
+  }
+
+  private func resolvedKey(_ event: ShiftModifierEvent) -> UInt16? {
+    guard event.keyCode == 0 else { return event.keyCode }
+    // Some event producers omit the hardware key code. Infer from device
+    // changes or a known held side, never turn a right release into a left tap.
+    let changes = previousModifiers ^ event.modifiers
+    guard changes & (ShiftModifierEvent.blockingMask | ShiftModifierEvent.capsLockMask) == 0 else { return nil }
+    let devices = changes & (ShiftModifierEvent.leftDeviceMask | ShiftModifierEvent.rightDeviceMask)
+    if devices == ShiftModifierEvent.leftDeviceMask { return ShiftModifierEvent.leftKey }
+    if devices == ShiftModifierEvent.rightDeviceMask { return ShiftModifierEvent.rightKey }
+    if devices != 0 { return nil } // Both sides changed; do not guess a tap.
+    if held.count == 1 { return held.first }
+    if held.isEmpty, changes & ShiftModifierEvent.shiftMask != 0,
+       event.modifiers & ShiftModifierEvent.shiftMask != 0, devices == 0 {
+      return ShiftModifierEvent.leftKey // No side evidence: inherited left default.
+    }
+    return nil // Ambiguous overlap or an orphan release cannot switch mode.
+  }
 
   mutating func receive(_ event: ShiftModifierEvent) -> ShiftGesture {
-    let key = event.keyCode
-    guard key == ShiftModifierEvent.leftKey || key == ShiftModifierEvent.rightKey else {
+    defer { previousModifiers = event.modifiers }
+    guard let key = resolvedKey(event), key == ShiftModifierEvent.leftKey || key == ShiftModifierEvent.rightKey else {
       armed = nil // Another modifier interrupts a tap, even if released first.
+      reconcileHeld(modifiers: event.modifiers)
+      let changes = previousModifiers ^ event.modifiers
+      let shiftChanges = ShiftModifierEvent.shiftMask | ShiftModifierEvent.leftDeviceMask | ShiftModifierEvent.rightDeviceMask
+      if event.keyCode == 0, changes & shiftChanges != 0,
+         changes & (ShiftModifierEvent.blockingMask | ShiftModifierEvent.capsLockMask) == 0 {
+        return .consumed // Ambiguous Shift events must not reach Rime as a tap.
+      }
       return .unrelated
     }
     let previous = held
@@ -327,7 +370,27 @@ final class CompositionModeRouter {
   private var shift = ShiftGestureTracker()
 
   func reset() { shift.reset() }
-  func keyDown() { shift.keyDown() }
+  func keyDown(modifiers: UInt) { shift.keyDown(modifiers: modifiers) }
+
+  // Menu and CLI selection share the same raw-finalization/focus guard as a
+  // left tap. Selecting the already active language preserves composition.
+  @discardableResult
+  func setASCII(_ enabled: Bool, host: CompositionModeHost) -> Bool {
+    shift.reset()
+    guard host.modeActive else { return false }
+    if host.modeASCII == enabled { host.modeRefresh(); return true }
+    let before = host.modeToken
+    guard host.modeFinalizeRaw(), canChangeMode(host, since: before) else { return false }
+    host.modeSetASCII(enabled)
+    if host.modeActive, host.modeToken.generation == before.generation { host.modeRefresh() }
+    return host.modeActive && host.modeToken.generation == before.generation && host.modeASCII == enabled
+  }
+
+  private func canChangeMode(_ host: CompositionModeHost, since before: CompositionToken) -> Bool {
+    host.modeActive && host.modeToken.session == before.session &&
+      host.modeToken.generation == before.generation &&
+      (host.modeToken.revision == before.revision || host.modeToken.revision == before.revision &+ 1)
+  }
 
   static func usesEnglishComposer(ascii: Bool, examples: Bool, engineInput: String) -> Bool {
     // A schema/engine may enter inline ASCII with a live Chinese prefix. That
@@ -348,9 +411,7 @@ final class CompositionModeRouter {
       if gesture == .leftTap || host.modeHasEnglishInput {
         guard host.modeFinalizeRaw() else { return true }
       }
-      guard host.modeActive, host.modeToken.session == before.session,
-            host.modeToken.generation == before.generation,
-            (host.modeToken.revision == before.revision || host.modeToken.revision == before.revision &+ 1) else { return true }
+      guard canChangeMode(host, since: before) else { return true }
       // A raw reservation advances once. Any extra revision means an external
       // host callback cancelled/replaced input; do not overwrite that decision.
       if gesture == .leftTap { host.modeSetASCII(!ascii) }

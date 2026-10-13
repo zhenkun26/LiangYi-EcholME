@@ -17,7 +17,7 @@ The authorized sequence is:
 1. Persist the complete plan and establish appropriate Git version management.
 2. Carry out the currently authorized round only (now Round 2).
 3. Report changes, verification results, limitations, and remaining work.
-4. Wait for the user before beginning Round 2.
+4. Wait for the user before beginning Round 3.
 
 Additional boundaries:
 
@@ -191,6 +191,11 @@ repair and commit locally. The repaired Shift contract finalizes raw input
 before a left tap, preserves the right-tap schema binding and keeps live engine
 input out of a second English buffer. See the current status/delivery evidence;
 this is Round 1 repair, not authorization to begin Round 2.
+
+The 2026-10-12 takeover adds bounded maintenance to that same input contract
+on the current offline-dictionary baseline: repair intermittent left Shift,
+provide explicit primary-language menu selection, and perform guided installed
+acceptance. This does not start context detection or any later feature round.
 
 **Acceptance:**
 

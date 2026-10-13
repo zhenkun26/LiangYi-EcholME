@@ -35,6 +35,8 @@ The Squirrel internal module/class names remain to limit divergence. App identit
 
 Tap Left Shift alone (within 0.5 seconds) to finalize raw composition once and switch Chinese/English. Right Shift alone retains the Rime schema binding; the baseline commits the Chinese candidate, while frontend English is finalized first. Either Shift used with a typed key, another modifier, the other Shift, or a long hold does not switch. The input menu's Local translations toggle disables subtitles and restores direct ASCII passthrough; its state is per controller. Unknown words show `—`, pending results show `…`, and a dictionary timeout shows `!`. No automatic context detection or cloud API is implemented. See the full key contract before testing English punctuation, email/URL/code or Chinese recognizers.
 
+Starting with 0.0.6, the input-source menu also offers **中文主输入 / Chinese** and **英文主输入 / English**, with a checkmark on the current language. Selecting a different language finalizes pending raw text once; reselecting the current language leaves it pending. The menu-bar status and candidate footer identify the primary language. To type `hello` as English, select English before typing: Return submits `hello`, Space submits `hello` plus a space, and Option+Return submits its ready Chinese subtitle. These controls require the repaired bundle to be installed; see the [current acceptance guide](docs/round2/MANUAL_ACCEPTANCE.md).
+
 ### Build and install
 
 Use full Xcode with the macOS SDK and Python 3. The reviewed build entry point remains `tools/round0.py`; see [Round 1 delivery](docs/round1/DELIVERY.md) for commands, evidence and environment. `python3 -B tools/check_round1.py` runs isolated state/host/layout checks without installing or accessing Rime databases. Its optional `--engine-bundle` uses fresh approved LiangYi validation directories. Do not run the inherited Makefile install/clean/package targets or `action-build.sh` / `action-install.sh` for EcholME: they contain destructive replacement or dynamic dependency operations.
@@ -84,6 +86,8 @@ No push or release is authorized by the current Round 2 request. Inherited upstr
 中文空格／数字保留引擎选词及识别规则；英文空格提交词及一个空格，数字继续输入。组合中的回车提交原始字母而不换行，空组合回车交给宿主；Esc 取消。**Option+Return** 仅上屏已显示、已就绪且通过完整范围检查的示例译文。Tab／Command 先提交原文再交给宿主。
 
 在 0.5 秒内单独轻按左 Shift，先提交原始组合一次，再切换中英文。右 Shift 单独轻按保留 Rime 方案绑定：当前基线提交中文候选，前端英文组合则先提交原文。左右 Shift 配合输入、其他修饰键、另一个 Shift 或长按时均不切换模式。“Local translations” 菜单开关关闭副标题时恢复英文直通，其状态仅属于当前控制器。未命中显示 `—`，等待中显示 `…`，词典超时显示 `!`。自动环境识别与云 API 尚未实现；邮箱、网址、代码和中文识别规则应按完整按键约定验收。
+
+从 0.0.6 起，输入源菜单还提供 **中文主输入 / Chinese** 和 **英文主输入 / English**，以勾选标明当前语言。选择另一种语言会先提交待输入的原始文字一次；重复选择当前语言保留待输入文字。菜单栏状态和候选窗底部均标明主语言。要原样输入 `hello`，先选择英文：回车提交 `hello`，空格提交 `hello` 及一个空格，Option+Return 提交已就绪的中文译文。这些入口需安装修复包后才能使用，见[当前验收指南](docs/round2/MANUAL_ACCEPTANCE.md)。
 
 ### 构建与安装
 

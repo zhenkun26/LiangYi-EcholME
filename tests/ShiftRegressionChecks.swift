@@ -116,7 +116,7 @@ private final class ShiftHarness: CompositionModeHost {
     for letter in text { key(0, text: String(letter), modifiers: modifiers) }
   }
   func key(_ code: UInt16, text: String, modifiers: NSEvent.ModifierFlags = []) {
-    router.keyDown()
+    router.keyDown(modifiers: modifiers.rawValue)
     let action = CompositionKeyPolicy.action(keyCode: code, text: text,
       command: modifiers.contains(.command), control: modifiers.contains(.control),
       option: modifiers.contains(.option), shift: modifiers.contains(.shift),
@@ -176,6 +176,35 @@ private enum ShiftRegressions {
     _ = h.state.appendEnglish("A")
     _ = h.api.process_key(h.session, XK_Shift_R, Int32(kReleaseMask.rawValue))
     try check(!h.modeASCII, "real engine control: missing intervening letter makes right Shift look like a tap")
+
+    for key: UInt16 in [56, 60] {
+      h.reset(ascii: false); h.type("nihao")
+      h.flags(key, .shift, at: 0.1)
+      h.flags(0, .shift, at: 0.12)
+      h.flags(0, [], at: 0.2)
+      h.type("a"); h.key(36, text: "\r")
+      try check(h.modeASCII && h.output == [key == 56 ? "nihao" : "你好", "a"] && h.raw.isEmpty,
+                "Shift \(key) anonymous repeat/release preserves its binding and typed text")
+      h.reset(ascii: true)
+      h.flags(key, .shift, at: 0.3) // No release event before the next letter.
+      h.type("hello")
+      h.tap(key, at: 0.5)
+      try check(!h.modeASCII && h.output == ["hello"] && h.state.englishInput.isEmpty,
+                "Shift \(key) recovers omitted release before the next intentional tap")
+      h.type("nihao"); h.key(49, text: " ")
+      try check(h.output == ["hello", "你好"], "Shift \(key) recovered handoff leaves Chinese input usable")
+    }
+    h.reset(ascii: true); h.type("hello")
+    try check(h.router.setASCII(true, host: h) && h.output.isEmpty && h.state.englishInput == "hello",
+              "explicit English reselection keeps the current token")
+    try check(h.router.setASCII(false, host: h) && h.output == ["hello"] && !h.modeASCII,
+              "explicit Chinese selection commits pending English once")
+    h.type("nihao"); h.key(49, text: " ")
+    try check(h.output == ["hello", "你好"], "explicit language handoff uses real Chinese candidates")
+    h.reset(ascii: false); h.type("nihao")
+    h.insertSucceeds = false
+    try check(!h.router.setASCII(true, host: h) && !h.modeASCII && h.output.isEmpty,
+              "failed host insertion aborts explicit mode change")
 
     h.reset(ascii: false); h.type("nihao")
     let obsolete = h.state.token
