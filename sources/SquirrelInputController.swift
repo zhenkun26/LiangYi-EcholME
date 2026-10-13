@@ -2,11 +2,13 @@
 //  SquirrelInputController.swift
 //  Squirrel
 //  Modified for EcholME on 2026-10-11: isolated identity; Round 1 state/commit, examples and Shift boundaries.
+//  Modified for EcholME on 2026-10-12: bounded context, unified mode policy and settings/HUD.
 //
 //  Created by Leo Liu on 5/7/24.
 //
 
 import InputMethodKit
+import Carbon
 
 final class SquirrelInputController: IMKInputController {
   private static let keyRollOver = 50
@@ -20,6 +22,14 @@ final class SquirrelInputController: IMKInputController {
   private var examplesEnabled = true
   private let translations = TranslationCoordinator()
   private let modeRouter = CompositionModeRouter()
+  private let contextGate = ContextRequestGate()
+  private var contextRequest: ContextCaptureRequest?
+  private let contextOwner = UUID()
+  private var contextStarted = false
+  private var contextEvidence = ContextEvidence.unavailable
+  private var manualDirection: InputDirection?
+  private var modeResolution: ModeResolution?
+  private var translationsAllowed: Bool { examplesEnabled && (modeResolution?.translationsAllowed ?? true) }
   private var observers: [NSObjectProtocol] = []
   private let rimeAPI: RimeApi_stdbool = rime_get_api_stdbool().pointee
   private var preedit: String = ""
@@ -50,6 +60,7 @@ final class SquirrelInputController: IMKInputController {
       cancelExamples()
       composition.deactivate()
       modeRouter.reset()
+      resetContext()
       createSession()
       if session == 0 {
         return false
@@ -60,9 +71,22 @@ final class SquirrelInputController: IMKInputController {
     if let client, let app = EcholMEClientBundleIdentifier(client), currentApp != app {
       currentApp = app
       updateAppOptions()
+      resetContext()
+    }
+
+    if !contextStarted { beginContext() }
+    // This local OS flag is cheap; no AX/host text access runs in handle().
+    if IsSecureEventInputEnabled() {
+      contextEvidence = ContextDetector.detect(text: "", field: .secure)
+    }
+    applyContextResolution()
+    if modeResolution?.passthrough == true {
+      lastModifiers = modifiers
+      return false
     }
 
     if event.type == .keyDown {
+      ModeHUD.shared.hide(owner: contextOwner)
       modeRouter.keyDown(modifiers: modifiers.rawValue)
       if let disposition = handleCompositionKey(event) { return disposition }
     } else if event.type == .flagsChanged {
@@ -70,7 +94,11 @@ final class SquirrelInputController: IMKInputController {
       // inference here would discard repeated events and mislabel right releases.
       let modifierEvent = ShiftModifierEvent(keyCode: event.keyCode,
                                             modifiers: modifiers.rawValue, timestamp: event.timestamp)
+      let previousASCII = modeASCII
+      let previousGeneration = composition.token.generation
       if modeRouter.handleModifiers(modifierEvent, host: self) {
+        if composition.active, composition.token.generation == previousGeneration,
+           modeASCII != previousASCII { rememberManualDirection() }
         lastModifiers = modifiers
         return true
       }
@@ -118,6 +146,7 @@ final class SquirrelInputController: IMKInputController {
 
       lastModifiers = modifiers
       rimeUpdate()
+      if changes.contains(.capsLock) { rememberManualDirection() }
 
     case .keyDown:
       // Let client apps handle Command shortcuts.
@@ -207,6 +236,7 @@ final class SquirrelInputController: IMKInputController {
     cancelExamples()
     composition.activate()
     modeRouter.reset()
+    resetContext()
     var keyboardLayout = NSApp.squirrelAppDelegate.config?.getString("keyboard_layout") ?? ""
     if keyboardLayout == "last" || keyboardLayout == "" {
       keyboardLayout = ""
@@ -234,6 +264,7 @@ final class SquirrelInputController: IMKInputController {
       let state = rimeAPI.get_option(session, "ascii_mode")
       NSApp.squirrelAppDelegate.updateStatusIcon(asciiMode: state, schemaLabel: state ? "英文" : "中文")
     }
+    beginContext()
   }
 
   override init!(server: IMKServer!, delegate: Any!, client: Any!) {
@@ -263,6 +294,7 @@ final class SquirrelInputController: IMKInputController {
       self?.cancelExamples()
       self?.composition.deactivate()
       self?.modeRouter.reset()
+      self?.resetContext()
       self?.hidePalettes()
     })
     observers.append(NotificationCenter.default.addObserver(forName: EcholMENotification.lexiconReady,
@@ -273,6 +305,10 @@ final class SquirrelInputController: IMKInputController {
                                            object: nil, queue: .main) { [weak self] _ in
       self?.lexiconDidFail()
     })
+    observers.append(NotificationCenter.default.addObserver(forName: ContextPreferences.didChange,
+                                           object: nil, queue: .main) { [weak self] _ in
+      self?.contextSettingsDidChange()
+    })
   }
 
   override func deactivateServer(_ sender: Any!) {
@@ -280,6 +316,7 @@ final class SquirrelInputController: IMKInputController {
     cancelExamples()
     composition.deactivate()
     modeRouter.reset()
+    resetContext()
     hidePalettes()
     client = nil
   }
@@ -319,9 +356,12 @@ final class SquirrelInputController: IMKInputController {
     wiki.target = self
 
     let menu = NSMenu()
+    let selectedMode = ContextPreferences.shared.settings.mode
     for (title, action, enabled) in [
-      ("中文主输入 / Chinese", #selector(selectChinese), !modeASCII),
-      ("英文主输入 / English", #selector(selectEnglish), modeASCII)
+      ("自动 / Auto", #selector(selectAutomatic), selectedMode == .auto && manualDirection == nil),
+      ("中文主输入 / Chinese", #selector(selectChinese), manualDirection == .chinese || (manualDirection == nil && selectedMode == .chinese)),
+      ("英文主输入 / English", #selector(selectEnglish), manualDirection == .english || (manualDirection == nil && selectedMode == .english)),
+      ("关闭 / Off — passthrough", #selector(selectOff), selectedMode == .off)
     ] {
       let item = NSMenuItem(title: title, action: action, keyEquivalent: "")
       item.target = self
@@ -333,6 +373,15 @@ final class SquirrelInputController: IMKInputController {
     examples.target = self
     examples.state = examplesEnabled ? .on : .off
     menu.addItem(examples)
+    let contextStatus = NSMenuItem(title: "Context: \(modeResolution?.reason ?? "unavailable")", action: nil, keyEquivalent: "")
+    contextStatus.isEnabled = false
+    menu.addItem(contextStatus)
+    let rules = NSMenuItem(title: "Language & App Rules…", action: #selector(openContextSettings), keyEquivalent: "")
+    rules.target = self
+    menu.addItem(rules)
+    let about = NSMenuItem(title: "About EcholME / Open Source Licenses…", action: #selector(openAbout), keyEquivalent: "")
+    about.target = self
+    menu.addItem(about)
     menu.addItem(.separator())
     menu.addItem(deploy)
     menu.addItem(sync)
@@ -349,10 +398,31 @@ final class SquirrelInputController: IMKInputController {
 
   @objc func selectChinese() { selectPrimaryLanguage(ascii: false) }
   @objc func selectEnglish() { selectPrimaryLanguage(ascii: true) }
+  @objc func selectAutomatic() {
+    manualDirection = nil
+    if ContextPreferences.shared.settings.mode == .auto { contextSettingsDidChange() }
+    else { ContextPreferences.shared.update { $0.mode = .auto } }
+  }
+  @objc func selectOff() { ContextPreferences.shared.update { $0.mode = .off } }
+  @objc func openContextSettings() {
+    finalizeRawComposition()
+    ContextSettingsWindow.shared.show()
+  }
+  @objc func openAbout() {
+    finalizeRawComposition()
+    ContextSettingsWindow.showAbout()
+  }
 
   private func selectPrimaryLanguage(ascii: Bool) {
-    guard session != 0 && rimeAPI.find_session(session) else { return }
-    modeRouter.setASCII(ascii, host: self)
+    // Persist the explicit mode even if the input menu temporarily deactivated
+    // this controller. Live changes still use the existing raw/focus boundary.
+    let mode: PrimaryInputMode = ascii ? .english : .chinese
+    manualDirection = nil
+    if ContextPreferences.shared.settings.mode == mode { contextSettingsDidChange() }
+    else { ContextPreferences.shared.update { $0.mode = mode } }
+    if contextEvidence.field != .secure {
+      ContextPreferences.shared.recordManual(ascii ? .english : .chinese, bundleID: currentApp)
+    }
   }
 
   @objc func toggleExamples() {
@@ -472,6 +542,9 @@ private extension SquirrelInputController {
     }
     if let appOptions = NSApp.squirrelAppDelegate.config?.getAppOptions(currentApp) {
       for (key, value) in appOptions {
+        // Primary direction has one resolver. Legacy schema options such as
+        // vim_mode remain supported; app_options/ascii_mode no longer competes.
+        guard key != "ascii_mode" else { continue }
         print("set app option: \(key) = \(value)")
         rimeAPI.set_option(session, key, value)
       }
@@ -487,6 +560,7 @@ private extension SquirrelInputController {
     cancelExamples()
     composition.deactivate()
     modeRouter.reset()
+    resetContext()
     if session != 0 {
       _ = rimeAPI.destroy_session(session)
       session = 0
@@ -670,7 +744,7 @@ private extension SquirrelInputController {
         hidePalettes()
       } else if let snapshot = composition.replace(direction: .chinese, rawInput: rawInput, preedit: preedit,
                                                     candidates: descriptors, highlighted: highlighted, page: page,
-                                                    lastPage: lastPage, examplesEnabled: examplesEnabled) {
+                                                    lastPage: lastPage, examplesEnabled: translationsAllowed) {
         present(snapshot)
         scheduleExamples(snapshot)
       }
@@ -758,14 +832,147 @@ private extension SquirrelInputController {
 }
 
 private extension SquirrelInputController {
+  var hasActiveComposition: Bool { !composition.englishInput.isEmpty || !rawEngineInput().isEmpty }
+
+  func resetContext() {
+    contextRequest?.cancel()
+    contextRequest = nil
+    contextGate.invalidate()
+    contextStarted = false
+    contextEvidence = .unavailable
+    manualDirection = nil
+    modeResolution = nil
+    ModeHUD.shared.hide(owner: contextOwner)
+  }
+
+  func beginContext() {
+    guard composition.active, client != nil, session != 0 else { return }
+    contextStarted = true
+    if let client, let bundle = EcholMEClientBundleIdentifier(client) { currentApp = bundle }
+    let request = contextGate.begin()
+    contextRequest?.cancel()
+    applyContextResolution()
+    let settings = ContextPreferences.shared.settings
+    guard settings.mode != .off,
+          !hasActiveComposition || settings.mode != .auto || manualDirection != nil || !settings.contextEnabled,
+          let app = NSWorkspace.shared.frontmostApplication, app.bundleIdentifier == currentApp else { return }
+    let processID = app.processIdentifier
+    let expectedComposition = composition.token
+    let includeText = settings.contextEnabled && settings.mode == .auto && manualDirection == nil && !hasActiveComposition
+    contextRequest = ContextCapture.shared.request(processID: processID, includeText: includeText) { [weak self] evidence in
+      guard let self, self.contextGate.accepts(request), self.composition.active,
+            NSWorkspace.shared.frontmostApplication?.processIdentifier == processID else { return }
+      // A queued AX read may race the first key and see our own marked pinyin.
+      // Never let that stale language hint influence the next composition.
+      // Safety evidence still blocks the same focus generation immediately.
+      guard self.contextGate.accepts(request, expected: expectedComposition,
+                                     current: self.composition.token, evidence: evidence) else { return }
+      self.contextEvidence = evidence
+      self.applyContextResolution()
+    }
+  }
+
+  func contextSettingsDidChange() {
+    guard composition.active, client != nil else { return }
+    let settings = ContextPreferences.shared.settings
+    manualDirection = nil
+    let hadComposition = hasActiveComposition
+    contextGate.invalidate()
+    contextRequest?.cancel()
+    contextRequest = nil
+    if contextEvidence.field == .secure || IsSecureEventInputEnabled() {
+      contextEvidence = ContextDetector.detect(text: "", field: .secure)
+      applyContextResolution()
+      return
+    }
+    let desired = ModeResolver.resolve(bundleID: currentApp, evidence: contextEvidence,
+                                       manual: nil, settings: settings)
+    if settings.mode == .off {
+      guard modeRouter.finalizeForModeChange(host: self) else { return }
+    } else {
+      // The shared router retains same-language idempotence and rejects
+      // reentrant focus/revision changes after a raw commit.
+      guard modeRouter.setASCII(desired.direction == .english, host: self) else { return }
+    }
+    // Reuse the pre-composition evidence. Re-reading just-committed text here
+    // would turn our own translation into a language-detection feedback loop.
+    applyContextResolution()
+    if ContextSamplingPolicy.refreshAfterSettings(mode: settings.mode, contextEnabled: settings.contextEnabled,
+                                                  hadComposition: hadComposition, evidence: contextEvidence) {
+      beginContext()
+    } else if settings.mode != .off && (settings.mode != .auto || !settings.contextEnabled) {
+      beginContext() // Safety metadata only; no just-committed text is read.
+    }
+  }
+
+  func applyContextResolution() {
+    guard composition.active, session != 0, rimeAPI.find_session(session) else { return }
+    let composing: InputDirection? = hasActiveComposition ?
+      (composition.englishInput.isEmpty ? .chinese : .english) : nil
+    let resolution = ModeResolver.resolve(bundleID: currentApp, evidence: contextEvidence,
+                                         manual: manualDirection, settings: ContextPreferences.shared.settings,
+                                         composingDirection: composing)
+    let changed = resolution != modeResolution
+    modeResolution = resolution
+    if resolution.passthrough {
+      // A newly identified sensitive field must not receive a stale pending
+      // composition, nor schedule dictionary work on subsequent keystrokes.
+      if hasActiveComposition { discardCurrentComposition() }
+      cancelExamples()
+      modeRouter.reset()
+    }
+    let ascii = resolution.direction == .english
+    // Rime owns inline ASCII inside a Chinese composition. Context changes
+    // become effective at the next empty boundary, never rewrite that option
+    // while the engine still owns text.
+    if !hasActiveComposition, modeASCII != ascii { modeSetASCII(ascii) }
+    if changed { showModeHUD() }
+  }
+
+  func rememberManualDirection() {
+    guard composition.active else { return }
+    let direction: InputDirection = modeASCII ? .english : .chinese
+    manualDirection = direction
+    contextRequest?.cancel()
+    contextRequest = nil
+    contextGate.invalidate()
+    ContextPreferences.shared.recordManual(direction, bundleID: currentApp)
+    applyContextResolution()
+    beginContext() // A manual override still checks secure-field metadata.
+  }
+
+  func showModeHUD() {
+    let expected = composition.token
+    let resolution = modeResolution
+    DispatchQueue.main.async { [weak self] in
+      guard let self, self.composition.active,
+            self.composition.token == expected, !self.hasActiveComposition,
+            self.modeResolution == resolution, let resolution, let client = self.client else { return }
+      let language = resolution.passthrough ? "Off" : (resolution.direction == .english ? "EN → 中" : "中 → EN")
+      let automatic = ContextPreferences.shared.settings.mode == .auto && self.manualDirection == nil && !resolution.passthrough
+      var caret = NSRect.zero
+      let anchor = EcholMEGetCaretRect(client, &caret) ? caret : nil
+      ModeHUD.shared.show(automatic ? "Auto · \(language)" : language, caret: anchor, owner: self.contextOwner)
+    }
+  }
+
   func attachClient(_ sender: Any?) -> Bool {
     guard let incoming = sender as? IMKTextInput else { return false }
+    if EcholMEClientBundleIdentifier(incoming) == SquirrelApp.bundleIdentifier {
+      discardCurrentComposition()
+      composition.deactivate()
+      modeRouter.reset()
+      resetContext()
+      client = nil
+      return false
+    }
     if let client, (incoming as AnyObject) !== (client as AnyObject) {
       // Focus callbacks can be missing/reordered. Discard the old session,
       // never finalize its text through the newly supplied client.
       discardCurrentComposition()
       composition.deactivate()
       modeRouter.reset()
+      resetContext()
     }
     client = incoming
     if !composition.active { composition.activate() }
@@ -843,7 +1050,7 @@ private extension SquirrelInputController {
       hasComposition: !composition.englishInput.isEmpty || !engineInput.isEmpty,
       englishInput: composition.englishInput,
       englishEnabled: CompositionModeRouter.usesEnglishComposer(
-        ascii: rimeAPI.get_option(session, "ascii_mode"), examples: examplesEnabled, engineInput: engineInput))
+        ascii: rimeAPI.get_option(session, "ascii_mode"), examples: translationsAllowed, engineInput: engineInput))
     switch action {
     case .engine:
       if flags.intersection([.command, .control, .option]).isEmpty,
@@ -893,7 +1100,7 @@ private extension SquirrelInputController {
     let candidate = CandidateDescriptor(primary: text, engineComment: "", label: "", fullCommitPreview: text)
     if let snapshot = composition.replace(direction: .english, rawInput: text, preedit: text,
                                           candidates: [candidate], highlighted: 0, page: 0, lastPage: true,
-                                          examplesEnabled: examplesEnabled) {
+                                          examplesEnabled: translationsAllowed) {
       present(snapshot)
       scheduleExamples(snapshot)
     }

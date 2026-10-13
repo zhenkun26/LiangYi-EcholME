@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E30000000000000000000008 /* ModeHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30000000000000000000007 /* ModeHUD.swift */; };
+		E30000000000000000000006 /* ContextSettingsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30000000000000000000005 /* ContextSettingsWindow.swift */; };
+		E30000000000000000000004 /* ContextCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30000000000000000000003 /* ContextCapture.swift */; };
+		E30000000000000000000002 /* ContextPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30000000000000000000001 /* ContextPolicy.swift */; };
 		E10000000000000000000002 /* CompositionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000001 /* CompositionState.swift */; };
 		E10000000000000000000004 /* ExampleTranslation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000003 /* ExampleTranslation.swift */; };
 		E10000000000000000000006 /* BilingualCandidateLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000005 /* BilingualCandidateLayout.swift */; };
@@ -168,6 +172,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E30000000000000000000007 /* ModeHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = sources/ModeHUD.swift; sourceTree = "<group>"; };
+		E30000000000000000000005 /* ContextSettingsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = sources/ContextSettingsWindow.swift; sourceTree = "<group>"; };
+		E30000000000000000000003 /* ContextCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = sources/ContextCapture.swift; sourceTree = "<group>"; };
+		E30000000000000000000001 /* ContextPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = sources/ContextPolicy.swift; sourceTree = "<group>"; };
 		E10000000000000000000001 /* CompositionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = sources/CompositionState.swift; sourceTree = "<group>"; };
 		E10000000000000000000003 /* ExampleTranslation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = sources/ExampleTranslation.swift; sourceTree = "<group>"; };
 		E10000000000000000000005 /* BilingualCandidateLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = sources/BilingualCandidateLayout.swift; sourceTree = "<group>"; };
@@ -274,6 +282,10 @@
 				E10000000000000000000003 /* ExampleTranslation.swift */,
 				E10000000000000000000005 /* BilingualCandidateLayout.swift */,
 				E20000000000000000000001 /* LocalLexicon.swift */,
+				E30000000000000000000007 /* ModeHUD.swift */,
+				E30000000000000000000005 /* ContextSettingsWindow.swift */,
+				E30000000000000000000003 /* ContextCapture.swift */,
+				E30000000000000000000001 /* ContextPolicy.swift */,
 				E10000000000000000000007 /* SafeIMEClient.m */,
 				E10000000000000000000009 /* SafeIMEClient.h */,
 				B39771222BECEA150093A49B /* MacOSKeyCodes.swift */,
@@ -529,6 +541,10 @@
 				E10000000000000000000004 /* ExampleTranslation.swift in Sources */,
 				E10000000000000000000006 /* BilingualCandidateLayout.swift in Sources */,
 				E20000000000000000000002 /* LocalLexicon.swift in Sources */,
+				E30000000000000000000008 /* ModeHUD.swift in Sources */,
+				E30000000000000000000006 /* ContextSettingsWindow.swift in Sources */,
+				E30000000000000000000004 /* ContextCapture.swift in Sources */,
+				E30000000000000000000002 /* ContextPolicy.swift in Sources */,
 				E10000000000000000000008 /* SafeIMEClient.m in Sources */,
 				B39771252BED899F0093A49B /* SquirrelConfig.swift in Sources */,
 				B397712F2BEECBED0093A49B /* Main.swift in Sources */,
@@ -555,7 +571,7 @@
 				CODE_SIGN_ENTITLEMENTS = resources/Squirrel.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 0.0.6;
+				CURRENT_PROJECT_VERSION = 0.0.7;
 				DEAD_CODE_STRIPPING = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
@@ -603,7 +619,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = resources/Squirrel.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 0.0.6;
+				CURRENT_PROJECT_VERSION = 0.0.7;
 				DEAD_CODE_STRIPPING = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;

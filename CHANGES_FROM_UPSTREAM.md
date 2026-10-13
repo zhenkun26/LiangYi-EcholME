@@ -6,6 +6,25 @@ Baseline: Squirrel [`769ae426f33f500266101a88f694aab0d158e680`](https://github.c
 
 This is a modification record for the derived project. It does not replace upstream copyright notices, [LICENSE.txt](LICENSE.txt), or the upstream [CHANGELOG.md](CHANGELOG.md). Changes belong to their recorded Git authors; imported work retains its original attribution.
 
+## 2026-10-12 — Round 3 context, rules and mode controls
+
+Add a bounded AX adapter, local Chinese/Latin-script classifier, deterministic
+priority resolver, versioned request gate, validated preference store,
+nonactivating mode HUD and basic native settings/About UI. IMK clients stay on
+the UI thread. Ordinary input uses rules/defaults when context is absent.
+Text analysis is Auto-only and never queries whole-field AXValue. Secure fields
+and Secure Event Input bypass composition/translation; Off explicitly finishes
+raw text before passthrough. Late preedit/focus results cannot change direction.
+Legacy app_options/ascii_mode is replaced by the unified resolver; other schema
+options remain available. No new third-party dependency or cloud backend is added.
+
+Version 0.0.7 integrates these modules into the Squirrel controller/project.
+Synthetic policy/capture/queue/store regressions and an offscreen settings
+preview accompany the prior dictionary, commit and real-librime checks.
+Installed acceptance remains a separate gate in [Round 3 delivery](docs/round3/DELIVERY.md).
+GPL source headers, upstream history/notices and separate CC-CEDICT attribution
+are retained. Public corresponding-source review and distribution are not done.
+
 ## 2026-10-11 — Round 0 foundation
 
 Status: **code/build/install delivered; runtime acceptance blocked**.

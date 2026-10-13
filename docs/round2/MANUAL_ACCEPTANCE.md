@@ -1,13 +1,21 @@
 # Round 2 — Installation and real input acceptance
 
 Current result: **old 0.0.4 moved to Trash; no installed bundle; repaired 0.0.6 NOT_INSTALLED; physical Shift acceptance NOT_RUN**.
-The current repair bundle is:
+The retained Round 2 repair bundle is:
 
 ```text
 .artifacts/builds/shift-handoff-006-final-20261012/DerivedData/Build/Products/Debug/EcholME.app
 ```
 
-The historical 0.0.4 bundle and TextEdit results below remain separate:
+The user subsequently authorized Round 3 source work. That does not install
+this artifact or mark these acceptance cases PASS. A later installation
+checkpoint must name the selected build; consult the
+[Round 3 delivery record](../round3/DELIVERY.md) before choosing it. The 0.0.6
+procedure below remains available as the historical Round 2 repair procedure.
+
+## Historical 0.0.4 installation and TextEdit results
+
+The historical 0.0.4 bundle and its TextEdit results remain separate:
 
 ```text
 .artifacts/builds/round2-lexicon-20261012c/DerivedData/Build/Products/Debug/EcholME.app
@@ -17,28 +25,32 @@ On 2026-10-12 the user removed the previous app. The destination was absent,
 with no EcholME process. `verify` and `install-first` copied 0.0.4 only after
 that check. Installed Info.plist, executable, lexicon, NOTICE, README, and
 librime matched the artifact by SHA-256. Registration returned OSStatus 0.
-Hans is enabled and selected; Hant is disabled and not selected. A short
+At that historical acceptance Hans was enabled and selected; Hant was disabled
+and not selected. A short
 `--select-input-source` call returned OSStatus 0 but did not stick until a
 small helper kept its run loop alive for 1.5 seconds. The final probe then
 showed Hans selected.
 
-The server is the installed 0.0.4 binary. Rime recorded the distribution
+The server exercised then was the installed 0.0.4 binary. Rime recorded the distribution
 version change from 0.0.1 to 0.0.4 and refreshed its build files under
 `~/Library/Application Support/LiangYi/Rime/`. Its own deployment log says it
 cleaned 4 old log files inside `~/Library/Logs/LiangYi/`; that is engine
 maintenance in the authorized log root, not a manual deletion. The only
-warning line is the inherited missing optional `grammar.yaml`. The test
-strings `nihao`, `hello`, and `你好` do not appear in those logs.
+warning line in that recorded slice was the inherited missing optional
+`grammar.yaml`. The test strings `nihao`, `hello`, and `你好` did not appear
+in those inspected logs.
 
-TextEdit received System Events keystrokes in a new unsaved document. This is
+TextEdit received System Events keystrokes in a new unsaved document. This was
 real IMK input, not the Notes host named in the table. The candidate panel was
-not screenshot-verified. Xcode and Terminal were not exercised. Do not install
-over this bundle.
+not screenshot-verified. Xcode and Terminal were not exercised. This records
+the historical test method, not permission to repeat denied UI operations.
+The old installation is now absent; future installation must still stop if
+its destination already exists.
 
 ## Installation
 
-Use one checkpoint at a time and wait for user confirmation. The user must
-perform the old-bundle removal; Computer Use authorization does not override
+Use one checkpoint at a time and wait for user confirmation. Any future
+old-bundle removal belongs to the user; Computer Use authorization does not override
 the repository's no-deletion rule. The explicit one-time exception below
 authorized this particular removal; it does not authorize future deletion.
 
@@ -61,12 +73,18 @@ probe, and `com.apple.inputmethod.SCIM.ITABC` selected. The 236 regular files in
 `~/Library/Logs/LiangYi/` had matching relative-path/content digests before
 and after removal. No input contents or filenames were copied into this record.
 
-Result: **PASS_OLD_BUNDLE_REMOVED_DATA_PRESERVED**. Trash was not emptied.
+Result: **PASS_OLD_BUNDLE_REMOVED_DATA_PRESERVED**, recorded in `323d902`.
+Trash was not emptied.
 No 0.0.6 installation, activation, physical Shift acceptance, or push occurred.
-**Next gate: wait for user confirmation before installation step 4.** The
-source will need registration/enabling again after the new package is copied.
+**Installation gate: identify the chosen artifact and wait for user
+confirmation before step 4.** Round 3 source work does not waive this gate.
+The source will need registration/enabling again after a new package is copied.
 
-### Checkpoints
+### Retained 0.0.6 installation checkpoints
+
+Steps 1–3 were completed in the removal record above. Do not rerun the quit
+command against an absent path. The following commands are the retained 0.0.6
+procedure, not an instruction to install it during Round 3 source work.
 
 1. Switch to ABC or another working input source and confirm normal typing.
 2. Quit the installed EcholME with its own executable. Do not use `killall`
@@ -114,7 +132,7 @@ Every row is currently **NOT_RUN**; stop after each row for confirmation.
 Record committed synthetic text, primary language, underline/panel closure,
 and PASS/FAIL. Do not log real documents or unrelated Notes contents.
 
-## Input checks
+## Historical 0.0.4 input checks and acceptance carryovers
 
 Use a new synthetic note. Record each row as PASS, FAIL, or NOT_RUN.
 

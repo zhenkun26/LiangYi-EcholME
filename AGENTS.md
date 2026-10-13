@@ -8,22 +8,26 @@ project memory. The latest explicit user instruction takes precedence.
 
 - The approved direction is a Squirrel-derived macOS input method named
   **LiangYi / 两仪**, with the English product name **EcholME**.
-- **Round 2** is authorized: real offline bidirectional dictionary subtitles,
-  local cache, cancellation, and timeout degradation. Stop after delivery;
-  Round 3 needs new confirmation. Round 1 installed IMK acceptance remains
-  NOT_RUN and is not a pass.
+- **Round 3** is authorized by the user's 2026-10-12 request to check Round 2
+  closeout and advance Round 3: bounded local context detection, rule priority,
+  manual modes, HUD, basic settings, and About/Open Source Licenses. Stop after
+  delivery; Round 4 needs new confirmation. Round 2 closes with its recorded
+  verification limits. Pending Round 1/2 installed IMK and physical Shift
+  acceptance remains NOT_RUN and is not a pass.
 - Keep Git commits local. No push, GitHub repository creation, public release,
-  deployment, or notarization is authorized by the current request.
+  installation, deployment, or notarization is authorized by this increment.
 - On 2026-10-12 the user explicitly authorized the assistant to remove the
   installed 0.0.4 `~/Library/Input Methods/EcholME.app` because it relaunched
   and blocked Finder removal. This one-time exception is **COMPLETED**: the
   source was removed from the enabled list, the process quit, and that app
   moved to Trash. Data/log roots were preserved. This is not reusable deletion
-  authority. Installation of 0.0.6 still awaits the next user confirmation.
+  authority. The retained 0.0.6 was never installed; current 0.0.7 installation
+  awaits the next user confirmation and must use the current delivery record.
 - The user authorized closing Round 0 on 2026-10-11. Remaining bounded checks
   and the final delivery record are in scope; this supersedes earlier per-case
   waiting checkpoints for that closeout. Round 0 is closed with verification
-  limits. The later explicit Round 1 authorization above is now controlling.
+  limits. The current Round 3 authorization supersedes that historical stage
+  boundary without changing unverified acceptance results.
 - The user authorized remaining Round 0 runtime acceptance on 2026-10-11.
   librime may perform normal generated-file and database maintenance only
   inside `~/Library/Application Support/LiangYi/` and `~/Library/Logs/LiangYi/`.

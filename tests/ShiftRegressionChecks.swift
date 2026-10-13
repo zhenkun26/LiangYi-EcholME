@@ -207,6 +207,16 @@ private enum ShiftRegressions {
               "failed host insertion aborts explicit mode change")
 
     h.reset(ascii: false); h.type("nihao")
+    try check(h.router.finalizeForModeChange(host: h) && h.output == ["nihao"] && h.raw.isEmpty,
+              "Off boundary drains real Chinese engine raw input exactly once")
+    h.reset(ascii: true); h.type("hello")
+    try check(h.router.finalizeForModeChange(host: h) && h.output == ["hello"] && h.state.englishInput.isEmpty,
+              "Off boundary drains frontend English with real engine present")
+    h.modeRefresh()
+    try check(h.output == ["hello"] && h.raw.isEmpty,
+              "refresh after Off boundary cannot append duplicate engine text")
+
+    h.reset(ascii: false); h.type("nihao")
     let obsolete = h.state.token
     h.tap(56)
     try check(h.output == ["nihao"] && h.modeASCII && h.raw.isEmpty, "P1 left tap finalizes Chinese raw before English starts")

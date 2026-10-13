@@ -2,21 +2,31 @@
 
 Recorded: 2026-10-12, America/New_York.
 
-## Current state — Round 2
+## Current state — Round 3
 
-- Authorization: Round 2 only, authorized on 2026-10-12 after revalidating the Round 1 source hashes and automated checks. Stop before Round 3. No push, release, replacement installation, cloud provider, or new code dependency.
+- Authorization: the user requested Round 2 closeout review and Round 3 implementation on 2026-10-12. Stop before Round 4. Keep commits local; no installation, registration, push, release or cloud calls in this increment.
+- Scope: bounded local field/text evidence, deterministic direction priority, focus-scoped manual override, Auto/Chinese/English/Off controls, short mode HUD, basic app-rule settings and About/licenses.
+- Round 2 closeout audit: **PASS** for 27 recorded source hashes, 86 retained 0.0.6 bundle hashes and strict signature, checked before Round 3 edits. Source audit found no blocking P1/P2 issue. The 0.0.4 installed-state wording is corrected; commit `323d902` had removed that app. **No installed EcholME bundle**; the 0.0.6 artifact remains retained and uninstalled.
+- Round 3 delivery: **IMPLEMENTED_AND_BUILT_WITH_INSTALLED_ACCEPTANCE_PENDING**. Version **0.0.7**, branch `codex/round-3-context`; stop before Round 4. [Delivery](../round3/DELIVERY.md) and [exact evidence](../round3/evidence/verification.json).
+- Verification: **PASS** — 104 context-policy, 86 capture/settings and 34 async queue checks; regressions 79 core, 22 host, 12 guards, 60 engine, 72 Shift/router and 136 dictionary checks. Offscreen settings preview passes (18 controls/8 labels). Final xcodebuild/static identity/resources/linkage/ad-hoc signature pass; no compiler/linker warnings, one inherited AppIntents metadata warning. Final independent review found no confirmed remaining P1/P2 issue.
+- Final bundle: `.artifacts/builds/round3-context-final-007-20261012b/DerivedData/Build/Products/Debug/EcholME.app`. All 40 recorded source/test/tool hashes and 86 bundle hashes match. No live document read, permission prompt, new dependency, manual deletion or installation occurred in this increment.
+- Acceptance boundary: Round 1/2 physical Shift, installed IMK input, multi-host behavior and visible candidate latency remain **NOT_RUN** for the repaired bundle. Round 3 implementation/build and synthetic/offscreen verification are separate from installed acceptance. Follow [the guided checks](../round3/MANUAL_ACCEPTANCE.md) only after the next installation confirmation.
+
+## Round 2 closeout (historical)
+
+- Original authorization: Round 2 only on 2026-10-12. The later user request authorizes Round 3; this historical record does not grant installation, cloud work, pushing, or release.
 - Delivery: **IMPLEMENTED_AND_BUILT_WITH_RUNTIME_ACCEPTANCE_PENDING**. [Round 2 report](../round2/DELIVERY.md) and [manual installation/acceptance](../round2/MANUAL_ACCEPTANCE.md).
 - Branch: `feat/round-1-composition`, continued for this increment. The final hash is the delivery commit; no self-referential hash commit is needed.
 - Dictionary: pinned MDBG CC-CEDICT export dated 2026-10-11T08:29:27Z, CC-BY-SA-4.0, 125,262 parsed entries. The derived index has 115,355 simplified keys (9,739 single-character and 105,616 multi-character), 33,030 English headwords, and 59,616 English phrases counted separately. Ranking uses the already vendored rime-essay scores at build time. This is not a reversal of one table into the other.
 - Behavior: Chinese candidates show an English subtitle; English tokens show a Chinese subtitle. Option+Return still commits only a ready subtitle whose preview covers the whole composition. Misses show `—`. Lookup timeout or a missing index shows `!` and does not block primary commit. A timeout is not cached as a miss. The one-word English composer does not submit multiword phrases; an exact spaced primary can still resolve a stored phrase.
-- Final bundle: `.artifacts/builds/round2-lexicon-20261012c/DerivedData/Build/Products/Debug/EcholME.app`, version **0.0.4**, macOS 14 deployment target, arm64 Debug/ad-hoc signed. The bundled index and NOTICE match the source tree.
+- Historical baseline bundle: `.artifacts/builds/round2-lexicon-20261012c/DerivedData/Build/Products/Debug/EcholME.app`, version **0.0.4**, macOS 14 deployment target, arm64 Debug/ad-hoc signed. The bundled index and NOTICE match the source tree.
 - Verification on Apple M4, 16 GiB, macOS 26.5, Xcode 26.6, arm64: lexicon rebuild PASS; 136 dictionary/state/commit checks PASS; Round 1 regression 60 core, 22 host, 12 tool guards, real librime PASS, and 57 Shift checks PASS. In-process cold index load 474.8 ms. Warm lookup over 1,300 calls: minimum 0.0003 ms, P50 0.0010 ms, P95 0.0021 ms, maximum 0.048 ms. This is not the visible-panel 150 ms measurement.
 - Warning: one inherited AppIntents metadata extraction warning; no compiler/linker warnings. macOS 14/Intel runtime and universal crash freedom are unverified.
 - Installed state: **NO_INSTALLED_BUNDLE; WAITING_FOR_0.0.6_INSTALL_CONFIRMATION**. Under the user's explicit one-time exception on 2026-10-12, the assistant disabled the old source through System Settings, quit it, and moved only 0.0.4 `EcholME.app` to Trash. The user had reported intermittent left Shift failure on that version. **0.0.5** (`992d5ea`) was never installed. Earlier TextEdit checks remain limited to their recorded 0.0.4 cases.
 - GPL: program sources remain GPL-3.0-only. The lexicon data remains CC-BY-SA-4.0 and is not relicensed. Complete corresponding-source distribution review remains an external release gate.
-- Next: Notes, Xcode, and Terminal still need typed acceptance. Stop before Round 3. Keep commits local. The TextEdit results and install record are in [manual acceptance](../round2/MANUAL_ACCEPTANCE.md).
+- Carryover: Notes, Xcode, and Terminal still need typed acceptance. Round 3 authorization does not turn these gaps into passes. Keep commits local. The TextEdit results and install record are in [manual acceptance](../round2/MANUAL_ACCEPTANCE.md).
 
-## Current follow-up — Shift and explicit primary language
+## Round 2 follow-up — Shift and explicit primary language (historical)
 
 - Scope: repair the reported Shift failure and make manual primary-language selection visible. No context detection, new translation backend, dependency, push, or later-round work.
 - Source: missing-key-code repeat/release events retain the known Shift side; a subsequent typed key reconciles an omitted release; ambiguous overlap is consumed without toggling. The input-source menu now explicitly selects Chinese or English through the same guarded commit boundary. Same-language selection preserves composition; status labels are consistent on activation.

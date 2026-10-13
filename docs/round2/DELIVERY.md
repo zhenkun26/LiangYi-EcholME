@@ -2,10 +2,12 @@
 
 Recorded: 2026-10-12, America/New_York.
 
-Delivery: **IMPLEMENTED_AND_BUILT_WITH_RUNTIME_ACCEPTANCE_PENDING**.
-Round 2 is authorized. Stop before Round 3. Sections 1–5 retain the 0.0.4
-delivery baseline; Section 6 records the current 0.0.6 switching repair.
-No push or release is authorized.
+Closeout: **DELIVERED_WITH_VERIFICATION_LIMITS; INSTALLED_ACCEPTANCE_PENDING**.
+Sections 1–5 retain the historical 0.0.4 delivery baseline; Section 6 records
+the retained 0.0.6 switching repair. The user subsequently authorized checking
+this closeout and advancing Round 3. That advances source work without making
+pending installed/physical acceptance a pass. Section 7 records the current
+boundary. No installation, push, or release is authorized by this closeout.
 
 ## 1. Objective
 
@@ -86,8 +88,9 @@ subtitle, the current candidate identity, and a preview equal to the whole
 primary. A partial candidate may show a subtitle and cannot commit it. Engine
 comments stay separate. The host adapter and commit coordinator are unchanged.
 
-The input menu item is now **Local translations**. Off still hides subtitles
-and restores ASCII passthrough for that controller.
+The 0.0.4 input menu item is **Local translations**. Turning that control off
+hides subtitles and restores ASCII passthrough for that controller. It is not
+the complete product Off mode introduced in the separate Round 3 contract.
 
 ## 4. Build and verification
 
@@ -126,7 +129,9 @@ warnings: none. One inherited AppIntents metadata extraction warning remains.
 
 At the original code delivery the installed app was **0.0.1**. The later
 user-assisted installation moved it to **0.0.4**, as recorded in manual
-acceptance. Version 0.0.6 has not yet replaced that installed copy.
+acceptance. That 0.0.4 app was subsequently moved to Trash under the user's
+completed one-time exception, recorded in `323d902`. There is currently no
+installed bundle. Version 0.0.6 remains a retained artifact and was not installed.
 
 ## 5. Limits and next gate
 
@@ -135,16 +140,19 @@ defined from the input change to the first visible valid subtitle. Only the
 in-process lookup portion was measured. Do not read the sub-millisecond lookup
 numbers as that end-to-end result.
 
-English phrase composition, context detection, cloud providers, and the full
-Off mode remain later rounds. Traditional-Chinese candidates are not a separate
-index. Irregular inflections such as `went`/`go` are not stemmed.
+At the Round 2 baseline, English phrase composition, context detection, cloud
+providers, and the full Off mode were deferred. Context and product Off belong
+to the separately authorized Round 3. English phrase composition and cloud
+providers remain outside this closeout. Traditional-Chinese candidates are
+not a separate index. Irregular inflections such as `went`/`go` are not stemmed.
 
 The original next gate was installation and acceptance of 0.0.4. The current
-repair and replacement gate are in Section 6. Stop before Round 3.
+repair evidence is in Section 6. The superseding source-work authorization
+and still-pending installation/acceptance boundary are in Section 7.
 
 ## 6. Primary-language switching repair — 0.0.6
 
-The user reports that a left Shift tap sometimes fails on installed 0.0.4.
+The user reported that a left Shift tap sometimes failed on installed 0.0.4.
 The 0.0.5 repeated-flags patch (`992d5ea`) was present in source but not
 installed. A new regression demonstrated a remaining failure when a repeated
 modifier event has key code zero. The controller previously inferred from
@@ -189,7 +197,33 @@ No alternate event injection was used. Physical Shift validation, new menu
 clicks, repaired installation, and `hello`/Chinese handoffs are **NOT_RUN**.
 No screenshot of unrelated notes is retained.
 
-The installed **0.0.4** app remains unchanged. Replacement is
-**BLOCKED_EXISTING_TARGET** under the no-deletion policy. Complete the manual
-installation checkpoints and physical-key cases before calling the reported
-issue resolved in actual use. No push or later round is included.
+The old **0.0.4** app was removed under the user's explicit one-time exception
+and the recorded path/process/source checks passed (`323d902`). The former
+**BLOCKED_EXISTING_TARGET** state is no longer current. The repaired artifact
+is **NOT_INSTALLED**, and physical/menu/installed IMK checks remain **NOT_RUN**.
+Complete a separately confirmed installation checkpoint and physical-key cases
+before calling the reported issue resolved in actual use.
+
+## 7. Closeout and Round 3 boundary — 2026-10-12
+
+The user requested checking Round 2 closeout and advancing Round 3. Round 2
+closes with its documented automated/build evidence and runtime limitations.
+The source contract, license provenance, local dictionary, timeout/cancellation
+behavior, and switching repair remain the implementation baseline. Neither
+the removed 0.0.4 installation nor the uninstalled 0.0.6 artifact establishes
+physical Shift recovery or acceptance of the final source in Notes, Xcode,
+and Terminal. Visible-panel latency remains **NOT_RUN**.
+
+Current recorded system state: no `~/Library/Input Methods/EcholME.app`, no
+EcholME process, and system Simplified Pinyin selected. The removal comparison
+preserved all 236 regular LiangYi data files and 7 log files by content digest.
+Trash was not emptied. That one-time removal authorization is completed and
+cannot be reused.
+
+Round 3 may implement bounded local context, rules, manual modes, HUD, settings,
+and the license entry point; see its [delivery record](../round3/DELIVERY.md).
+This source increment does not install 0.0.6 or a newer artifact. Installation
+and the retained [manual acceptance](MANUAL_ACCEPTANCE.md) need a separate
+confirmed checkpoint. Stop before Round 4 and keep commits local. GPL notices
+and dictionary attribution remain mandatory; external distribution and its
+complete corresponding-source review are still separate release gates.

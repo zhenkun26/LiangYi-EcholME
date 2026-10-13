@@ -1,6 +1,6 @@
 # LiangYi / EcholME — Decision Register
 
-Recorded: 2026-10-11, America/New_York.
+Updated: 2026-10-12, America/New_York; initial plan recorded 2026-10-11.
 
 This is the decision index for the approved [delivery plan](PLAN.md). An accepted direction is not a claim that its implementation or runtime acceptance has passed. Detailed ADRs may be added during the round that owns the decision.
 
@@ -16,7 +16,7 @@ This is the decision index for the approved [delivery plan](PLAN.md). An accepte
 | ADR-006 | Prefer field type and nearby text for automatic direction, with explicit rules and stable fallback. | ACCEPTED | Freeze direction per composition; learned preferences never override explicit rules. |
 | ADR-007 | Provide local-only, local-first, and API-first translation policies. | ACCEPTED | API-first cannot block primary-text input. Service support requires protocol and live-verification evidence. |
 | ADR-008 | Prepare for GPL-derived distribution throughout development. | ACCEPTED | Preserve upstream rights and provide corresponding-source materials before external binary distribution. Exact grant/SPDX and dependency/data inventory still require verification. |
-| ADR-009 | Deliver sequentially and stop after each authorized round for confirmation. | ACCEPTED | Round 0 and Round 1 are delivered with recorded limits. Round 2 was authorized on 2026-10-12. Stop before Round 3; keep commits local. |
+| ADR-009 | Deliver sequentially and stop after each authorized round for confirmation. | ACCEPTED | The user authorized checking Round 2 closeout and advancing Round 3 on 2026-10-12. Round 2 closes with recorded limits; installed IMK/physical acceptance is not promoted to PASS. Stop before Round 4; keep commits local; no installation in this increment. |
 | ADR-010 | Honor no filesystem deletion and independent product storage. | ACCEPTED | Review scripts, stop on existing install targets, and never alter Squirrel user data or evade replacement restrictions. |
 
 Runtime acceptance authorization update (2026-10-11): the user permits librime's normal generated-file/database maintenance only within `~/Library/Application Support/LiangYi/` and `~/Library/Logs/LiangYi/`. This supersedes the earlier engine-maintenance blocker for audited, confined operations. Manual deletion, Squirrel/other data changes and pushing remain outside scope. Round 1 was outside scope at that historical authorization; its later explicit authorization is recorded above. Historical verification below records the initial delivery; follow-up runtime results are recorded in [RUNTIME_ACCEPTANCE.md](../round0/RUNTIME_ACCEPTANCE.md).
@@ -28,7 +28,7 @@ The planning baseline was committed as `041b643` and Squirrel source/history was
 | ID | Current decision | Status / remaining evidence |
 | --- | --- | --- |
 | ADR-011 | Squirrel `769ae426f33f500266101a88f694aab0d158e680`; inherited librime `33e78140250125871856cdc5b42ddc6a5fcd3cd4` / v1.17.0 and Sparkle `41847a58cdef7506b257591fcca6f9495df591d4` / 2.6.2 references; `dependencies.lock.json` and `data/schema-manifest.json` identify artifact/data inputs. | BUILD_VERIFIED on macOS 26.5/arm64; Sparkle excluded. Artifact/data/notice checks pass; complete distribution closure remains pending. |
-| ADR-012 | Product identity root `io.github.zhenkun26.inputmethod.EcholME`; user install `~/Library/Input Methods/EcholME.app`; data `~/Library/Application Support/LiangYi/Rime/`; logs `~/Library/Logs/LiangYi/`; runtime updater disabled. | FIXED_INSTALL_REGISTER_SELECT_PASS; both bundled mode defaults false. User removed the initial app; fixed app installed at the absent target. Hans currently enabled/selected, Hant disabled. Real Squirrel coexistence remains unverified. |
+| ADR-012 | Product identity root `io.github.zhenkun26.inputmethod.EcholME`; user install `~/Library/Input Methods/EcholME.app`; data `~/Library/Application Support/LiangYi/Rime/`; logs `~/Library/Logs/LiangYi/`; runtime updater disabled. | FIXED_INSTALL_REGISTER_SELECT_PASS at the historical Round 0 acceptance; both bundled mode defaults false. At that acceptance Hans was enabled/selected and Hant disabled. The later 0.0.4 installation was removed in `323d902`; no installed bundle is the current recorded state. Real Squirrel coexistence remains unverified. |
 | ADR-013 | IMK adapter owns host access; session state owns lifecycle; engine adapter owns librime; presentation tracks displayed identity; one commit coordinator writes to the host; translation consumes copied values. | IMPLEMENTED_IN_ROUND_1 with fixture translations. Automated state/host/layout/engine checks are separate from pending installed IMK acceptance. |
 | ADR-014 | Use privacy-preserving capability probes and separate source, AX, and real IMK evidence. | Notes metadata/basic/punctuation and closeout field checks passed within scope; physical equals/punctuation closure user-confirmed. Format: 7 ASCII passes; 7 Chinese observations; false fault labels withdrawn. Closeout editing/mixed/switch/reload passed; Unicode paste-only and same-app focus observation. Panel/Return branches remain unverified. Xcode BLOCKED_NO_UI_SURFACE; Terminal BLOCKED_TOOL_POLICY. |
 | ADR-015 | Isolate long cloud work in a service process; XPC is a proposed mechanism requiring lifecycle, signing, peer-authentication, and failure validation. | DESIGN_PROPOSED; no service implementation or validated platform result. Round 4 remains unauthorized. |
@@ -82,9 +82,10 @@ dictionary coverage, model support or measured real translation latency.
 ### Primary-language switching follow-up (2026-10-12)
 
 The user reported intermittent failure of a left Shift tap on installed 0.0.4
-and authorized taking over the repair and Computer Use checks. This is bounded
-input-mode maintenance, not authorization for context detection, cloud work,
-or a push. The earlier `992d5ea` fix was not installed.
+and authorized taking over the repair and Computer Use checks. That follow-up
+was bounded input-mode maintenance, without authorization for context
+detection, cloud work, or a push. Round 3 was authorized separately afterward.
+The earlier `992d5ea` fix was not installed.
 
 Keep the existing 0.5-second left/right contract. Version 0.0.6 extends gesture
 handling to key-code-zero events using device/held-side evidence and recovers
@@ -101,7 +102,9 @@ the enabled list; `--quit` was followed by an independent no-PID check; Finder
 moved the exact old app to Trash. No permanent erasure or other deletion was
 performed. LiangYi data/log file inventories and content hashes matched before
 and after. This one-time exception is complete, not standing deletion authority.
-Wait for confirmation before installing 0.0.6. Keep commits local.
+The removal record is `323d902`. Version 0.0.6 remains retained and uninstalled;
+the subsequent Round 3 source work does not authorize installation. A separate
+installation checkpoint must identify the chosen artifact. Keep commits local.
 
 ### Round 2 decision now resolved
 
@@ -111,7 +114,76 @@ Wait for confirmation before installing 0.0.6. Keep commits local.
 
 The Chinese subtitle is one eligible gloss: a plain English word, otherwise a short phrase, otherwise a truncated definition. English headwords prefer the earlier CC-CEDICT sense and then the higher essay score. Phrases of two to four words are stored separately. Labeled surname, variant, abbreviation, archaic, slang, and bound-form senses are demoted or skipped. Regular English plurals and `-ing`/`-ed` forms fall back only when the surface word is absent. The displayed subtitle is exactly what Option+Return can commit, and only when the candidate preview covers the whole composition.
 
-Known policy results, not defects in that contract: English `input` commits `投放` while `输入` displays `import`; `eat` commits `食用`; `time` commits `时候`; `chinese` commits `中国人` while `中文` displays `Chinese`. A miss (`—`) and a timeout (`!`) stay distinct. No cloud provider, context detector, or new code dependency was added.
+Known policy results, not defects in that contract: English `input` commits `投放` while `输入` displays `import`; `eat` commits `食用`; `time` commits `时候`; `chinese` commits `中国人` while `中文` displays `Chinese`. A miss (`—`) and a timeout (`!`) stay distinct. Round 2 added no cloud provider, context detector, or new code dependency.
+
+### Round 3 — Context, mode, and local retention contract
+
+**ADR-025 — Accepted and implemented in the Round 3 source increment; installed
+acceptance remains NOT_RUN.** The user's request to check Round 2 closeout and
+advance Round 3 authorizes this source work and local commits. It does not
+authorize installation, Round 4, cloud providers, or pushing. Current build,
+automated results, and remaining manual checks belong in the
+[Round 3 delivery record](../round3/DELIVERY.md).
+
+The resolved mode contract is:
+
+- Auto is the default. Its global fallback is Chinese. Safety checks take
+  precedence; product Off then bypasses ordinary language resolution. Current
+  focus manual choice, persistent Chinese/English mode, exact app force rule,
+  reliable field/nearby-text evidence, enabled learned preference, built-in
+  app fallback, and global direction follow in that order.
+- Chinese/English menu or settings choices persist. A successful Shift gesture
+  establishes a manual override for the current focus. Selecting Auto clears
+  that override and restores the resolver. The existing left/right Shift and
+  raw/candidate commit contract remains in force.
+- Off first finalizes pending raw composition through the guarded host boundary,
+  then passes keys through without bilingual composition or translation.
+  Sensitive-field protection instead cancels stale pending composition and
+  subtitles before passthrough; it must not insert text from a previous field
+  into the protected field.
+- Ordinary context changes do not switch an active composition's direction.
+  Explicit mode changes finalize through the existing guarded commit path.
+  Reordered context results require both the current request UUID and matching
+  session/focus/composition identity. A secure-field result may cross a revision
+  only within that same request and focus. This prevents the input method's own
+  preedit or a later commit from becoming stale automatic direction evidence.
+
+The local context boundary is:
+
+- At activation, a background AX adapter may read at most 128 UTF-16 units
+  immediately before a collapsed caret using the bounded parameterized range
+  API. Full-field `AXValue`, selected text, and document titles are not read.
+  A host lacking that capability falls back; no broad text-read alternative is
+  used. IMK client objects never leave the controller thread.
+  Selecting Auto while idle can sample missing evidence; a mode change that
+  just finalized raw input does not read that output. Manual mode changes can
+  repeat the safety-metadata check without reading nearby text.
+- Text collection occurs only in Auto with nearby context enabled. Explicit
+  Chinese/English modes use safety metadata only. Off makes no context request.
+  There is no automatic Accessibility permission prompt and no per-key AX
+  polling. Ordinary input does not require Accessibility permission.
+- Captured text is transient, local, and absent from evidence objects, settings,
+  logs, and outbound requests. Classification uses conservative Han/ASCII-script
+  dominance and code-literal patterns, not a claim to distinguish all natural
+  languages. Short/mixed/unsupported text and failed or late AX responses use
+  the documented priority fallback. AX calls have bounded messaging and delivery
+  budgets; this is not a guarantee that all platform IPC can be interrupted.
+
+Settings live in the application's own UserDefaults domain, with at most
+128 app identifiers across force rules and learned entries and a maximum
+64 KiB encoded payload. Learning is disabled by default. When enabled it stores
+only app ID, selected direction, and a count capped at three; three consistent
+manual choices are required before that learned fallback applies. Invalid
+settings do not replace valid active preferences. The settings UI exposes rule
+editing, learning reset, mode/context controls, and About/Open Source Licenses.
+No new third-party dependency or cloud backend is introduced.
+
+The development target remains macOS 14 and arm64. Source checks, synthetic
+capture/policy tests, and a development build do not establish installed IMK
+behavior, physical Shift recovery, real cross-host permission/focus behavior,
+or a visible-panel latency below 150 ms. Those remain explicit acceptance
+carryovers; complete corresponding-source distribution review remains a
+separate release gate.
 
 ### Remaining decisions and platform evidence
 
@@ -123,11 +195,11 @@ Known policy results, not defects in that contract: English `input` commits `投
 | ADR-014 | What host context/caret information is available in Notes, Xcode, and Terminal on the tested environment? | Round 0 | Record capability evidence, time/call boundaries, and fallback; do not assume all fields or AX attributes are available on macOS 14. |
 | ADR-015 | How will long-running cloud tasks be isolated and authenticated? | Round 0 design; Round 4 implementation | Choose a concrete service mechanism based on capability validation; define peer authentication and bounded messages rather than treating process separation as authentication. |
 | ADR-016 | What safe build/install/reload procedures work under the no-deletion policy? | Round 0 | Inspect side effects, stop on existing targets, and distinguish install/register/select/input states. |
-| ADR-017 | Runtime evidence for the resolved key contract above; phrase entry and full Off mode. | Round 1 acceptance; later feature rounds | Complete installed IMK acceptance; do not treat core tests or Example Off as full product mode acceptance. |
+| ADR-017 | Runtime evidence for the resolved key contract above; phrase entry and Round 3 product Off mode. | Round 1/3 acceptance; later phrase work | Complete installed IMK acceptance; do not treat core tests or the historical Example Off control as product Off acceptance. See ADR-025 for the source contract. |
 | ADR-018 | Runtime evidence for the implemented snapshot/display model above. | Round 1 acceptance; Round 5 geometry | Test mouse press/release, focus, subtitle arrival, screen edges and scale on the installed bundle. |
 | ADR-019 | Runtime and quality limits of the selected dictionary above. | Round 2 acceptance; Round 5 latency | Installed IMK subtitle/commit acceptance and visible-panel latency remain NOT_RUN. One displayed sense is not a professional quality rating. |
 | ADR-020 | What is the measured local latency envelope on the supported devices and corpus? | Round 2 baseline; Round 5 acceptance | Measure valid visible translation end-to-end; report cold/warm distributions, maxima, misses, and timeouts without weakening the 150 ms criterion. |
-| ADR-021 | What exact outbound-text, retention, cache, and sensitive-field policies apply? | Round 3–4 | Define visible user controls and default behavior; avoid whole-field outbound text and plaintext diagnostic content by default. |
+| ADR-021 | What exact outbound-text, retention, cache, and sensitive-field policies apply? | Round 3–4 | ADR-025 resolves local context/retention/sensitive-field scope. Installed acceptance remains pending; Round 4 must separately define outbound provider policy without whole-field forwarding or plaintext diagnostic capture. |
 | ADR-022 | Which provider protocol variants and endpoint rules are actually supported? | Round 4 | Separate contract tests, live requests, and quality/latency results for each provider. |
 | ADR-023 | What OS/architecture combinations may be advertised as supported? | Round 5–6 | Distinguish compilation from actual runtime verification, including macOS 14 and Intel. |
 | ADR-024 | What source delivery method and artifact set satisfy the chosen GPL distribution path? | Before first external binary; final review in Round 6 | Map exact binary to complete corresponding source, dependencies, scripts, notices, and checksums. |

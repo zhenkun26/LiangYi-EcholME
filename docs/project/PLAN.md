@@ -1,6 +1,6 @@
 # LiangYi / EcholME — Approved Delivery Plan
 
-Status: **Approved for sequential delivery. Round 0 and Round 1 are delivered with their recorded verification limits. Round 2 was authorized on 2026-10-12; stop before Round 3.**
+Status: **Approved for sequential delivery. Round 2 closes with recorded verification limits; Round 3 was authorized on 2026-10-12. Stop before Round 4.**
 
 Plan recorded: 2026-10-11, America/New_York.
 
@@ -10,18 +10,19 @@ This document preserves the plan approved in the project conversation. It is the
 
 ## 1. Authorization and delivery boundaries
 
-The user approved the Squirrel-derived route and requested durable project documentation and Git version management. Initial authorization covered Round 0 only. After its closeout, the user explicitly authorized **Round 1 only**: define the key contract, unify state/commit management, and implement horizontal two-line candidates with example subtitles. Option+Return was selected for translated commit. On 2026-10-12 the user authorized **Round 2 only** after the Round 1 source and automated checks were revalidated. Round 1 installed IMK acceptance remains NOT_RUN and is not treated as a pass. Stop after Round 2 delivery and wait for confirmation before Round 3. Repeat this boundary between all later rounds.
+The user approved the Squirrel-derived route and requested durable project documentation and Git version management. Initial authorization covered Round 0 only. After its closeout, the user explicitly authorized **Round 1 only**: define the key contract, unify state/commit management, and implement horizontal two-line candidates with example subtitles. Option+Return was selected for translated commit. On 2026-10-12 the user authorized **Round 2 only** after the Round 1 source and automated checks were revalidated. The subsequent request to check Round 2 closeout and advance Round 3 authorizes **Round 3 only**: context detection, rules, manual modes, HUD, basic settings, and the license entry point. Pending Round 1/2 installed IMK and physical-key acceptance remains NOT_RUN; advancing source implementation does not turn it into a pass. Stop after Round 3 delivery and wait for confirmation before Round 4. Repeat this boundary between all later rounds.
 
 The authorized sequence is:
 
 1. Persist the complete plan and establish appropriate Git version management.
-2. Carry out the currently authorized round only (now Round 2).
+2. Carry out the currently authorized round only (now Round 3).
 3. Report changes, verification results, limitations, and remaining work.
-4. Wait for the user before beginning Round 3.
+4. Wait for the user before beginning Round 4.
 
 Additional boundaries:
 
 - Do not push commits, create a public release, notarize, deploy, or distribute publicly without explicit authorization for that action and destination. Approval to implement is not approval to publish.
+- This Round 3 source increment does not install a bundle. The old 0.0.4 app was removed under a completed one-time user exception (`323d902`); 0.0.6 remains a retained, uninstalled artifact. A later installation checkpoint must identify the selected build and confirm the destination is absent.
 - Preserve unrelated user work. Do not invent Git author identity, credentials, test results, supported platforms, or performance measurements.
 - Follow the user's no-deletion rule: no filesystem deletion, trash operation, whole-file deletion, destructive cleanup, or equivalent workaround. Existing install targets must cause a preflight stop. Do not rename or move an existing target merely to evade this boundary.
 - Runtime acceptance exception authorized on 2026-10-11: librime may perform normal generated-file/database maintenance only inside the independent LiangYi data and log directories. Squirrel and other user data remain protected. The original exception accompanied Round 0; later Round 1 authorization does not broaden its writable roots or permit manual deletion or pushing.
@@ -47,11 +48,11 @@ Additional boundaries:
 - Mode switching, a short-lived HUD, configuration, diagnostics, and development installation/reload guidance are part of v0.1.
 - The project is intended for future GitHub open-source distribution. GPL distribution preparation is part of this route; actual publication is a separate authorization boundary.
 
-### Proposed modes requiring precise interaction specification
+### Mode and interaction specification
 
-The design starts from `Auto`, `Zh→En`, `En→Zh`, and `Off`. Round 1 must define the exact meaning of Off and every key action. These names do not resolve whether an operation affects translation, composition, or input passthrough.
+The modes are `Auto`, `Chinese→English`, `English→Chinese`, and `Off`. Round 3 resolves their behavior: Auto uses the priority resolver with a Chinese global default; explicit Chinese/English selections persist; a successful Shift gesture overrides direction for the current focus; choosing Auto clears that override. Off finalizes pending raw composition through the guarded commit boundary, then passes literal input to the host without bilingual composition. Sensitive-field protection takes priority and discards stale pending composition rather than inserting it into a sensitive field.
 
-Round 1 specifies Space, digits, Tab, Return/keypad Enter, Esc, punctuation, deactivation and focus loss in the [key contract](../round1/KEY_CONTRACT.md). The user selected Option+Return for translated commit. English words are letter-started tokens; spaces commit a token and retain the separator. Multiword English phrase composition, automatic direction and the complete mode UI remain later work. The temporary Example Off control disables examples and English token interception; it is not the complete future Off mode. Tab remains a host action after raw finalization.
+Round 1 specifies Space, digits, Tab, Return/keypad Enter, Esc, punctuation, deactivation and focus loss in the [key contract](../round1/KEY_CONTRACT.md). The user selected Option+Return for translated commit. English words are letter-started tokens; spaces commit a token and retain the separator. Multiword English phrase composition remains later work. The Round 1 Example Off / Round 2 Local translations control only disables subtitles and English token interception; it is distinct from Round 3's product Off mode. Tab remains a host action after raw finalization. Source-level contracts and installed interaction acceptance are tracked separately.
 
 ### MVP boundaries
 
@@ -124,10 +125,10 @@ Provider calls, caching, credentials, settings, and diagnostics remain outside t
 
 ## 5. Context and mode resolution
 
-Proposed priority, to be implemented and tested in Round 3:
+Round 3 priority contract (Off bypasses ordinary direction resolution after safety checks):
 
 1. Safety restrictions.
-2. Current explicit manual choice.
+2. Current explicit manual choice: a current-focus override, otherwise the persistent Chinese/English setting.
 3. User-configured force rules.
 4. Field type and nearby text evidence.
 5. Learned preferences.
@@ -135,6 +136,10 @@ Proposed priority, to be implemented and tested in Round 3:
 7. Global default.
 
 Built-in defaults for Xcode, Terminal, and iTerm lean toward English-to-Chinese, but must not override a higher-priority rule. Field access may fail or return insufficient data; failures must lead to a documented fallback rather than a stalled key event. Learned preferences cannot override explicit rules.
+
+Auto uses at most 128 UTF-16 units immediately before the caret from an available bounded AX range API, on a background activation-time request. It does not read the full AX value, request permission, poll per keystroke, or retain captured text. Explicit language modes use safety metadata only; Off makes no context request. IMK clients stay on the controller thread. Request UUID, focus/session identity, and composition revision checks reject results racing the input method's own preedit or a later commit. A same-focus secure-field result may interrupt a changed composition; an old focus or request cannot.
+
+Language hints use conservative Han/ASCII-script dominance and code-literal recognition, not a general multilingual classifier. Empty, short, mixed, unavailable, or unsupported evidence falls through the same priority chain. Direction stays frozen during composition until guarded explicit finalization or a safety transition. Learning is off by default, records only per-app direction/count, and requires three consistent manual choices. Rules and learned preferences together are limited to 128 app IDs and a 64 KiB encoded settings payload. See the Round 3 decision and [delivery record](../round3/DELIVERY.md) for implemented scope and verification limits.
 
 Language metadata must be checked against the macOS 14 deployment target; a newer Accessibility attribute must not be assumed available. No permission should be required merely to perform ordinary input.
 

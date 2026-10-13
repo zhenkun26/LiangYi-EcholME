@@ -273,7 +273,20 @@ struct Round1Checks {
     try check(!router.setASCII(true, host: host) && !host.modeASCII && host.inserts.last == "nihao",
               "explicit mode selection cannot change a reentrantly replaced focus")
     host.onInsert = nil
+    host.state.activate()
+    _ = host.state.appendEnglish("hello")
+    let offCount = host.inserts.count
+    try check(router.finalizeForModeChange(host: host) && host.inserts.count == offCount + 1 &&
+              host.inserts.last == "hello" && host.state.englishInput.isEmpty,
+              "Off finalizes English even without an ASCII bit change")
+    try check(router.finalizeForModeChange(host: host) && host.inserts.count == offCount + 1,
+              "an empty Off boundary does not duplicate insertion")
+    host.raw = "nihao"
+    host.onInsert = { host.state.invalidate(); host.state.invalidate() }
+    try check(!router.finalizeForModeChange(host: host), "Off rejects reentrant composition replacement")
+    host.onInsert = nil
     host.state.deactivate()
+    try check(!router.finalizeForModeChange(host: host), "Off cannot finalize a deactivated host")
     try check(!router.setASCII(true, host: host), "inactive menu or CLI cannot switch a stale controller")
     try check(!CompositionModeRouter.usesEnglishComposer(ascii: true, examples: true, engineInput: "nihao"), "inline ASCII with a live engine prefix cannot start a second buffer")
     try check(CompositionModeRouter.usesEnglishComposer(ascii: true, examples: true, engineInput: ""), "empty engine permits frontend English composition")

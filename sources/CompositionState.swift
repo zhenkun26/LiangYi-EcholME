@@ -3,7 +3,7 @@
 
 import Foundation
 
-enum InputDirection: String, Sendable {
+enum InputDirection: String, Sendable, Codable {
   case chinese, english
 }
 
@@ -371,6 +371,16 @@ final class CompositionModeRouter {
 
   func reset() { shift.reset() }
   func keyDown(modifiers: UInt) { shift.keyDown(modifiers: modifiers) }
+
+  // Off/other explicit policy changes also need the same reentrant commit
+  // boundary, even when the requested ASCII bit already matches the engine.
+  @discardableResult
+  func finalizeForModeChange(host: CompositionModeHost) -> Bool {
+    shift.reset()
+    guard host.modeActive else { return false }
+    let before = host.modeToken
+    return host.modeFinalizeRaw() && canChangeMode(host, since: before)
+  }
 
   // Menu and CLI selection share the same raw-finalization/focus guard as a
   // left tap. Selecting the already active language preserves composition.
