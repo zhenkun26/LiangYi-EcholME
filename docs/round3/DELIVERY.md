@@ -1,7 +1,10 @@
 # Round 3 — Context, rules and mode control
 
 Updated: 2026-10-13, America/New_York. Repair artifact: **0.0.8**;
-currently installed: **0.0.7**. Round 3 installed acceptance remains partial.
+currently installed: **NONE**. The user-authorized Finder removal of 0.0.7 is
+complete; data/log inventories are unchanged. Wait for 0.0.8 installation
+confirmation. See [removal evidence](evidence/removal-007.json). Round 3
+installed acceptance remains partial; the 0.0.7 observations below predate removal.
 Round 4 is conditionally authorized after all executable Round 3 acceptance
 and has not started. Commits stay local; no automatic replacement or push.
 

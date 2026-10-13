@@ -11,6 +11,14 @@ explicitly rejected using the `nihao` smoke check alone as that gate. Round 4
 has not started. Historical source-increment restrictions below do not undo
 these approvals. No push, replacement deletion or Round 5 is authorized.
 
+Subsequent guided removal checkpoint (2026-10-13): explicit one-time user
+authorization permitted moving only the installed 0.0.7 EcholME.app to Trash
+using Finder. This action is complete and the exception is consumed. The
+install path is now absent; no EcholME PID remains in the post-removal checks;
+309 data files and 3 logs have unchanged inventory/content digests. Wait for
+confirmation before installing 0.0.8; no Round 4 or push in this checkpoint.
+See [removal evidence](../round3/evidence/removal-007.json).
+
 Evidence decision: distinguish physical-keyboard user reports from Computer
 Use events and field snapshots. The latter did not reproduce or independently
 corroborate the current physical Notes results. Do not classify literal CU
@@ -40,7 +48,7 @@ The planning baseline was committed as `041b643` and Squirrel source/history was
 | ID | Current decision | Status / remaining evidence |
 | --- | --- | --- |
 | ADR-011 | Squirrel `769ae426f33f500266101a88f694aab0d158e680`; inherited librime `33e78140250125871856cdc5b42ddc6a5fcd3cd4` / v1.17.0 and Sparkle `41847a58cdef7506b257591fcca6f9495df591d4` / 2.6.2 references; `dependencies.lock.json` and `data/schema-manifest.json` identify artifact/data inputs. | BUILD_VERIFIED on macOS 26.5/arm64; Sparkle excluded. Artifact/data/notice checks pass; complete distribution closure remains pending. |
-| ADR-012 | Product identity root `io.github.zhenkun26.inputmethod.EcholME`; user install `~/Library/Input Methods/EcholME.app`; data `~/Library/Application Support/LiangYi/Rime/`; logs `~/Library/Logs/LiangYi/`; runtime updater disabled. | 0.0.7 installed/registered/activated through guided checkpoints; all 86 delivered file hashes match. Hans enabled/selected, Hant disabled. The earlier 0.0.4 removal exception (`323d902`) is consumed. Both bundled mode defaults remain false. Real Squirrel coexistence remains unverified. |
+| ADR-012 | Product identity root `io.github.zhenkun26.inputmethod.EcholME`; user install `~/Library/Input Methods/EcholME.app`; data `~/Library/Application Support/LiangYi/Rime/`; logs `~/Library/Logs/LiangYi/`; runtime updater disabled. | 0.0.7 installation/registration/activation passed earlier, then its app was removed through an explicitly authorized Finder checkpoint. Install path now absent; 0.0.8 awaits installation confirmation. Both 0.0.4 and 0.0.7 removal exceptions are consumed. Both bundled mode defaults remain false. Real Squirrel coexistence remains unverified. |
 | ADR-013 | IMK adapter owns host access; session state owns lifecycle; engine adapter owns librime; presentation tracks displayed identity; one commit coordinator writes to the host; translation consumes copied values. | IMPLEMENTED_IN_ROUND_1 with fixture translations. Automated state/host/layout/engine checks are separate from pending installed IMK acceptance. |
 | ADR-014 | Use privacy-preserving capability probes and separate source, AX, and real IMK evidence. | Notes metadata/basic/punctuation and closeout field checks passed within scope; physical equals/punctuation closure user-confirmed. Format: 7 ASCII passes; 7 Chinese observations; false fault labels withdrawn. Closeout editing/mixed/switch/reload passed; Unicode paste-only and same-app focus observation. Panel/Return branches remain unverified. Xcode BLOCKED_NO_UI_SURFACE; Terminal BLOCKED_TOOL_POLICY. |
 | ADR-015 | Isolate long cloud work in a service process; XPC is a proposed mechanism requiring lifecycle, signing, peer-authentication, and failure validation. | DESIGN_PROPOSED; no service implementation or validated platform result. Round 4 is conditionally authorized after the Round 3 acceptance gate and has not started. |

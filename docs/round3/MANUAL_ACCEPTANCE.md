@@ -1,9 +1,13 @@
 # Round 3 — Guided installation and actual input acceptance
 
-Status: **IN_PROGRESS**, updated 2026-10-13, America/New_York. The delivered
-0.0.7 is now installed, registered and activated through separately confirmed
-checkpoints. Its 86 file hashes match `evidence/verification.json`; 0.0.6 was
-never installed. The old removal exception in `323d902` is consumed.
+Status: **WAITING_FOR_0.0.8_INSTALL_CONFIRMATION**, updated 2026-10-13,
+America/New_York. The earlier installed 0.0.7 was moved to Trash through Finder
+under a new explicit one-time user authorization. The installation path is now
+absent, no EcholME process was found afterward, and all 309 data files and 3
+logs retain their inventory/content digests. No Trash emptying. This exception
+and the earlier one in `323d902` are consumed; 0.0.6 was never installed.
+The existing physical results below describe 0.0.7 before removal. Stop before
+installing 0.0.8, entering Round 4 or pushing. See [removal record](evidence/removal-007.json).
 
 The latest user instruction authorizes all executable Round 3 acceptance, then
 Round 4. The user clarified that this means the full executable matrix, not
@@ -13,6 +17,7 @@ only `nihao`. Round 4 has not started. No push or automatic bundle replacement.
 
 | Check | Status | Evidence and limit |
 | --- | --- | --- |
+| Authorized 0.0.7 removal | PASS | Verified exact bundle/version/hash manifest; normal quit followed by Finder Move to Trash. Original path absent, no process in two checks, data/log inventories unchanged. 0.0.8 not installed. |
 | Absent-target 0.0.7 installation | PASS | Reviewed `install-first`; installed version/signature/resources/link paths pass; all 86 file hashes match delivery. No deletion or replacement. |
 | Registration and System Settings addition | PASS | Register OSStatus 0 plus visible 两仪 entry; independent TIS check confirms Hans enabled/selectable and Hant disabled. Original globe-key emoji behavior restored after Settings changed it automatically. |
 | Notes activation | PASS, bounded | Dedicated `EcholME 0.0.7 — Round 3 验收` note; Hans selected; installed executable path/PID and version checked; `--getascii` responded `nascii`. Initial selection had no process/reply; later activation succeeded. HUD timing is NOT_RUN. |

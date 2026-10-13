@@ -2,7 +2,22 @@
 
 Recorded: 2026-10-13, America/New_York.
 
-## Current installed acceptance — 0.0.7
+## Current checkpoint — 0.0.7 removed; waiting for 0.0.8 installation confirmation
+
+- **PASS**: under the user's explicit one-time authorization, Computer Use
+  moved only `~/Library/Input Methods/EcholME.app` (verified 0.0.7, all 86
+  delivered hashes matched) to Trash through Finder. Finder now shows zero
+  items in Input Methods, and the exact app path is absent.
+- The old app had restarted as PID 63936 after the preceding quit checkpoint.
+  Normal `--quit` succeeded before removal; two post-removal process checks
+  found no EcholME process. No force termination or system-wide reload.
+- **PASS**: all 309 data files and 3 log files retain the same path/content
+  inventory digests before and after removal. No Trash emptying or input-source
+  disabling occurred. The removal exception is consumed.
+- **WAITING_FOR_CONFIRMATION**: 0.0.8 remains an uninstalled artifact. Stop
+  before installation, Round 4 and pushing. [Exact record](../round3/evidence/removal-007.json).
+
+## Previous installed acceptance — 0.0.7 (before removal)
 
 - Authorization: finish all executable Round 3 acceptance before entering
   Round 4, as explicitly clarified by the user on 2026-10-13. Round 4 is

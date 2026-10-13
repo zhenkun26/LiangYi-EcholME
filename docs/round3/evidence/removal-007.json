@@ -1,0 +1,51 @@
+{
+  "recorded_date": "2026-10-13",
+  "timezone": "America/New_York",
+  "status": "PASS",
+  "authorization": "User explicitly authorized Computer Use in Finder to remove only the installed 0.0.7 EcholME.app, preserve dictionaries/logs, then wait before installing 0.0.8. No Round 4 or push.",
+  "bundle_path": "/Users/zhenkun/Library/Input Methods/EcholME.app",
+  "version": "0.0.7",
+  "delivered_bundle_hashes_matched": 86,
+  "removal_method": "Finder Move to Trash via Command-Backspace on the verified selected app item",
+  "finder_after": "Input Methods folder: 0 items",
+  "pre_removal_observation": "EcholME had restarted as PID 63936 after the preceding exit checkpoint; normal --quit succeeded before removal.",
+  "before": {
+    "version": "0.0.7",
+    "quit_exit_code": 0,
+    "processes": [],
+    "data": {
+      "exists": true,
+      "files": 309,
+      "inventory_sha256": "8604e75840082ad22c6d7a9c826899ace3f8580c9f7f4ad752be8e57102ac1d4"
+    },
+    "logs": {
+      "exists": true,
+      "files": 3,
+      "inventory_sha256": "05155d230f0cbf95848774aeedb9d344bb83a948a4dc7bfa9515c58855eef8c9"
+    }
+  },
+  "after": {
+    "installed_path_present": false,
+    "process_checks": [
+      [],
+      []
+    ],
+    "data": {
+      "exists": true,
+      "files": 309,
+      "inventory_sha256": "8604e75840082ad22c6d7a9c826899ace3f8580c9f7f4ad752be8e57102ac1d4"
+    },
+    "logs": {
+      "exists": true,
+      "files": 3,
+      "inventory_sha256": "05155d230f0cbf95848774aeedb9d344bb83a948a4dc7bfa9515c58855eef8c9"
+    }
+  },
+  "data_and_logs_unchanged": true,
+  "trash_emptied": false,
+  "input_source_disable_performed": false,
+  "installation_008_performed": false,
+  "round4_started": false,
+  "push_performed": false,
+  "exception_status": "CONSUMED_FOR_THIS_BUNDLE_REMOVAL_ONLY"
+}

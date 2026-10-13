@@ -19,6 +19,12 @@ confirmed guided checkpoints installed, registered and activated the delivered
 0.0.7 package. The earlier source-increment limits below are historical.
 No push, public distribution, automatic replacement or Round 5 is authorized.
 
+Guided replacement checkpoint: the user later explicitly authorized only the
+Finder removal of installed 0.0.7. This is complete with data/log preservation;
+the install path is absent. Wait for another confirmation before installing
+0.0.8. No Round 4 or push in this checkpoint; the one-time removal exception
+does not broaden the general no-deletion rule.
+
 The user approved the Squirrel-derived route and requested durable project documentation and Git version management. Initial authorization covered Round 0 only. After its closeout, the user explicitly authorized **Round 1 only**: define the key contract, unify state/commit management, and implement horizontal two-line candidates with example subtitles. Option+Return was selected for translated commit. On 2026-10-12 the user authorized **Round 2 only** after the Round 1 source and automated checks were revalidated. The subsequent request to check Round 2 closeout and advance Round 3 authorized context detection, rules, manual modes, HUD, basic settings, and the license entry point. Those source deliveries did not establish installed input acceptance. Current partial physical passes and remaining cases are recorded separately; the latest conditional Round 4 gate above supersedes the original stop-after-source checkpoint.
 
 The authorized sequence is:

@@ -6,6 +6,12 @@ project memory. The latest explicit user instruction takes precedence.
 
 ## Current authorization
 
+- Latest guided checkpoint (2026-10-13): the user explicitly authorized Finder
+  removal of only the installed 0.0.7 EcholME.app. **COMPLETED**: the app was
+  moved to Trash, the install path is absent, no EcholME process was found, and
+  data/log inventories and content hashes match. This one-time deletion
+  exception is consumed. Stop and wait for confirmation before installing
+  0.0.8; do not enter Round 4 or push. See `docs/round3/evidence/removal-007.json`.
 - The approved direction is a Squirrel-derived macOS input method named
   **LiangYi / 两仪**, with the English product name **EcholME**.
 - Latest authorization (2026-10-13): complete all executable Round 3 installed
@@ -14,8 +20,8 @@ project memory. The latest explicit user instruction takes precedence.
   and user physical-keyboard results separately. Round 4 is conditionally
   authorized; it has not started. No push or later-round authorization follows.
 - Guided checkpoints subsequently installed, registered, enabled and selected
-  the exact delivered 0.0.7 bundle. The installed path is no longer absent.
-  Never rerun `install-first` over it or replace it automatically. Current
+  the exact delivered 0.0.7 bundle, which has now been removed under the newer
+  checkpoint above. Never run `install-first` over an existing target. Current
   acceptance evidence belongs in `docs/round3/MANUAL_ACCEPTANCE.md`.
 - **Round 3** is authorized by the user's 2026-10-12 request to check Round 2
   closeout and advance Round 3: bounded local context detection, rule priority,
