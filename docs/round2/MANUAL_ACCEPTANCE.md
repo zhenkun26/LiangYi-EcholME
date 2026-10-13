@@ -1,6 +1,6 @@
 # Round 2 — Installation and real input acceptance
 
-Current result: **installed 0.0.4; repaired 0.0.6 NOT_INSTALLED; physical Shift acceptance NOT_RUN**.
+Current result: **old 0.0.4 moved to Trash; no installed bundle; repaired 0.0.6 NOT_INSTALLED; physical Shift acceptance NOT_RUN**.
 The current repair bundle is:
 
 ```text
@@ -39,7 +39,34 @@ over this bundle.
 
 Use one checkpoint at a time and wait for user confirmation. The user must
 perform the old-bundle removal; Computer Use authorization does not override
-the repository's no-deletion rule.
+the repository's no-deletion rule. The explicit one-time exception below
+authorized this particular removal; it does not authorize future deletion.
+
+### Completed old-package removal — 2026-10-12
+
+The user explicitly authorized assistant deletion after the old app relaunched
+and Finder refused to move it. The standalone `--disable-input-source` returned
+OSStatus 0, but an independent probe still found the source enabled. System
+Settings > Keyboard > Text Input > Edit > 两仪 > Remove > Done then removed
+it from the displayed list, leaving ABC and Simplified Pinyin. The root source
+became disabled; the child Hans flag temporarily remained true in TIS. Do not
+treat the earlier CLI success as a verified disablement.
+
+After `--quit`, `pgrep -x EcholME` returned no PID. Finder showed the exact
+selected `/Users/zhenkun/Library/Input Methods/EcholME.app`; moving that item
+to Trash succeeded and the folder showed zero items. Independent checks then
+confirmed the app path absent, no EcholME PID, no EcholME TIS entries in the
+probe, and `com.apple.inputmethod.SCIM.ITABC` selected. The 236 regular files in
+`~/Library/Application Support/LiangYi/` and 7 regular files in
+`~/Library/Logs/LiangYi/` had matching relative-path/content digests before
+and after removal. No input contents or filenames were copied into this record.
+
+Result: **PASS_OLD_BUNDLE_REMOVED_DATA_PRESERVED**. Trash was not emptied.
+No 0.0.6 installation, activation, physical Shift acceptance, or push occurred.
+**Next gate: wait for user confirmation before installation step 4.** The
+source will need registration/enabling again after the new package is copied.
+
+### Checkpoints
 
 1. Switch to ABC or another working input source and confirm normal typing.
 2. Quit the installed EcholME with its own executable. Do not use `killall`

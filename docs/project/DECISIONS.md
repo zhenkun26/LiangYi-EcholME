@@ -94,6 +94,15 @@ focus/revision checks. Reselecting the active language is idempotent. Mode
 queries only report active controllers. Hardware event delivery and menu
 callbacks require installed acceptance; synthetic tests cannot establish them.
 
+Old-package removal exception (2026-10-12): after Finder refused removal because
+0.0.4 had relaunched, the user explicitly authorized assistant deletion of only
+`~/Library/Input Methods/EcholME.app`. System Settings removed the source from
+the enabled list; `--quit` was followed by an independent no-PID check; Finder
+moved the exact old app to Trash. No permanent erasure or other deletion was
+performed. LiangYi data/log file inventories and content hashes matched before
+and after. This one-time exception is complete, not standing deletion authority.
+Wait for confirmation before installing 0.0.6. Keep commits local.
+
 ### Round 2 decision now resolved
 
 | ID | Decision | Evidence and remaining limit |

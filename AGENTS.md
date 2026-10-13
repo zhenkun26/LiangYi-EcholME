@@ -14,6 +14,12 @@ project memory. The latest explicit user instruction takes precedence.
   NOT_RUN and is not a pass.
 - Keep Git commits local. No push, GitHub repository creation, public release,
   deployment, or notarization is authorized by the current request.
+- On 2026-10-12 the user explicitly authorized the assistant to remove the
+  installed 0.0.4 `~/Library/Input Methods/EcholME.app` because it relaunched
+  and blocked Finder removal. This one-time exception is **COMPLETED**: the
+  source was removed from the enabled list, the process quit, and that app
+  moved to Trash. Data/log roots were preserved. This is not reusable deletion
+  authority. Installation of 0.0.6 still awaits the next user confirmation.
 - The user authorized closing Round 0 on 2026-10-11. Remaining bounded checks
   and the final delivery record are in scope; this supersedes earlier per-case
   waiting checkpoints for that closeout. Round 0 is closed with verification
