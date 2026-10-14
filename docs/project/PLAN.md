@@ -10,6 +10,14 @@ This document preserves the plan approved in the project conversation. It is the
 
 ## 1. Authorization and delivery boundaries
 
+Latest installation/publication task (recorded 2026-10-14): the user requested
+0.0.8 installation and push, then explicitly chose creation of the public
+`zhenkun26/LiangYi-EcholME` repository and a source/learning reference record.
+Publish the current `codex/round-3-context` source branch without merging it
+into the integration branch or releasing binaries. Round 4 remains outside
+this task. The checkpoints below retain their original historical boundaries.
+See [REFERENCES.md](REFERENCES.md) for direct reuse versus learning references.
+
 Latest update (2026-10-13): the user authorized completing all executable
 Round 3 installed acceptance and then advancing to Round 4. They explicitly
 chose the complete executable matrix rather than the `nihao` smoke check alone.

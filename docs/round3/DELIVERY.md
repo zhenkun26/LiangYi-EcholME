@@ -1,12 +1,17 @@
 # Round 3 — Context, rules and mode control
 
-Updated: 2026-10-13, America/New_York. Repair artifact: **0.0.8**;
-currently installed: **NONE**. The user-authorized Finder removal of 0.0.7 is
-complete; data/log inventories are unchanged. Wait for 0.0.8 installation
-confirmation. See [removal evidence](evidence/removal-007.json). Round 3
-installed acceptance remains partial; the 0.0.7 observations below predate removal.
-Round 4 is conditionally authorized after all executable Round 3 acceptance
-and has not started. Commits stay local; no automatic replacement or push.
+Updated: 2026-10-14, America/New_York. Repair artifact and installed version:
+**0.0.8**. Installation/static verification passes; all 86 installed hashes
+match. Registration/selection/real input remain separate from installation.
+See [installation evidence](evidence/installed-008.json) and the earlier
+[0.0.7 removal evidence](evidence/removal-007.json). The 0.0.7 physical
+observations below predate removal and do not validate the repaired bundle.
+The user explicitly authorized a public `zhenkun26/LiangYi-EcholME` repository,
+source push and [open-source reference record](../project/REFERENCES.md).
+Publish the current `codex/round-3-context` source branch; no integration merge,
+tag or binary release. Round 4 has not started and is outside this task.
+The following repair/source verification sections preserve their original
+delivery-time state; current observations are recorded above and in STATUS.md.
 
 ## Current repair and acceptance record
 

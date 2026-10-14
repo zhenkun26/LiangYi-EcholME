@@ -1,0 +1,50 @@
+{
+  "recorded_date": "2026-10-14",
+  "timezone": "America/New_York",
+  "version": "0.0.8",
+  "status": "PASS_INSTALLED_STATIC_VERIFICATION",
+  "authorization": "User explicitly requested installing 0.0.8 and pushing; subsequently authorized creation of public zhenkun26/LiangYi-EcholME and an open-source reference record.",
+  "installation_command": "python3 -B tools/round0.py install-first --bundle .artifacts/builds/round3-secure-recovery-008-20261013a/DerivedData/Build/Products/Debug/EcholME.app",
+  "installation_command_result": "PASS in the preceding authorized step, to an absent destination; no deletion/replacement",
+  "rechecked": {
+    "status": "PASS",
+    "installed_version": "0.0.8",
+    "bundle": "/Users/zhenkun/Library/Input Methods/EcholME.app",
+    "matched_file_hashes": 86,
+    "data": {
+      "exists": true,
+      "files": 310,
+      "inventory_sha256": "742e627bd1763b89671a5ee8ac34b8ada3f48cd287b161736492e00d2aa4e1c3"
+    },
+    "logs": {
+      "exists": true,
+      "files": 5,
+      "inventory_sha256": "2c5d04d1f9c0cc86c1a171926e1e1deb70a947ec577e8802a6549a0eb2633f28"
+    },
+    "data_and_logs_match_preinstall": false,
+    "processes": [],
+    "registration": "NOT_RUN_BY_THIS_STEP",
+    "activation": "NOT_RUN_BY_THIS_STEP",
+    "runtime_acceptance": "NOT_RUN"
+  },
+  "static_verification": {
+    "status": "PASS",
+    "scope": "Identity, resources, arm64 portable dependency paths and strict ad-hoc signature",
+    "notarized": false
+  },
+  "preservation_limit": "Data/log roots exist. Their counts/digests now differ from the pre-install/removal snapshot across the elapsed period; no file-by-file unchanged-content claim is made. The audited installer only copies the application and does not modify those roots. No cause for the intervening changes is inferred.",
+  "registration": "NOT_RUN_BY_INSTALL_STEP",
+  "enable_selection": "NOT_RUN_BY_INSTALL_STEP",
+  "runtime_acceptance": "NOT_RUN",
+  "push_readiness": {
+    "status": "PASS_BOUNDED_SCAN",
+    "new_history_text_blobs_scanned": 262,
+    "largest_new_blob_bytes": 4753686,
+    "credential_pattern_hits": [],
+    "over_100MiB_blobs": [],
+    "unexpected_tracked_artifacts": [],
+    "inherited_workflows": "All three upstream job entry points are restricted to github.repository == rime/squirrel.",
+    "limitation": "Selected credential patterns and tracked-artifact/size checks; not a complete security or binary-license audit."
+  },
+  "publication_scope": "Current codex/round-3-context source branch; no binary release, integration merge, tag, or Round 4 work."
+}

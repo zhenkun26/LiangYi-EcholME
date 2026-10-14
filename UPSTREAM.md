@@ -59,6 +59,11 @@ Existing source class names, Xcode project names, internal resource keys, and Ri
 
 ## License and source delivery
 
+The [open-source reference record](docs/project/REFERENCES.md) acknowledges
+Metasequoia, McBopomofo and Fcitx5 macOS comparison/learning sources. They are
+distinct from the Squirrel-derived implementation and pinned runtime/data
+inventory; a comparison does not make their code an EcholME dependency.
+
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) tracks the initial inventory and outstanding review. Its existence does not certify a complete binary distribution.
 
 Before giving an application binary to an external tester or publishing it, prepare the corresponding source, required dependency sources, notices, and build/install material for that exact binary. A link to a moving main branch or a root-only GitHub archive is not the project's source-delivery strategy. No external binary distribution is authorized in Round 0.

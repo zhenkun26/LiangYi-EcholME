@@ -1,10 +1,19 @@
 # LiangYi / EcholME — Decision Register
 
-Updated: 2026-10-13, America/New_York; initial plan recorded 2026-10-11.
+Updated: 2026-10-14, America/New_York; initial plan recorded 2026-10-11.
 
 This is the decision index for the approved [delivery plan](PLAN.md). An accepted direction is not a claim that its implementation or runtime acceptance has passed. Detailed ADRs may be added during the round that owns the decision.
 
-Latest authorization update (2026-10-13): the user separately approved guided
+Latest task update (2026-10-14): the user authorized installing 0.0.8 and
+pushing, then explicitly authorized the public `zhenkun26/LiangYi-EcholME`
+repository and an open-source reference record. The current source branch is
+`codex/round-3-context`; there is no integration merge, tag or binary release.
+Source publication does not complete the pending binary distribution review
+or installed input acceptance. Round 4 remains outside this task.
+[REFERENCES.md](REFERENCES.md) distinguishes imported Squirrel/librime material
+from the Metasequoia, McBopomofo and Fcitx5 comparison/learning references.
+
+Earlier authorization update (2026-10-13): the user separately approved guided
 installation, registration and activation of 0.0.7, then authorized Round 4
 only after completing all executable Round 3 installed acceptance. They
 explicitly rejected using the `nihao` smoke check alone as that gate. Round 4
@@ -48,7 +57,7 @@ The planning baseline was committed as `041b643` and Squirrel source/history was
 | ID | Current decision | Status / remaining evidence |
 | --- | --- | --- |
 | ADR-011 | Squirrel `769ae426f33f500266101a88f694aab0d158e680`; inherited librime `33e78140250125871856cdc5b42ddc6a5fcd3cd4` / v1.17.0 and Sparkle `41847a58cdef7506b257591fcca6f9495df591d4` / 2.6.2 references; `dependencies.lock.json` and `data/schema-manifest.json` identify artifact/data inputs. | BUILD_VERIFIED on macOS 26.5/arm64; Sparkle excluded. Artifact/data/notice checks pass; complete distribution closure remains pending. |
-| ADR-012 | Product identity root `io.github.zhenkun26.inputmethod.EcholME`; user install `~/Library/Input Methods/EcholME.app`; data `~/Library/Application Support/LiangYi/Rime/`; logs `~/Library/Logs/LiangYi/`; runtime updater disabled. | 0.0.7 installation/registration/activation passed earlier, then its app was removed through an explicitly authorized Finder checkpoint. Install path now absent; 0.0.8 awaits installation confirmation. Both 0.0.4 and 0.0.7 removal exceptions are consumed. Both bundled mode defaults remain false. Real Squirrel coexistence remains unverified. |
+| ADR-012 | Product identity root `io.github.zhenkun26.inputmethod.EcholME`; user install `~/Library/Input Methods/EcholME.app`; data `~/Library/Application Support/LiangYi/Rime/`; logs `~/Library/Logs/LiangYi/`; runtime updater disabled. | 0.0.8 installed through the audited absent-target path; all 86 repaired artifact hashes match and static signature/resources pass. Registration/selection/real input are separate from installation. Both 0.0.4 and 0.0.7 removal exceptions are consumed. Both bundled mode defaults remain false. Real Squirrel coexistence remains unverified. |
 | ADR-013 | IMK adapter owns host access; session state owns lifecycle; engine adapter owns librime; presentation tracks displayed identity; one commit coordinator writes to the host; translation consumes copied values. | IMPLEMENTED_IN_ROUND_1 with fixture translations. Automated state/host/layout/engine checks are separate from pending installed IMK acceptance. |
 | ADR-014 | Use privacy-preserving capability probes and separate source, AX, and real IMK evidence. | Notes metadata/basic/punctuation and closeout field checks passed within scope; physical equals/punctuation closure user-confirmed. Format: 7 ASCII passes; 7 Chinese observations; false fault labels withdrawn. Closeout editing/mixed/switch/reload passed; Unicode paste-only and same-app focus observation. Panel/Return branches remain unverified. Xcode BLOCKED_NO_UI_SURFACE; Terminal BLOCKED_TOOL_POLICY. |
 | ADR-015 | Isolate long cloud work in a service process; XPC is a proposed mechanism requiring lifecycle, signing, peer-authentication, and failure validation. | DESIGN_PROPOSED; no service implementation or validated platform result. Round 4 is conditionally authorized after the Round 3 acceptance gate and has not started. |

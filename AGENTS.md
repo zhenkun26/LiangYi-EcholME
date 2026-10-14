@@ -6,12 +6,21 @@ project memory. The latest explicit user instruction takes precedence.
 
 ## Current authorization
 
+- Latest task (recorded 2026-10-14): the user explicitly requested installing
+  0.0.8 and pushing, then authorized creating the public GitHub repository
+  `zhenkun26/LiangYi-EcholME` and recording open-source learning references.
+  Push only the current `codex/round-3-context` source branch to that repository.
+  This supersedes earlier local-only/install-wait checkpoints for this task.
+  No integration merge, binary release, tag, deployment, notarization or
+  Round 4 work is authorized. The audited absent-target installation has
+  completed; all 86 installed file hashes match the repaired artifact.
 - Latest guided checkpoint (2026-10-13): the user explicitly authorized Finder
   removal of only the installed 0.0.7 EcholME.app. **COMPLETED**: the app was
   moved to Trash, the install path is absent, no EcholME process was found, and
   data/log inventories and content hashes match. This one-time deletion
-  exception is consumed. Stop and wait for confirmation before installing
-  0.0.8; do not enter Round 4 or push. See `docs/round3/evidence/removal-007.json`.
+  exception is consumed. That checkpoint stopped before installation and push;
+  the later task above provides their authorization.
+  See `docs/round3/evidence/removal-007.json`.
 - The approved direction is a Squirrel-derived macOS input method named
   **LiangYi / 两仪**, with the English product name **EcholME**.
 - Latest authorization (2026-10-13): complete all executable Round 3 installed
@@ -30,9 +39,10 @@ project memory. The latest explicit user instruction takes precedence.
   above controls advancement. Round 2 retains its recorded verification limits.
   The 0.0.7 physical checks now have partial user-reported passes, with remaining
   cases tracked individually rather than promoted to a full installed pass.
-- Keep Git commits local. No push, GitHub repository creation, public release,
-  deployment, or notarization is authorized. A repair build does not authorize
-  automatic replacement of the installed bundle.
+- Earlier source increments kept Git commits local. The current task permits
+  the specifically named public repository and source push above. Binary
+  release, deployment and notarization remain outside scope. A build alone
+  does not authorize replacement of an installed bundle.
 - On 2026-10-12 the user explicitly authorized the assistant to remove the
   installed 0.0.4 `~/Library/Input Methods/EcholME.app` because it relaunched
   and blocked Finder removal. This one-time exception is **COMPLETED**: the

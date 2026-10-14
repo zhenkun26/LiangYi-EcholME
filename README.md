@@ -14,6 +14,7 @@ Minimum deployment target: macOS 14. Swift is the main frontend language. The En
 - [Runtime acceptance](docs/round0/RUNTIME_ACCEPTANCE.md) and [manual installation/input checks](docs/round0/MANUAL_ACCEPTANCE.md): follow these before enabling an earlier development artifact.
 - [Decisions](docs/project/DECISIONS.md) and [Round 0 foundation](docs/round0/FOUNDATION.md): identity, architecture, safe commands, and limitations.
 - [Upstream provenance](UPSTREAM.md), [changes](CHANGES_FROM_UPSTREAM.md), and [third-party notices](THIRD_PARTY_NOTICES.md).
+- [Open-source references and learning record](docs/project/REFERENCES.md): direct Squirrel/librime reuse and comparison references from Metasequoia, McBopomofo and Fcitx5 macOS.
 
 ### Architecture
 
@@ -94,6 +95,7 @@ No push or release is authorized by the current Round 3 request. Inherited upstr
 - [运行验收](docs/round0/RUNTIME_ACCEPTANCE.md)与[手动安装／输入检查](docs/round0/MANUAL_ACCEPTANCE.md)：启用旧开发包前先按此核对和更新。
 - [技术决策](docs/project/DECISIONS.md)与[本轮基础说明](docs/round0/FOUNDATION.md)：身份、架构、操作命令和限制。
 - [上游来源](UPSTREAM.md)、[改动说明](CHANGES_FROM_UPSTREAM.md)与[第三方声明](THIRD_PARTY_NOTICES.md)。
+- [开源项目参考与学习记录](docs/project/REFERENCES.md)：区分直接复用的 Squirrel／librime，以及水杉、小麦注音、Fcitx5 macOS 等比较与学习参考。
 
 当前链路为宿主应用 → InputMethodKit → librime／英文词组合 → 带版本的候选快照 → 横向双行 Squirrel Panel/View → 统一上屏协调器。内部保留 Squirrel 模块及类名，应用身份、输入源、通知、数据和日志均独立。
 

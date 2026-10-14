@@ -1,23 +1,33 @@
 # Round 3 — Guided installation and actual input acceptance
 
-Status: **WAITING_FOR_0.0.8_INSTALL_CONFIRMATION**, updated 2026-10-13,
-America/New_York. The earlier installed 0.0.7 was moved to Trash through Finder
-under a new explicit one-time user authorization. The installation path is now
-absent, no EcholME process was found afterward, and all 309 data files and 3
-logs retain their inventory/content digests. No Trash emptying. This exception
+Status: **0.0.8_INSTALLED; REPAIRED_INPUT_ACCEPTANCE_PENDING**, updated
+2026-10-14, America/New_York. The user subsequently requested installing 0.0.8
+and pushing, then explicitly authorized a public project repository and an
+open-source reference record. Audited absent-target installation and static
+verification pass; all 86 installed hashes match. Registration/selection and
+real input remain separate checkpoints. See [installation evidence](evidence/installed-008.json).
+Round 4, integration merge and binary release remain outside this task.
+
+The earlier installed 0.0.7 was moved to Trash through Finder
+under a new explicit one-time user authorization. At that removal checkpoint,
+the installation path was absent, no EcholME process was found afterward, and
+all 309 data files and 3 logs retained their inventory/content digests. No Trash emptying. This exception
 and the earlier one in `323d902` are consumed; 0.0.6 was never installed.
 The existing physical results below describe 0.0.7 before removal. Stop before
-installing 0.0.8, entering Round 4 or pushing. See [removal record](evidence/removal-007.json).
+entering Round 4 at that historical checkpoint. The later authorization above
+supersedes its installation/push wait. See [removal record](evidence/removal-007.json).
 
-The latest user instruction authorizes all executable Round 3 acceptance, then
-Round 4. The user clarified that this means the full executable matrix, not
-only `nihao`. Round 4 has not started. No push or automatic bundle replacement.
+The earlier conditional Round 4 authorization requires the complete executable
+Round 3 matrix, not only `nihao`. Round 4 has not started. The current task
+authorizes 0.0.8 installation and public source publication only; later
+installed acceptance continues one checkpoint at a time.
 
 ## Live checkpoint ledger
 
 | Check | Status | Evidence and limit |
 | --- | --- | --- |
-| Authorized 0.0.7 removal | PASS | Verified exact bundle/version/hash manifest; normal quit followed by Finder Move to Trash. Original path absent, no process in two checks, data/log inventories unchanged. 0.0.8 not installed. |
+| Authorized 0.0.8 installation | PASS, static only | Audited absent-target copy, version 0.0.8, 86 artifact file hashes, resources/linkage and strict signature. Registration/selection/typed input NOT_RUN by this installation step. |
+| Authorized 0.0.7 removal | PASS, historical | Verified exact bundle/version/hash manifest; normal quit followed by Finder Move to Trash. At that checkpoint: original path absent, no process in two checks, data/log inventories unchanged, 0.0.8 not yet installed. |
 | Absent-target 0.0.7 installation | PASS | Reviewed `install-first`; installed version/signature/resources/link paths pass; all 86 file hashes match delivery. No deletion or replacement. |
 | Registration and System Settings addition | PASS | Register OSStatus 0 plus visible 两仪 entry; independent TIS check confirms Hans enabled/selectable and Hant disabled. Original globe-key emoji behavior restored after Settings changed it automatically. |
 | Notes activation | PASS, bounded | Dedicated `EcholME 0.0.7 — Round 3 验收` note; Hans selected; installed executable path/PID and version checked; `--getascii` responded `nascii`. Initial selection had no process/reply; later activation succeeded. HUD timing is NOT_RUN. |
@@ -38,9 +48,9 @@ only `nihao`. Round 4 has not started. No push or automatic bundle replacement.
 Source review identified a transient Secure Event Input recovery issue and a
 metadata-only focus race. A separate 0.0.8 repair now passes automated checks
 and builds; see [delivery](DELIVERY.md) and [repair evidence](evidence/secure-input-recovery-008.json).
-This does not explain the CU letter-path observation. Installed 0.0.7 remains
-unchanged, and repaired installed acceptance is NOT_RUN. Never install over
-that existing target. The structured live record is
+This does not explain the CU letter-path observation. The removed 0.0.7 results
+remain separate from repaired 0.0.8 installed input acceptance, which is NOT_RUN.
+Never rerun the installer over the existing 0.0.8 target. The structured 0.0.7 record is
 [installed-acceptance-007.json](evidence/installed-acceptance-007.json).
 
 Use one checkpoint at a time and wait for the user's confirmation. Computer
@@ -54,7 +64,7 @@ Never use real passwords, private notes, secrets or personal messages as fixture
 1. Confirm the system Simplified Pinyin/ABC source is selected and usable. Check
    that `~/Library/Input Methods/EcholME.app` is absent and no EcholME process
    runs. If a target exists, stop; do not replace/delete/move it automatically.
-2. Verify the exact 0.0.7 artifact listed in [DELIVERY.md](DELIVERY.md), then use
+2. Verify the exact 0.0.8 artifact listed in [DELIVERY.md](DELIVERY.md), then use
    `python3 -B tools/round0.py install-first --bundle <artifact-path>` only after explicit
    installation confirmation. Compare installed version/signature/file hashes.
    Stop here for confirmation.
@@ -96,5 +106,6 @@ ordinary confined engine maintenance is authorized. No cleanup of user data,
 Squirrel data, failed artifacts or logs is authorized by this guide.
 
 Complete the executable matrix and record unavailable checks before advancing
-to the conditionally authorized Round 4. Pushing and Round 5 are not authorized;
-no scheduled continuation is configured.
+to the conditionally authorized Round 4. Source pushing to the expressly named
+public repository is authorized; Round 5 and binary release are not.
+No scheduled continuation is configured.

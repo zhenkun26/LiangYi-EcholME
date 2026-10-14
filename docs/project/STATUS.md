@@ -1,8 +1,34 @@
 # LiangYi / EcholME — Delivery Status
 
-Recorded: 2026-10-13, America/New_York.
+Recorded: 2026-10-14, America/New_York.
 
-## Current checkpoint — 0.0.7 removed; waiting for 0.0.8 installation confirmation
+## Current checkpoint — 0.0.8 installed; authorized source publication
+
+- **PASS**: audited absent-target installation of 0.0.8, rechecked on
+  2026-10-14. All 86 installed file hashes match the repaired artifact;
+  identity/resources/arm64 dependency paths and strict ad-hoc signature pass.
+  No deletion or existing-target replacement occurred. [Installation evidence](../round3/evidence/installed-008.json).
+- The data/log roots exist, with 310 data files and 5 logs at recheck. Their
+  digests differ from the earlier removal/pre-install snapshot over the elapsed
+  period. The installer does not write these roots; no cause is inferred and
+  no unchanged-content claim is made for the intervening activity.
+- Registration, enabling/selection, activation and repaired real-input
+  acceptance remain **NOT_RUN_BY_THIS_INSTALL_STEP**. No EcholME process was
+  found at recheck. Earlier 0.0.7 physical passes do not validate 0.0.8 recovery.
+- Publication is explicitly authorized: public `zhenkun26/LiangYi-EcholME`,
+  created and verified public/empty before the first push. The target is the
+  current `codex/round-3-context` source branch. Integration merge, binary
+  release, tag and Round 4 are outside this task. Repository/remote verification
+  follows creation and pushing; the final delivery reports the remote commit.
+- **PASS, bounded**: 262 new-history text blobs checked for selected credential
+  patterns, no matches; no tracked build/app outputs or blobs above 100 MiB.
+  Inherited CI jobs are restricted to `rime/squirrel`. No cloud CI pass claimed.
+- [Open-source references](REFERENCES.md) record actual Squirrel/librime reuse
+  and Metasequoia, McBopomofo and Fcitx5 learning/comparison sources. Reference
+  links were checked on 2026-10-14. This documentation update follows the
+  0.0.8 build; the installed bundle retains its recorded build-time README.
+
+## Previous checkpoint — 0.0.7 removal
 
 - **PASS**: under the user's explicit one-time authorization, Computer Use
   moved only `~/Library/Input Methods/EcholME.app` (verified 0.0.7, all 86
