@@ -42,7 +42,7 @@ Starting with 0.0.6, the input-source menu also offers **中文主输入 / Chine
 
 Choose **Auto** for field-first detection, **Chinese** or **English** for a persistent explicit language, or **Off** to finish pending raw text and pass subsequent keys directly to the host. Shift overrides the current focus; selecting Auto or activating a new field ends that temporary override. Manual language changes retain the guarded Round 1 commit behavior. Automatic results never change a live composition.
 
-Auto resolves safety → manual choice → saved app rule → field/nearby text → opt-in learned preference → built-in app default → global fallback (Chinese). Xcode, Terminal and iTerm default to English only when higher-priority evidence is absent. Empty, short or ambiguous mixed text falls back; the classifier is a Chinese/Latin-script hint, not semantic identification of every language. Explicit Chinese mode is not required to preserve email/URL/code literally.
+Auto resolves safety → manual choice → saved app rule → field/nearby text → opt-in learned preference → built-in app default → global fallback (Chinese). Xcode, Terminal and iTerm default to English only when higher-priority evidence is absent. Empty, short or ambiguous mixed text falls back; the classifier is a Chinese/Latin-script hint, not semantic identification of every language. Explicit Chinese mode does not guarantee literal preservation of email addresses, URLs or code; Chinese punctuation and recognizers retain their schema semantics (see the [key contract](docs/round1/KEY_CONTRACT.md)).
 
 **Language & App Rules…** edits modes, fallback and exact bundle-ID rules. Learning is off by default and stores only an app ID, direction and a capped count. Settings use the EcholME UserDefaults domain and a versioned JSON value, bounded to 128 app IDs and 64 KiB. Rules replace legacy `app_options/ascii_mode`; other Rime options remain supported. **About EcholME / Open Source Licenses…** opens the bundled notices.
 
@@ -109,7 +109,7 @@ No push or release is authorized by the current Round 3 request. Inherited upstr
 
 选择 **Auto** 按输入框优先判断；**Chinese / English** 固定主语言；**Off** 先提交待输入的原始文字，再让按键直接交给宿主。Shift 的手动覆盖在当前焦点有效，选择 Auto 或激活新输入框后结束。手动切换沿用 Round 1 的上屏保护，自动结果不会改变正在输入的组合。
 
-优先级为：安全限制 → 手动选择 → 应用强制规则 → 字段／附近文字 → 自愿开启的学习偏好 → 内置应用默认值 → 全局默认值（中文）。Xcode、Terminal、iTerm 仅在没有更高优先级证据时默认英文。空白、短片段或模糊混合文字会回退；识别是中文／拉丁字母倾向判断，不能区分所有自然语言。显式中文模式不承诺原样保留邮箱、网址和代码。
+优先级为：安全限制 → 手动选择 → 应用强制规则 → 字段／附近文字 → 自愿开启的学习偏好 → 内置应用默认值 → 全局默认值（中文）。Xcode、Terminal、iTerm 仅在没有更高优先级证据时默认英文。空白、短片段或模糊混合文字会回退；识别是中文／拉丁字母倾向判断，不能区分所有自然语言。显式中文模式不承诺原样保留邮箱、网址和代码；中文标点和识别规则保留输入方案语义（见[按键契约](docs/round1/KEY_CONTRACT.md)）。
 
 **Language & App Rules…** 可编辑模式、默认值和精确 Bundle ID 规则。学习默认关闭，仅记录应用 ID、方向和有上限的次数。设置存于 EcholME 的 UserDefaults 域，使用版本化 JSON，限制为 128 个应用 ID、64 KiB。新规则统一接管旧 `app_options/ascii_mode`，其余 Rime 选项仍保留。**About EcholME / Open Source Licenses…** 提供包内声明入口。
 

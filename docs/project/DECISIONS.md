@@ -264,3 +264,7 @@ passes remain separate from this repair. See [repair evidence](../round3/evidenc
 - Do not infer permission to push, release, or distribute from approval to implement.
 - Do not introduce a specific cloud model, API key, paid service, or bundled local model merely because the architecture supports it.
 - Keep prior proposed translation shortcuts and English phrase-entry shortcuts explicitly tentative until ADR-017 is resolved.
+
+## README translation clarification — 2026-11-08
+
+The English README now states that explicit Chinese mode does not guarantee literal email/URL/code preservation, matching the Chinese README text and the Round 1 key contract. This corrects translation ambiguity only; it does not introduce a new input requirement or revise the recorded acceptance results.
