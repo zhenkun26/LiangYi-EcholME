@@ -2,6 +2,11 @@
 
 Recorded: 2026-10-14, America/New_York.
 
+## README translation clarification — 2026-11-08
+
+- **PASS, static**: aligned the English and Chinese literal-input guidance with the Round 1 key contract: explicit Chinese mode retains schema punctuation and recognizers and does not guarantee literal email/URL/code preservation.
+- **NOT_RUN**: builds, automated tests and real-input acceptance. No input behavior, installation or release status changed.
+
 ## Current checkpoint — 0.0.8 installed; authorized source publication
 
 - **PASS**: audited absent-target installation of 0.0.8, rechecked on
